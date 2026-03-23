@@ -104,6 +104,59 @@ class ReportGenerator:
                     md_content += f"   {news.get('content', '')[:100]}...\n"
                     md_content += f"   *来源: {news.get('source', '')} | 时间: {news.get('time', datetime.datetime.now()).strftime('%H:%M')}*\n\n"
 
+            # 回测结果
+            backtest_result = analysis_results.get('backtest_result')
+            if backtest_result:
+                md_content += "\n## 🧪 量化回测实验室\n\n"
+                analysis_result = backtest_result.get('analysis_result', {})
+
+                md_content += "### 📊 回测核心指标\n"
+                md_content += "| 指标 | 数值 | 说明 |\n"
+                md_content += "|------|------|------|\n"
+                md_content += f"| 总收益率 | {analysis_result.get('total_return', 0):.2%} | 回测期间总收益 |\n"
+                md_content += f"| 年化收益率 | {analysis_result.get('annual_return', 0):.2%} | 年化收益水平 |\n"
+                md_content += f"| 最大回撤 | {analysis_result.get('max_drawdown', 0):.2%} | 最大亏损幅度 |\n"
+                md_content += f"| 夏普比率 | {analysis_result.get('sharpe_ratio', 0):.4f} | 风险调整后收益 |\n"
+                md_content += f"| 波动率 | {analysis_result.get('volatility', 0):.2%} | 收益波动水平 |\n"
+                md_content += f"| 胜率 | {analysis_result.get('win_rate', 0):.2%} | 盈利交易占比 |\n"
+                md_content += f"| 盈亏比 | {analysis_result.get('profit_loss_ratio', 0):.2f} | 盈利/亏损幅度 |\n"
+
+                # 策略评估
+                md_content += "\n### 🎯 策略评估\n"
+                sharpe_ratio = analysis_result.get('sharpe_ratio', 0)
+                max_drawdown = analysis_result.get('max_drawdown', 0)
+                annual_return = analysis_result.get('annual_return', 0)
+
+                if sharpe_ratio > 1.5:
+                    md_content += "✅ 夏普比率优秀，策略风险调整后收益出色\n"
+                elif sharpe_ratio > 1.0:
+                    md_content += "👍 夏普比率良好，策略风险调整后收益较好\n"
+                else:
+                    md_content += "⚠️ 夏普比率一般，策略风险调整后收益有待提升\n"
+
+                if max_drawdown > -0.2:
+                    md_content += "✅ 最大回撤控制良好，风险较低\n"
+                elif max_drawdown > -0.3:
+                    md_content += "👍 最大回撤控制一般，风险适中\n"
+                else:
+                    md_content += "⚠️ 最大回撤较大，风险较高\n"
+
+                if annual_return > 0.2:
+                    md_content += "✅ 年化收益率优秀，盈利能力强\n"
+                elif annual_return > 0.1:
+                    md_content += "👍 年化收益率良好，盈利能力较好\n"
+                else:
+                    md_content += "⚠️ 年化收益率一般，盈利能力有待提升\n"
+
+                # 投资建议
+                md_content += "\n### 💡 回测投资建议\n"
+                if sharpe_ratio > 1.5 and max_drawdown > -0.2 and annual_return > 0.2:
+                    md_content += "✅ 策略表现优秀，建议考虑实盘应用\n"
+                elif sharpe_ratio > 1.0 and max_drawdown > -0.3 and annual_return > 0.1:
+                    md_content += "👍 策略表现良好，建议进一步优化后考虑实盘\n"
+                else:
+                    md_content += "⚠️ 策略表现一般，建议进行参数优化或策略改进\n"
+
             # 免责声明
             md_content += "\n---\n\n"
             md_content += "**免责声明**: 本报告仅用于学习和研究目的，不构成任何投资建议。股市有风险，投资需谨慎。\n"

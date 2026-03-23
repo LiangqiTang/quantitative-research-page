@@ -1,6 +1,0 @@
-{
-  "trade_date": "tradedate",
-  "vol": "volume",
-  "ts_code": "symbol",
-  "close": "adjclose"
-}

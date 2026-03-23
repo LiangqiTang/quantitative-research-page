@@ -2,18 +2,18 @@
 
 # 数据源配置
 data_sources:
-  akshare:
-    enabled: true
-    priority: 1
-    # AKShare免费版，无需token
-  tushare:
-    enabled: false  # 禁用Tushare，使用免费的AKShare
-    priority: 2
-    token: ${TUSHARE_TOKEN}
   baostock:
     enabled: true
+    priority: 1
+    # 免费的A股历史数据接口，稳定可靠
+  akshare:
+    enabled: false  # 临时禁用，网络连接不稳定
+    priority: 2
+    # AKShare免费版，无需token
+  tushare:
+    enabled: false
     priority: 3
-    # 免费的A股历史数据接口
+    token: ${TUSHARE_TOKEN}
 
 # 数据采集配置
 collection:
@@ -100,8 +100,19 @@ logging:
 
 # 回测配置
 backtest:
-  enabled: false
+  enabled: true
   initial_capital: 1000000
   commission: 0.0003
   slippage: 0.0001
   benchmark: 000001.SH
+
+# 因子挖掘配置
+factor_mining:
+  enabled: true
+  max_factors: 20
+  min_significance: 0.05
+  factor_types: ["price", "volume", "momentum", "volatility", "trend", "liquidity"]
+  validation_enabled: true
+  backtest_enabled: true
+  built_in_miner_enabled: true
+  rd_agent_miner_enabled: false
