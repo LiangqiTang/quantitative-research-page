@@ -1,0 +1,107 @@
+# 量化日报系统配置文件
+
+# 数据源配置
+data_sources:
+  akshare:
+    enabled: true
+    priority: 1
+    # AKShare免费版，无需token
+  tushare:
+    enabled: false  # 禁用Tushare，使用免费的AKShare
+    priority: 2
+    token: ${TUSHARE_TOKEN}
+  baostock:
+    enabled: true
+    priority: 3
+    # 免费的A股历史数据接口
+
+# 数据采集配置
+collection:
+  market_overview:
+    enabled: true
+    sources: [eastmoney, 10jqka, sse]
+  hot_sectors:
+    enabled: true
+    limit: 20
+  stock_basic:
+    enabled: true
+  stock_kline:
+    enabled: true
+    periods: [daily, weekly, monthly]
+    history_days: 365
+  stock_financial:
+    enabled: true
+  mainforce_flow:
+    enabled: true
+  news:
+    enabled: true
+    sources: [cailianshe, eastmoney_news, xq]
+    limit: 20
+
+# 分析配置
+analysis:
+  market_sentiment:
+    enabled: true
+    indicators: [up_ratio, limit_up_ratio, sentiment_index, money_flow]
+  sector_rotation:
+    enabled: true
+    window_days: 60
+  stock_fundamentals:
+    enabled: true
+    metrics: [pe, pb, roe, eps, revenue_growth, profit_growth]
+  technical_analysis:
+    enabled: true
+    indicators: [ma, macd, rsi, boll, kdj]
+  chip_distribution:
+    enabled: true
+  mainforce_behavior:
+    enabled: true
+
+# 可视化配置
+visualization:
+  kline_chart:
+    enabled: true
+    indicators: [ma5, ma20, ma60, volume, macd]
+    save_format: png
+    dpi: 300
+  sector_chart:
+    enabled: true
+  sentiment_chart:
+    enabled: true
+  report_template: templates/index.html
+  output_dir: output
+
+# 自动化配置
+automation:
+  schedule:
+    enabled: true
+    time: '08:30'  # 北京时间8:30
+    timezone: 'Asia/Shanghai'
+  github_upload:
+    enabled: true
+    repo_name: ${GITHUB_REPO}
+    token: ${GITHUB_TOKEN}
+    branch: gh-pages
+  alert:
+    enabled: true
+    email: ${ALERT_EMAIL}
+    smtp_server: ${SMTP_SERVER}
+    smtp_port: ${SMTP_PORT}
+    smtp_username: ${SMTP_USERNAME}
+    smtp_password: ${SMTP_PASSWORD}
+
+# 日志配置
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: logs/quant_daily.log
+  max_size: 100MB
+  backup_count: 5
+
+# 回测配置
+backtest:
+  enabled: false
+  initial_capital: 1000000
+  commission: 0.0003
+  slippage: 0.0001
+  benchmark: 000001.SH

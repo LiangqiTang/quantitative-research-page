@@ -8,10 +8,8 @@
 - **🧠 量化分析引擎**: 内置宏观分析、基本面分析、技术面分析、筹码分析等多种分析模块
 - **📈 专业可视化**: 生成专业K线图、技术指标图、资金流向图等金融图表
 - **📝 自动化报告**: 自动生成HTML/Markdown格式的量化研报
-- **🚀 定时任务**: 支持每日定时采集、分析、生成报告、部署全自动化
-- **☁️ 云端部署**: 自动上传报告到GitHub Pages，支持多日期历史查询
-- **🔄 Qlib回测**: 基于微软Qlib的专业量化策略回测框架
-- **🎨 黑金风格**: 保持统一的专业量化风格，报告一致性强
+- **🚀 定时任务**: 支持每日定时采集数据、生成报告并自动部署
+- **☁️ 云端部署**: 自动上传报告到GitHub Pages，支持多设备访问
 
 ## 🏗️ 系统架构
 
@@ -22,7 +20,7 @@
          ▲                      ▲                      ▲                      ▲
          │                      │                      │                      │
 ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐    ┌──────────────────┐
-│  A股数据源接口   │    │  Qlib回测引擎    │    │  研报生成引擎    │    │  GitHub集成      │
+│  A股数据源接口   │    │  量化策略引擎    │    │  研报生成引擎    │    │  GitHub集成      │
 └──────────────────┘    └──────────────────┘    └──────────────────┘    └──────────────────┘
 ```
 
@@ -32,10 +30,14 @@
 - **数据处理**: Pandas, NumPy, Python-dateutil
 - **A股数据**: AKShare, Tushare, Baostock
 - **技术指标**: TA-Lib, Pandas-TA
-- **量化回测**: Qlib (微软开源量化框架)
 - **可视化**: Mplfinance, Plotly, Jinja2
 - **自动化**: APScheduler, PyGitHub, python-dotenv
 - **日志监控**: Loguru, Sentry
+
+### 开发工具
+- **测试框架**: Pytest, pytest-cov, pytest-asyncio
+- **代码质量**: Black, Flake8, Isort, Mypy
+- **开发环境**: IPython, Jupyter, Pandas-profiling
 
 ## 🚀 快速开始
 
@@ -80,31 +82,31 @@ vim .env.local
 
 ### 1. 数据采集模块 (data_collector)
 
-#### 多源数据获取器
+#### 宏观数据采集器
 ```python
-from data_collector import MultiSourceDataFetcher
+from data_collector import MacroDataCollector
 
-# 初始化多源数据获取器
-fetcher = MultiSourceDataFetcher()
-
-# 获取单只股票数据
-stock_data = fetcher.fetch_stock_data('000001')
-
-# 异步获取多只股票数据
-stocks_data = await fetcher.fetch_multiple_stocks_async(['000001', '600519'])
+collector = MacroDataCollector()
+market_overview = collector.get_market_overview()  # 获取大盘概况
+hot_sectors = collector.get_hot_sectors()          # 获取热点板块
 ```
 
-#### 数据质量验证
+#### 股票数据采集器
 ```python
-from data_collector import DataQualityValidator
+from data_collector import StockDataCollector
 
-validator = DataQualityValidator()
-report = validator.validate_all(stock_data)
+collector = StockDataCollector()
+kline_data = collector.get_stock_kline('000001')  # 获取K线数据
+financial_data = collector.get_stock_financial('000001')  # 获取财务数据
+```
 
-if validator.is_data_acceptable(stock_data):
-    print("✅ 数据质量合格")
-else:
-    print("❌ 数据质量不合格")
+#### 新闻数据采集器
+```python
+from data_collector import NewsDataCollector
+
+collector = NewsDataCollector()
+latest_news = collector.get_latest_news()  # 获取宏观新闻
+stock_news = collector.get_stock_news('000001')  # 获取个股新闻
 ```
 
 ### 2. 量化分析模块 (analyzer)
@@ -114,9 +116,8 @@ else:
 from analyzer import MacroAnalyzer
 
 analyzer = MacroAnalyzer(market_data)
-sentiment = analyzer.analyze_market_sentiment()
-print(f"情绪阶段: {sentiment['sentiment_stage']}")
-print(f"操作建议: {sentiment['trading_advice']['short']}")
+sentiment = analyzer.analyze_market_sentiment()  # 市场情绪分析
+sector_rotation = analyzer.analyze_sector_rotation()  # 板块轮动分析
 ```
 
 #### 股票分析引擎
@@ -124,25 +125,19 @@ print(f"操作建议: {sentiment['trading_advice']['short']}")
 from analyzer import StockAnalyzer
 
 analyzer = StockAnalyzer(stock_data)
-funda_analysis = analyzer.analyze_fundamentals()
-technical_analysis = analyzer.analyze_technical()
-
-print(f"综合评分: {funda_analysis['composite_score']:.1f}")
-print(f"投资评级: {funda_analysis['investment_rating']}")
+funda_analysis = analyzer.analyze_fundamentals()  # 基本面分析
+tech_analysis = analyzer.analyze_technical()  # 技术面分析
 ```
 
 ### 3. 可视化模块 (visualizer)
 
 #### K线图绘制
 ```python
-from visualizer import KLineVisualizer
+from visualizer import KLinePlotter
 
-plotter = KLineVisualizer(kline_data)
-plotter.plot_kline_with_indicators('000001')
-plotter.save_plot('kline.png')
-
-# 绘制筹码分布图
-chip_fig = plotter.plot_chip_distribution()
+plotter = KLinePlotter(kline_data)
+plotter.plot_kline_with_indicators('000001')  # 绘制带指标的K线图
+plotter.save_plot('kline.png')  # 保存图表
 ```
 
 #### 报告生成
@@ -150,81 +145,18 @@ chip_fig = plotter.plot_chip_distribution()
 from visualizer import ReportGenerator
 
 generator = ReportGenerator()
-report_content = generator.generate_daily_report(analysis_results)
-generator.save_report(report_content, 'daily_report.md')
-
-# 生成HTML报告
-html_content = generator.generate_html_report(analysis_results)
-generator.save_report(html_content, 'index.html')
+report_content = generator.generate_daily_report(analysis_results)  # 生成日报
+generator.save_report(report_content, 'daily_report.md')  # 保存报告
 ```
 
-### 4. Qlib回测模块 (backtester)
-
-#### 初始化回测引擎
-```python
-from backtester import QlibBacktestEngine
-
-# 初始化Qlib回测引擎
-backtester = QlibBacktestEngine(data_path='./qlib_data')
-backtester.initialize_qlib()
-```
-
-#### 获取回测数据
-```python
-# 获取回测数据
-data = backtester.fetch_data(
-    symbols=['000001', '600036', '600519'],
-    start_date='2021-01-01',
-    end_date='2022-12-31'
-)
-```
-
-#### 运行策略回测
-```python
-# 运行回测
-result = backtester.run_backtest(data)
-
-# 生成回测报告
-report = backtester.generate_report(result)
-print(report)
-```
-
-#### 参数优化
-```python
-# 参数优化
-param_grid = {
-    'topk': [30, 50, 80],
-    'n_drop': [10, 20, 30],
-    'threshold': [0.001, 0.003, 0.005]
-}
-
-optimization_result = backtester.optimize_parameters(data, param_grid)
-print(f"最优参数: {optimization_result['best_params']}")
-print(f"最佳评分: {optimization_result['best_score']:.4f}")
-```
-
-#### 策略分析
-```python
-from backtester import StrategyAnalyzer
-
-analyzer = StrategyAnalyzer()
-analysis_result = analyzer.analyze_strategy_performance(result)
-report = analyzer.generate_strategy_report(result, '均值回归策略')
-
-print(report)
-```
-
-### 5. 自动化部署模块 (scripts)
+### 4. 自动化部署模块 (scripts)
 
 #### GitHub自动上传
 ```python
 from scripts import GitHubUploader
 
 uploader = GitHubUploader(github_token, repo_name)
-uploader.upload_report('daily_report.html')
-
-# 配置GitHub Pages
-uploader.setup_github_pages()
+uploader.upload_report('daily_report.html')  # 上传报告到GitHub Pages
 ```
 
 #### 定时任务配置
@@ -303,26 +235,23 @@ scheduler:
 
 ### 均线交叉策略
 ```python
-from backtester import QlibBacktestEngine
+from strategies import MovingAverageCrossStrategy
 
 # 初始化策略
-backtester = QlibBacktestEngine()
-data = backtester.fetch_data(
-    symbols=['000001', '600519', '002415'],
-    start_date='2021-01-01',
-    end_date='2022-12-31'
+strategy = MovingAverageCrossStrategy(
+    short_window=5,
+    long_window=20,
+    stop_loss=0.05,
+    take_profit=0.10
 )
 
 # 运行回测
-result = backtester.run_backtest(data, strategy_type='ma_cross')
+backtest_result = strategy.run_backtest(kline_data)
 
-# 分析结果
-analyzer = StrategyAnalyzer()
-analysis_result = analyzer.analyze_strategy_performance(result)
-
-print(f"总收益率: {analysis_result['return_metrics']['total_return']:.2%}")
-print(f"年化收益率: {analysis_result['return_metrics']['annual_return']:.2%}")
-print(f"夏普比率: {analysis_result['risk_adjusted_metrics']['sharpe_ratio']:.2f}")
+# 输出结果
+print(f"总收益率: {backtest_result.total_return:.2%}")
+print(f"胜率: {backtest_result.win_rate:.2%}")
+print(f"最大回撤: {backtest_result.max_drawdown:.2%}")
 ```
 
 ## 🤝 贡献指南
@@ -346,13 +275,11 @@ print(f"夏普比率: {analysis_result['risk_adjusted_metrics']['sharpe_ratio']:
 ## 📝 更新日志
 
 ### v1.0.0 (2026-03-19)
-- ✨ 完成核心系统架构设计
-- ✨ 实现多数据源集成和数据质量验证
-- ✨ 开发量化分析引擎，包含宏观、基本面、技术面分析
-- ✨ 实现专业可视化模块，生成K线图和量化报告
-- ✨ 集成Qlib回测框架，支持策略回测和参数优化
-- ✨ 实现自动化部署模块，支持GitHub Pages自动上传
-- ✨ 添加定时任务系统，支持每日自动执行
+- ✨ 实现多数据源集成（AKShare、Tushare、Baostock）
+- ✨ 完成宏观分析、基本面分析、技术面分析模块
+- ✨ 实现专业K线图绘制和量化报告生成
+- ✨ 添加定时任务和自动部署功能
+- ✨ 完成系统架构设计和基础框架搭建
 
 ## 📄 许可证
 

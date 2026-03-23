@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Data
+*.csv
+*.xlsx
+*.xls
+*.json
+*.db
+*.sqlite
+*.parquet
+*.feather
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Output
+output/
+reports/
+charts/
+figures/
+
+# Configuration
+.env
+.env.local
+.env.*.local
+config.local.yaml
+config.local.toml
+
+# Vercel
+.vercel/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Misc
+.cache/
+*.pid
+*.seed
+*.pid.lock
