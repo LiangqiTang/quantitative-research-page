@@ -292,6 +292,24 @@ class ReportGenerator:
                             monthly_returns, drawdown_data, annual_returns) -> str:
         """构建HTML模板"""
 
+        # 先生成因子表格内容
+        factor_rows = ""
+        for i, (_, row) in enumerate(top_factors.iterrows(), 1):
+            sign_class = 'success' if row['significant'] else 'warning'
+            sign_badge = '✅ 显著' if row['significant'] else '⚠️ 一般'
+            factor_rows += f"""
+                            <tr>
+                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#{i}</td>
+                                <td style="font-weight: 600; color: var(--text-primary);">{row['factor_name']}</td>
+                                <td><span class="badge info">{row['factor_type']}</span></td>
+                                <td style="font-family: 'JetBrains Mono', monospace;">{row['quality_score']:.2f}</td>
+                                <td style="font-family: 'JetBrains Mono', monospace;">{row['ic']:.4f}</td>
+                                <td style="font-family: 'JetBrains Mono', monospace;">{row['icir']:.3f}</td>
+                                <td><span class="badge {sign_class}">{sign_badge}</span></td>
+                            </tr>
+"""
+
+        # 构建完整HTML
         html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -1059,26 +1077,7 @@ class ReportGenerator:
                             </tr>
                         </thead>
                         <tbody>
-"""
-
-        # 拼接因子表格行
-        for i, (_, row) in enumerate(top_factors.iterrows(), 1):
-            sign_class = 'success' if row['significant'] else 'warning'
-            sign_badge = '✅ 显著' if row['significant'] else '⚠️ 一般'
-            html += f"""
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#{i}</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">{row['factor_name']}</td>
-                                <td><span class="badge info">{row['factor_type']}</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">{row['quality_score']:.2f}</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">{row['ic']:.4f}</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">{row['icir']:.3f}</td>
-                                <td><span class="badge {sign_class}">{sign_badge}</span></td>
-                            </tr>
-"""
-
-        # 拼接HTML最后部分
-        html += """
+{factor_rows}
                         </tbody>
                     </table>
                 </div>
