@@ -1,1 +1,60 @@
 qlib_demo/qlib_bin/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.tox/
+
+# Data and cache
+*.csv
+*.xlsx
+*.xls
+*.json
+*.db
+*.sqlite
+*.parquet
+*.feather
+*.pkl
+quant-daily-report/quant_cache/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Misc
+.cache/
+*.pid
+*.seed
+*.pid.lock
