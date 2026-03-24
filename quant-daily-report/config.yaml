@@ -2,18 +2,18 @@
 
 # 数据源配置
 data_sources:
-  baostock:
+  tushare:
     enabled: true
     priority: 1
+    token: "d8d09d2910337867b1966484fe2bf8e8ab3c35536a8b46f97498dcb"
+  baostock:
+    enabled: true
+    priority: 2
     # 免费的A股历史数据接口，稳定可靠
   akshare:
-    enabled: false  # 临时禁用，网络连接不稳定
-    priority: 2
-    # AKShare免费版，无需token
-  tushare:
     enabled: false
     priority: 3
-    token: ${TUSHARE_TOKEN}
+    # AKShare免费版，无需token
 
 # 数据采集配置
 collection:

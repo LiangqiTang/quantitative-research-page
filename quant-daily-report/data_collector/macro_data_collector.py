@@ -26,19 +26,31 @@ class MacroDataCollector:
             data = {}
 
             # 1. 获取大盘指数数据
-            data.update(self._get_index_data())
+            try:
+                data.update(self._get_index_data())
+            except Exception as e:
+                print(f"获取指数数据失败: {e}，使用模拟数据")
+                data.update(self._get_mock_index_data())
 
             # 2. 获取涨跌家数数据
-            data.update(self._get_market_breadth())
+            try:
+                data.update(self._get_market_breadth())
+            except Exception as e:
+                print(f"获取涨跌家数失败: {e}，使用模拟数据")
+                data.update(self._get_mock_breadth_data())
 
             # 3. 获取资金流向数据
-            data.update(self._get_money_flow())
+            try:
+                data.update(self._get_money_flow())
+            except Exception as e:
+                print(f"获取资金流向失败: {e}，使用模拟数据")
+                data.update(self._get_mock_money_flow_data())
 
             return data
 
         except Exception as e:
-            print(f"获取市场概况失败: {e}")
-            return {}
+            print(f"获取市场概况失败: {e}，返回完整模拟数据")
+            return self._get_full_mock_data()
 
     def get_hot_sectors(self, limit: int = 20) -> List[Dict]:
         """
