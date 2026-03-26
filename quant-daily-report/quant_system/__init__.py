@@ -25,7 +25,10 @@ from .backtest_module import (
     EqualWeightStrategy,
     FactorStrategy,
     Portfolio,
-    PerformanceMetrics
+    PerformanceMetrics,
+    TradingConstraint,
+    EnhancedPortfolio,
+    EnhancedBacktestEngine,
 )
 from .report_module import ReportGenerator
 
@@ -113,6 +116,21 @@ from .overfitting_detector import (
     walk_forward_validation
 )
 
+# Sprint 3: 高级策略
+from .advanced_strategies import (
+    MomentumStrategy,
+    MeanReversionStrategy,
+    PairTradingStrategy,
+    EventDrivenStrategy,
+    MomentumType,
+    PairSpread,
+    Event
+)
+
+# Sprint 4: 数据扩展与 Pipeline
+from .data_extended import ExtendedDataManager
+from .pipeline import QuantResearchPipeline
+
 __all__ = [
     # 核心模块
     'DataManager',
@@ -125,6 +143,9 @@ __all__ = [
     'Portfolio',
     'PerformanceMetrics',
     'ReportGenerator',
+    'TradingConstraint',
+    'EnhancedPortfolio',
+    'EnhancedBacktestEngine',
 
     # 因子评价
     'FactorEvaluator',
@@ -205,4 +226,19 @@ __all__ = [
     'ParameterSensitivityResult',
     'detect_overfitting',
     'walk_forward_validation',
+
+    # 高级策略
+    'MomentumStrategy',
+    'MeanReversionStrategy',
+    'PairTradingStrategy',
+    'EventDrivenStrategy',
+    'MomentumType',
+    'PairSpread',
+    'Event',
+
+    # 数据扩展
+    'ExtendedDataManager',
+
+    # Pipeline
+    'QuantResearchPipeline',
 ]

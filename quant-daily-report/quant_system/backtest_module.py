@@ -4,7 +4,7 @@
 """
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Optional, Any, Callable
+from typing import Dict, List, Optional, Any, Callable, Set, Tuple
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime, timedelta
@@ -41,7 +41,10 @@ class Trade:
     quantity: int
     price: float
     time: str
-    commission: float
+    commission: float = 0.0
+    slippage: float = 0.0
+    impact_cost: float = 0.0
+    total_cost: float = 0.0
 
 
 @dataclass
@@ -479,3 +482,355 @@ class BacktestEngine:
         print(f"  期末资产: {metrics.get('final_value', 0):,.2f}")
         print(f"  交易日数: {metrics.get('trading_days', 0)}")
         print("=" * 60)
+
+
+class TradingConstraint:
+    """交易约束管理器（T+1、涨跌停、停牌）"""
+
+    def __init__(self):
+        self.t_plus_1_holdings: Dict[str, str] = {}  # ts_code -> buy_date
+        self.limit_prices: Dict[str, Tuple[float, float]] = {}  # ts_code -> (low, high)
+        self.suspended_stocks: Set[str] = set()
+
+    def check_t_plus_1(self, ts_code: str, current_date: str,
+                      direction: OrderDirection) -> Tuple[bool, str]:
+        """检查T+1规则
+        当日买入的股票，当日不能卖出
+        """
+        if direction != OrderDirection.SELL:
+            return True, ""
+
+        if ts_code not in self.t_plus_1_holdings:
+            return True, ""
+
+        buy_date = self.t_plus_1_holdings[ts_code]
+        if buy_date == current_date:
+            return False, f"T+1规则: 股票 {ts_code} 当日买入，不能卖出"
+
+        return True, ""
+
+    def check_price_limits(self, ts_code: str, price: float,
+                          direction: OrderDirection) -> Tuple[bool, str]:
+        """检查涨跌停
+        涨停时：无法买入，只能卖出（按涨停价）
+        跌停时：无法卖出，只能买入（按跌停价）
+        """
+        if ts_code not in self.limit_prices:
+            return True, ""
+
+        limit_low, limit_high = self.limit_prices[ts_code]
+
+        if direction == OrderDirection.BUY:
+            if price >= limit_high:
+                return False, f"涨停限制: 股票 {ts_code} 已涨停，无法买入"
+        else:  # SELL
+            if price <= limit_low:
+                return False, f"跌停限制: 股票 {ts_code} 已跌停，无法卖出"
+
+        return True, ""
+
+    def check_suspended(self, ts_code: str) -> Tuple[bool, str]:
+        """检查停牌"""
+        if ts_code in self.suspended_stocks:
+            return False, f"停牌限制: 股票 {ts_code} 已停牌"
+        return True, ""
+
+    def can_trade(self, ts_code: str, current_date: str,
+                direction: OrderDirection, price: float) -> Tuple[bool, str]:
+        """综合判断可否交易"""
+        # 检查停牌
+        ok, msg = self.check_suspended(ts_code)
+        if not ok:
+            return False, msg
+
+        # 检查涨跌停
+        ok, msg = self.check_price_limits(ts_code, price, direction)
+        if not ok:
+            return False, msg
+
+        # 检查T+1
+        ok, msg = self.check_t_plus_1(ts_code, current_date, direction)
+        if not ok:
+            return False, msg
+
+        return True, ""
+
+    def register_buy(self, ts_code: str, date: str):
+        """登记买入（用于T+1）"""
+        self.t_plus_1_holdings[ts_code] = date
+
+    def set_limit_prices(self, ts_code: str, limit_low: float, limit_high: float):
+        """设置涨跌停价格"""
+        self.limit_prices[ts_code] = (limit_low, limit_high)
+
+    def set_suspended(self, ts_code: str, suspended: bool = True):
+        """设置停牌状态"""
+        if suspended:
+            self.suspended_stocks.add(ts_code)
+        elif ts_code in self.suspended_stocks:
+            self.suspended_stocks.remove(ts_code)
+
+    def new_day(self, date: str):
+        """新的交易日，清理T+1记录（保留非当日买入的）"""
+        # 只保留不是今天买入的
+        to_remove = [code for code, buy_date in self.t_plus_1_holdings.items()
+                    if buy_date != date]
+        for code in to_remove:
+            del self.t_plus_1_holdings[code]
+
+
+try:
+    from .transaction_cost import TransactionCostModel
+    from .position_manager import PositionManager
+
+    class EnhancedPortfolio(Portfolio):
+        """增强版组合管理"""
+
+        def __init__(self, initial_capital: float = 1000000.0,
+                    commission_rate: float = 0.0003,
+                    cost_model: Optional[TransactionCostModel] = None,
+                    position_manager: Optional[PositionManager] = None):
+            super().__init__(initial_capital, commission_rate)
+            self.cost_model = cost_model
+            self.position_manager = position_manager
+            self.trading_constraint = TradingConstraint()
+            self.cost_details: List[Dict] = []  # 成本明细
+
+        def execute_order_with_costs(self, order: Order, data: Dict[str, pd.DataFrame],
+                                    date: str) -> Optional[Trade]:
+            """执行订单，含交易成本计算"""
+            # 获取当前价格
+            price = 0.0
+            if order.ts_code in data:
+                df = data[order.ts_code]
+                df_date = df[df['trade_date'] == date]
+                if not df_date.empty:
+                    price = float(df_date['close'].iloc[0])
+
+            if price <= 0:
+                return None
+
+            # 检查交易约束
+            can_trade, msg = self.trading_constraint.can_trade(
+                order.ts_code, date, order.direction, price
+            )
+            if not can_trade:
+                return None
+
+            # 计算交易成本
+            commission = 0.0
+            slippage = 0.0
+            impact_cost = 0.0
+            total_cost = 0.0
+            exec_price = price
+
+            if self.cost_model:
+                from .transaction_cost import OrderDirection as TCOrderDirection
+                tc_direction = TCOrderDirection.BUY if order.direction == OrderDirection.BUY else TCOrderDirection.SELL
+
+                cost_result = self.cost_model.calculate_total_cost(
+                    ts_code=order.ts_code,
+                    direction=tc_direction,
+                    quantity=order.quantity,
+                    price=price,
+                    date=date
+                )
+                commission = cost_result.total_commission
+                slippage = cost_result.slippage_cost
+                impact_cost = cost_result.impact_cost
+                total_cost = cost_result.total_cost
+
+                # 调整成交价（含滑点）
+                if order.direction == OrderDirection.BUY:
+                    exec_price = price + (slippage / order.quantity if order.quantity > 0 else 0)
+                else:
+                    exec_price = price - (slippage / order.quantity if order.quantity > 0 else 0)
+            else:
+                # 简单计算
+                trade_value = price * order.quantity
+                commission = trade_value * self.commission_rate
+
+            # 执行交易
+            trade_value = exec_price * order.quantity
+            if order.direction == OrderDirection.BUY:
+                if self.current_capital < trade_value + commission + total_cost:
+                    return None
+
+                self.current_capital -= (trade_value + commission + total_cost)
+
+                # 更新持仓
+                if order.ts_code in self.positions:
+                    pos = self.positions[order.ts_code]
+                    total_quantity = pos.quantity + order.quantity
+                    total_cost_value = pos.avg_price * pos.quantity + exec_price * order.quantity
+                    pos.quantity = total_quantity
+                    pos.avg_price = total_cost_value / total_quantity
+                    pos.current_price = exec_price
+                    pos.market_value = total_quantity * exec_price
+                else:
+                    self.positions[order.ts_code] = Position(
+                        ts_code=order.ts_code,
+                        quantity=order.quantity,
+                        avg_price=exec_price,
+                        current_price=exec_price,
+                        market_value=order.quantity * exec_price,
+                        pnl=0,
+                        pnl_ratio=0
+                    )
+
+                # 登记买入（用于T+1）
+                self.trading_constraint.register_buy(order.ts_code, date)
+
+            else:  # SELL
+                if order.ts_code not in self.positions:
+                    return None
+
+                pos = self.positions[order.ts_code]
+                if pos.quantity < order.quantity:
+                    return None
+
+                # 计算卖出实现的盈亏
+                realized_pnl = (exec_price - pos.avg_price) * order.quantity
+                self.current_capital += (trade_value - commission - total_cost)
+                pos.quantity -= order.quantity
+
+                if pos.quantity <= 0:
+                    del self.positions[order.ts_code]
+                else:
+                    pos.market_value = pos.quantity * exec_price
+
+            # 记录成交
+            trade = Trade(
+                ts_code=order.ts_code,
+                direction=order.direction,
+                quantity=order.quantity,
+                price=exec_price,
+                time=date,
+                commission=commission,
+                slippage=slippage,
+                impact_cost=impact_cost,
+                total_cost=total_cost
+            )
+            self.trades.append(trade)
+
+            # 记录成本明细
+            self.cost_details.append({
+                'date': date,
+                'ts_code': order.ts_code,
+                'direction': order.direction.value,
+                'quantity': order.quantity,
+                'price': exec_price,
+                'commission': commission,
+                'slippage': slippage,
+                'impact_cost': impact_cost,
+                'total_cost': total_cost
+            })
+
+            return trade
+
+    class EnhancedBacktestEngine(BacktestEngine):
+        """增强版回测引擎"""
+
+        def __init__(self, data_manager, initial_capital: float = 1000000.0,
+                    start_date: Optional[str] = None,
+                    end_date: Optional[str] = None,
+                    cost_model: Optional[TransactionCostModel] = None,
+                    position_manager: Optional[PositionManager] = None,
+                    extended_data_manager = None):
+            super().__init__(data_manager, initial_capital, start_date, end_date)
+            self.cost_model = cost_model
+            self.position_manager = position_manager
+            self.extended_data_manager = extended_data_manager
+            self.enhanced_portfolio: Optional[EnhancedPortfolio] = None
+
+        def run_enhanced(self, stock_list: Optional[List[str]] = None,
+                        filter_st: bool = True,
+                        filter_star: bool = True,
+                        filter_suspended: bool = True) -> Dict:
+            """运行增强版回测
+            支持过滤ST、科创板、北交所、停牌股票
+            """
+            print("\n" + "=" * 60)
+            print("⏳ 开始增强版回测")
+            print("=" * 60)
+
+            # 准备数据
+            data_dict = self.data_manager.prepare_factor_data(
+                stock_list, self.start_date, self.end_date
+            )
+
+            if not data_dict:
+                print("❌ 没有数据，无法回测")
+                return {}
+
+            # 过滤股票
+            filtered_stock_list = list(data_dict.keys())
+            if filter_st:
+                filtered_stock_list = [code for code in filtered_stock_list
+                                    if not code.startswith('ST') and not code.endswith('ST')]
+            if filter_star:
+                # 过滤科创板（688开头）和北交所（8开头）
+                filtered_stock_list = [code for code in filtered_stock_list
+                                    if not code.startswith('688') and not code.startswith('8')]
+
+            # 重新过滤数据字典
+            data_dict = {code: df for code, df in data_dict.items()
+                        if code in filtered_stock_list}
+
+            if not data_dict:
+                print("❌ 过滤后没有数据，无法回测")
+                return {}
+
+            # 初始化增强组合
+            self.enhanced_portfolio = EnhancedPortfolio(
+                initial_capital=self.initial_capital,
+                cost_model=self.cost_model,
+                position_manager=self.position_manager
+            )
+
+            # 获取交易日历
+            first_code = list(data_dict.keys())[0]
+            trade_dates = data_dict[first_code]['trade_date'].tolist()
+
+            print(f"\n📊 回测周期: {trade_dates[0]} 至 {trade_dates[-1]}")
+            print(f"📅 交易日数: {len(trade_dates)}")
+            print(f"💼 初始资金: {self.initial_capital:,.2f}")
+            print(f"📈 股票数量: {len(data_dict)}")
+
+            # 回测主循环
+            for i, date in enumerate(trade_dates, 1):
+                if i % 20 == 0 or i == len(trade_dates):
+                    print(f"   进度: {i}/{len(trade_dates)} ({date})", end='\r')
+
+                # 新的交易日
+                self.enhanced_portfolio.trading_constraint.new_day(date)
+
+                # 更新市场数据
+                self.enhanced_portfolio.update_market_data(data_dict, date)
+
+                # 生成并执行订单
+                if self.strategy:
+                    orders = self.strategy.on_bar(date, data_dict, self.enhanced_portfolio.positions)
+                    for order in orders:
+                        self.enhanced_portfolio.execute_order_with_costs(order, data_dict, date)
+
+            print(f"\n\n✅ 增强版回测完成")
+
+            # 计算绩效
+            metrics = PerformanceMetrics.calculate(self.enhanced_portfolio.history)
+
+            self.results = {
+                'metrics': metrics,
+                'portfolio_history': self.enhanced_portfolio.history,
+                'trades': self.enhanced_portfolio.trades,
+                'cost_details': self.enhanced_portfolio.cost_details,
+                'final_positions': self.enhanced_portfolio.positions,
+                'is_enhanced': True
+            }
+
+            self._print_results(metrics)
+            return self.results
+
+except ImportError:
+    # 如果依赖模块还不存在，跳过增强类的定义
+    pass
