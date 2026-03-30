@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quant System v4.0 | 个人量化交易系统</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,13 +19,16 @@
             --gold-primary: #d4af37;
             --gold-light: #f4e4bc;
             --gold-dark: #b8962c;
-            --bg-dark: #0a0a0a;
+            --bg-950: #050508;
+            --bg-900: #0a0a0f;
+            --bg-800: #12121a;
+            --bg-700: #1a1a28;
             --bg-card: rgba(255, 255, 255, 0.03);
-            --bg-card-hover: rgba(255, 255, 255, 0.05);
-            --border-gold: rgba(212, 175, 55, 0.3);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border-gold: rgba(212, 175, 55, 0.25);
             --border-gold-strong: rgba(212, 175, 55, 0.5);
-            --text-primary: #e0e0e0;
-            --text-secondary: #888;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
             --text-muted: #666;
             --accent-blue: #6ab0f3;
             --success: #4ade80;
@@ -31,11 +37,33 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(ellipse at top, #1a1a28 0%, #0a0a0f 50%, #050508 100%);
             color: var(--text-primary);
             min-height: 100vh;
-            line-height: 1.6;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(106, 176, 243, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: bgPulse 10s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
         }
 
         .app-container {
@@ -45,35 +73,55 @@
 
         /* Sidebar */
         .sidebar {
-            width: 260px;
-            background: rgba(0, 0, 0, 0.5);
+            width: 280px;
+            background: linear-gradient(180deg, rgba(10, 10, 15, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%);
             border-right: 1px solid var(--border-gold);
-            padding: 24px 0;
+            padding: 0;
             position: fixed;
             height: 100vh;
             overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+            backdrop-filter: blur(20px);
         }
 
         .sidebar-header {
-            padding: 0 20px 24px;
+            padding: 32px 24px 28px;
             border-bottom: 1px solid var(--border-gold);
-            margin-bottom: 24px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, transparent 100%);
         }
 
         .sidebar-logo {
-            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 50%, var(--gold-primary) 100%);
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 50%, var(--gold-dark) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 6px;
         }
 
         .sidebar-version {
             color: var(--gold-primary);
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            margin-top: 4px;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .nav-section {
+            padding: 20px 0;
+        }
+
+        .nav-section-title {
+            padding: 8px 24px;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 600;
         }
 
         .nav-item {
@@ -81,96 +129,174 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
+            gap: 14px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             border-left: 3px solid transparent;
+            position: relative;
+            margin: 2px 0;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-item:hover::before {
+            width: 100%;
         }
 
         .nav-item:hover {
-            background: var(--bg-card);
-            border-left-color: var(--gold-primary);
+            color: var(--gold-light);
         }
 
         .nav-item.active {
-            background: rgba(212, 175, 55, 0.1);
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.12) 0%, transparent 100%);
             border-left-color: var(--gold-primary);
-            color: var(--gold-primary);
+            color: var(--gold-light);
+        }
+
+        .nav-item.active::before {
+            width: 100%;
         }
 
         .nav-icon {
-            font-size: 1.2rem;
-            width: 24px;
+            font-size: 1.15rem;
+            width: 26px;
             text-align: center;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
         }
 
         .nav-text {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
+            font-weight: 500;
         }
 
         /* Main Content */
         .main-content {
             flex: 1;
-            margin-left: 260px;
-            padding: 32px;
+            margin-left: 280px;
+            padding: 36px 40px;
+            animation: contentFadeIn 0.6s ease-out;
+        }
+
+        @keyframes contentFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .page {
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: pageSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .page.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes pageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .page-header {
             margin-bottom: 32px;
+            position: relative;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold-primary) 0%, transparent 100%);
+            border-radius: 2px;
         }
 
         .page-title {
-            font-size: 2rem;
-            color: var(--gold-primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--gold-light);
             margin-bottom: 8px;
+            letter-spacing: 0.01em;
+            font-weight: 600;
         }
 
         .page-subtitle {
             color: var(--text-secondary);
             font-size: 1rem;
+            font-weight: 400;
         }
 
         /* Cards */
         .card {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
             border: 1px solid var(--border-gold);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 28px;
             margin-bottom: 24px;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold-primary) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .card:hover {
+            transform: translateY(-4px);
             border-color: var(--border-gold-strong);
-            background: var(--bg-card-hover);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(212, 175, 55, 0.08);
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-gold);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
         }
 
         .card-title {
-            font-size: 1.2rem;
-            color: var(--gold-primary);
+            font-size: 1.15rem;
+            color: var(--gold-light);
             font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
         /* Grid Layout */
@@ -189,38 +315,67 @@
         .grid-4 {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
+            gap: 20px;
         }
 
         /* Stats */
         .stat-card {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
             border: 1px solid var(--border-gold);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 28px 24px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
             font-weight: 700;
             color: var(--gold-primary);
             margin-bottom: 8px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
         }
 
         .stat-label {
             color: var(--text-secondary);
             font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
         }
 
         /* Forms */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: var(--text-primary);
             font-weight: 500;
             font-size: 0.95rem;
@@ -228,10 +383,10 @@
 
         .form-input, .form-select {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--border-gold);
-            border-radius: 8px;
+            border-radius: 10px;
             color: var(--text-primary);
             font-size: 0.95rem;
             transition: all 0.3s ease;
@@ -240,13 +395,14 @@
         .form-input:focus, .form-select:focus {
             outline: none;
             border-color: var(--gold-primary);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1), 0 0 20px rgba(212, 175, 55, 0.1);
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            gap: 24px;
         }
 
         .form-row-3 {
@@ -265,190 +421,415 @@
         .range-slider {
             flex: 1;
             -webkit-appearance: none;
-            height: 6px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 3px;
+            height: 8px;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 4px;
             outline: none;
+            cursor: pointer;
         }
 
         .range-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--gold-primary);
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
             border-radius: 50%;
             cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.15), 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .range-value {
+            min-width: 90px;
+            text-align: right;
+            color: var(--gold-primary);
+            font-weight: 600;
+            font-family: 'Noto Sans SC', monospace;
+            font-size: 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-gold);
+        }
+
+        /* Toggle */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .toggle {
+            position: relative;
+            width: 56px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            cursor: pointer;
             transition: all 0.3s ease;
+            border: 1px solid var(--border-gold);
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(212, 175, 55, 0.2) 100%);
+            border-color: var(--gold-primary);
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--text-secondary) 0%, var(--text-muted) 100%);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle.active .toggle-knob {
+            left: 29px;
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+            box-shadow: 0 2px 12px rgba(212, 175, 55, 0.4);
         }
 
         /* Buttons */
         .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            letter-spacing: 0.02em;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
             color: #0a0a0a;
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--border-gold);
             color: var(--text-primary);
         }
 
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--gold-primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #16a34a 0%, #4ade80 100%);
+            color: #0a0a0a;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(74, 222, 128, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(248, 113, 113, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
         .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 14px;
+            flex-wrap: wrap;
         }
 
         /* Factor Grid */
         .factor-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
         }
 
         .factor-item {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-gold);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .factor-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .factor-item:hover::before {
+            opacity: 1;
         }
 
         .factor-item:hover {
             border-color: var(--gold-primary);
-            background: rgba(212, 175, 55, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .factor-item.selected {
-            background: rgba(212, 175, 55, 0.15);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0.08) 100%);
             border-color: var(--gold-primary);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .factor-item.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+            color: #0a0a0a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
         }
 
         .factor-name {
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
         }
 
         .factor-category {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            position: relative;
+            z-index: 1;
         }
 
         .factor-ic {
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: var(--gold-primary);
-            margin-top: 8px;
-            font-family: 'Monaco', 'Menlo', monospace;
+            margin-top: 10px;
+            font-family: 'Noto Sans SC', monospace;
+            position: relative;
+            z-index: 1;
         }
 
         /* Template Cards */
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
         }
 
         .template-card {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
             border: 1px solid var(--border-gold);
-            border-radius: 12px;
-            padding: 24px;
+            border-radius: 16px;
+            padding: 28px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .template-card:hover::before {
+            opacity: 1;
         }
 
         .template-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
             border-color: var(--gold-primary);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(212, 175, 55, 0.1);
         }
 
         .template-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 16px;
+            filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.2));
         }
 
         .template-name {
-            font-size: 1.2rem;
-            color: var(--gold-primary);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: var(--gold-light);
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .template-desc {
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
+            font-size: 0.92rem;
+            margin-bottom: 18px;
+            line-height: 1.6;
         }
 
         .tag {
-            padding: 4px 10px;
+            display: inline-block;
+            padding: 5px 12px;
             background: rgba(212, 175, 55, 0.15);
-            border-radius: 4px;
-            font-size: 0.75rem;
-            color: var(--gold-primary);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            font-size: 0.78rem;
+            color: var(--gold-light);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         /* Progress */
         .progress-container {
-            margin: 24px 0;
+            margin: 28px 0;
         }
 
         .progress-bar {
-            height: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 4px;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
             overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
-            border-radius: 4px;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
+            border-radius: 5px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
 
         .progress-text {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
+            margin-top: 12px;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
 
         /* Log Viewer */
         .log-viewer {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-gold);
-            border-radius: 8px;
-            padding: 16px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            border-radius: 12px;
+            padding: 18px;
+            font-family: 'SF Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 0.85rem;
-            max-height: 300px;
+            max-height: 320px;
             overflow-y: auto;
         }
 
+        .log-viewer::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .log-viewer::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .log-viewer::-webkit-scrollbar-thumb {
+            background: var(--border-gold);
+            border-radius: 4px;
+        }
+
         .log-entry {
-            padding: 4px 0;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            animation: logSlide 0.3s ease;
+        }
+
+        @keyframes logSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .log-time {
@@ -464,97 +845,175 @@
             color: var(--success);
         }
 
+        .log-warning {
+            color: var(--warning);
+        }
+
+        .log-error {
+            color: var(--danger);
+        }
+
         /* Tabs */
         .tabs {
             display: flex;
-            border-bottom: 1px solid var(--border-gold);
-            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 28px;
+            gap: 8px;
         }
 
         .tab {
-            padding: 14px 24px;
+            padding: 16px 28px;
             cursor: pointer;
             color: var(--text-secondary);
             border-bottom: 2px solid transparent;
             transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .tab.active {
-            color: var(--gold-primary);
+            color: var(--gold-light);
             border-bottom-color: var(--gold-primary);
         }
 
         .tab-content {
             display: none;
+            animation: tabFadeIn 0.4s ease;
         }
 
         .tab-content.active {
             display: block;
         }
 
+        @keyframes tabFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Chart Container */
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 320px;
             margin-bottom: 24px;
         }
 
         .chart-container.large {
-            height: 400px;
+            height: 420px;
         }
 
         /* Results Grid */
         .results-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 18px;
+            margin-bottom: 28px;
         }
 
         .result-item {
-            background: rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.2) 100%);
             border: 1px solid var(--border-gold);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 20px 16px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-gold-strong);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
         }
 
         .result-value {
-            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--gold-primary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .result-label {
             font-size: 0.85rem;
             color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
         /* Quick Stats Bar */
         .quick-stats {
             display: flex;
-            gap: 32px;
-            padding: 16px 0;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border-gold);
+            gap: 40px;
+            padding: 24px 0;
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .quick-stat {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+        }
+
+        .quick-stat-icon {
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.3));
         }
 
         .quick-stat-value {
-            font-size: 1.3rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--gold-primary);
         }
 
         .quick-stat-label {
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: var(--text-secondary);
+        }
+
+        /* Optimization Method Cards */
+        .opt-method {
+            cursor: pointer;
+        }
+
+        .opt-method.selected {
+            border-color: var(--gold-primary);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 18px 22px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid;
+        }
+
+        .alert-info {
+            background: rgba(106, 176, 243, 0.1);
+            border-color: rgba(106, 176, 243, 0.3);
+            color: var(--accent-blue);
+        }
+
+        .alert-success {
+            background: rgba(74, 222, 128, 0.1);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: var(--success);
         }
 
         /* Loading Overlay */
@@ -564,13 +1023,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(5, 5, 8, 0.95);
             display: none;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 20px;
-            z-index: 1000;
+            gap: 24px;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
         }
 
         .loading-overlay.active {
@@ -578,9 +1038,9 @@
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(212, 175, 55, 0.2);
+            width: 56px;
+            height: 56px;
+            border: 3px solid rgba(212, 175, 55, 0.15);
             border-top-color: var(--gold-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -591,8 +1051,78 @@
         }
 
         .loading-text {
-            color: var(--gold-primary);
+            color: var(--gold-light);
             font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        }
+
+        th {
+            color: var(--gold-light);
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.25);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: rgba(74, 222, 128, 0.18);
+            color: var(--success);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(251, 191, 36, 0.18);
+            color: var(--warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-4, .results-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { width: 80px; }
+            .sidebar-logo, .sidebar-version, .nav-text, .nav-section-title { display: none; }
+            .main-content { margin-left: 80px; padding: 24px 20px; }
+            .grid-2, .grid-3, .form-row, .form-row-3 { grid-template-columns: 1fr; }
+            .quick-stats { flex-wrap: wrap; gap: 24px; }
+        }
+
+        @media (max-width: 600px) {
+            .grid-4, .results-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -605,37 +1135,46 @@
                 <div class="sidebar-version">v4.0</div>
             </div>
             <nav>
-                <div class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-text">仪表盘</span>
+                <div class="nav-section">
+                    <div class="nav-section-title">概览</div>
+                    <div class="nav-item active" data-page="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">仪表盘</span>
+                    </div>
                 </div>
-                <div class="nav-item" data-page="strategy">
-                    <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">策略配置</span>
+                <div class="nav-section">
+                    <div class="nav-section-title">策略配置</div>
+                    <div class="nav-item" data-page="strategy">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">策略配置</span>
+                    </div>
+                    <div class="nav-item" data-page="factors">
+                        <span class="nav-icon">🧮</span>
+                        <span class="nav-text">因子管理</span>
+                    </div>
+                    <div class="nav-item" data-page="portfolio">
+                        <span class="nav-icon">🎯</span>
+                        <span class="nav-text">组合优化</span>
+                    </div>
+                    <div class="nav-item" data-page="risk">
+                        <span class="nav-icon">🛡️</span>
+                        <span class="nav-text">风险控制</span>
+                    </div>
                 </div>
-                <div class="nav-item" data-page="factors">
-                    <span class="nav-icon">🧮</span>
-                    <span class="nav-text">因子管理</span>
-                </div>
-                <div class="nav-item" data-page="portfolio">
-                    <span class="nav-icon">🎯</span>
-                    <span class="nav-text">组合优化</span>
-                </div>
-                <div class="nav-item" data-page="risk">
-                    <span class="nav-icon">🛡️</span>
-                    <span class="nav-text">风险控制</span>
-                </div>
-                <div class="nav-item" data-page="backtest">
-                    <span class="nav-icon">💹</span>
-                    <span class="nav-text">回测执行</span>
-                </div>
-                <div class="nav-item" data-page="results">
-                    <span class="nav-icon">📈</span>
-                    <span class="nav-text">结果分析</span>
-                </div>
-                <div class="nav-item" data-page="report">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-text">报告导出</span>
+                <div class="nav-section">
+                    <div class="nav-section-title">回测分析</div>
+                    <div class="nav-item" data-page="backtest">
+                        <span class="nav-icon">💹</span>
+                        <span class="nav-text">回测执行</span>
+                    </div>
+                    <div class="nav-item" data-page="results">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">结果分析</span>
+                    </div>
+                    <div class="nav-item" data-page="report">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">报告导出</span>
+                    </div>
                 </div>
             </nav>
         </aside>
@@ -691,7 +1230,7 @@
                                 <div class="template-icon">📊</div>
                                 <div class="template-name">动量策略</div>
                                 <div class="template-desc">基于价格动量的经典趋势跟踪策略</div>
-                                <div class="template-tags">
+                                <div style="display:flex; gap:8px;">
                                     <span class="tag">趋势</span>
                                     <span class="tag">高波动</span>
                                 </div>
@@ -700,7 +1239,7 @@
                                 <div class="template-icon">🔄</div>
                                 <div class="template-name">均值回归</div>
                                 <div class="template-desc">基于布林带的反转策略</div>
-                                <div class="template-tags">
+                                <div style="display:flex; gap:8px;">
                                     <span class="tag">反转</span>
                                     <span class="tag">低波动</span>
                                 </div>
@@ -709,7 +1248,7 @@
                                 <div class="template-icon">🧮</div>
                                 <div class="template-name">多因子组合</div>
                                 <div class="template-desc">综合多维度因子的稳健策略</div>
-                                <div class="template-tags">
+                                <div style="display:flex; gap:8px;">
                                     <span class="tag">多因子</span>
                                     <span class="tag">稳健</span>
                                 </div>
@@ -721,30 +1260,37 @@
                         <div class="card-header">
                             <h3 class="card-title">📊 最近回测</h3>
                         </div>
-                        <table style="width:100%; border-collapse:collapse;">
+                        <table>
                             <thead>
                                 <tr>
-                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">策略名称</th>
-                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">收益率</th>
-                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">夏普比率</th>
-                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">最大回撤</th>
-                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">状态</th>
+                                    <th>策略名称</th>
+                                    <th>收益率</th>
+                                    <th>夏普比率</th>
+                                    <th>最大回撤</th>
+                                    <th>状态</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="recent-backtests">
                                 <tr>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">动量策略演示</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--success);">+28.5%</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">1.82</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--danger);">-15.3%</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);"><span style="padding:4px 10px; background:rgba(74,222,128,0.2); color:var(--success); border-radius:4px; font-size:0.8rem;">完成</span></td>
+                                    <td>动量策略演示</td>
+                                    <td style="color: var(--success);">+28.5%</td>
+                                    <td>1.82</td>
+                                    <td style="color: var(--danger);">-15.3%</td>
+                                    <td><span class="badge badge-success">完成</span></td>
                                 </tr>
                                 <tr>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">多因子组合</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--success);">+18.2%</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">2.15</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--danger);">-8.7%</td>
-                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);"><span style="padding:4px 10px; background:rgba(74,222,128,0.2); color:var(--success); border-radius:4px; font-size:0.8rem;">完成</span></td>
+                                    <td>多因子组合</td>
+                                    <td style="color: var(--success);">+18.2%</td>
+                                    <td>2.15</td>
+                                    <td style="color: var(--danger);">-8.7%</td>
+                                    <td><span class="badge badge-success">完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>均值回归</td>
+                                    <td style="color: var(--success);">+12.8%</td>
+                                    <td>1.42</td>
+                                    <td style="color: var(--danger);">-10.2%</td>
+                                    <td><span class="badge badge-warning">进行中</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -757,16 +1303,16 @@
                     </div>
                     <div class="grid-3">
                         <div>
-                            <h4 style="color: var(--gold-primary); margin-bottom: 8px;">1️⃣ 配置策略</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem;">前往"策略配置"选择策略模板，设置参数</p>
+                            <h4 style="color: var(--gold-light); margin-bottom: 10px; font-size: 1.05rem;">1️⃣ 配置策略</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.92rem;">前往"策略配置"选择策略模板，设置参数</p>
                         </div>
                         <div>
-                            <h4 style="color: var(--gold-primary); margin-bottom: 8px;">2️⃣ 选择因子</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem;">在"因子管理"中挑选并组合您需要的因子</p>
+                            <h4 style="color: var(--gold-light); margin-bottom: 10px; font-size: 1.05rem;">2️⃣ 选择因子</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.92rem;">在"因子管理"中挑选并组合您需要的因子</p>
                         </div>
                         <div>
-                            <h4 style="color: var(--gold-primary); margin-bottom: 8px;">3️⃣ 运行回测</h4>
-                            <p style="color: var(--text-secondary); font-size: 0.9rem;">到"回测执行"一键运行，查看分析结果和报告</p>
+                            <h4 style="color: var(--gold-light); margin-bottom: 10px; font-size: 1.05rem;">3️⃣ 运行回测</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.92rem;">到"回测执行"一键运行，查看分析结果和报告</p>
                         </div>
                     </div>
                 </div>
@@ -808,6 +1354,7 @@
                                 <option value="000300.SH">沪深300</option>
                                 <option value="000905.SH">中证500</option>
                                 <option value="000852.SH">中证1000</option>
+                                <option value="399006.SZ">创业板指</option>
                             </select>
                         </div>
                     </div>
@@ -822,6 +1369,7 @@
                                 <option value="momentum">动量策略</option>
                                 <option value="mean_reversion">均值回归策略</option>
                                 <option value="multi_factor">多因子策略</option>
+                                <option value="pair_trading">配对交易策略</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -830,6 +1378,7 @@
                                 <option value="hs300">沪深300成分股</option>
                                 <option value="zz500">中证500成分股</option>
                                 <option value="zz1000">中证1000成分股</option>
+                                <option value="all">全A股</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -845,7 +1394,37 @@
                                 <option value="daily">每日</option>
                                 <option value="weekly">每周</option>
                                 <option value="monthly" selected>每月</option>
+                                <option value="quarterly">每季度</option>
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔧 策略参数</h3>
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label class="form-label">动量周期 (天)</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="mom-period" min="5" max="60" value="20">
+                                <span class="range-value" id="mom-period-value">20</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">持仓周期 (天)</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="hold-period" min="5" max="60" value="10">
+                                <span class="range-value" id="hold-period-value">10</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">选股数量</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="stock-count" min="5" max="50" value="20">
+                                <span class="range-value" id="stock-count-value">20</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -863,11 +1442,42 @@
                     <p class="page-subtitle">选择和配置您的因子组合</p>
                 </div>
 
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔍 因子筛选</h3>
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label class="form-label">因子类别</label>
+                            <select class="form-select" id="factor-category">
+                                <option value="all">全部类别</option>
+                                <option value="technical">技术因子</option>
+                                <option value="fundamental">基本面因子</option>
+                                <option value="sentiment">情绪因子</option>
+                                <option value="alpha101">Alpha101风格</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">IC值筛选</label>
+                            <select class="form-select" id="factor-ic-filter">
+                                <option value="all">全部</option>
+                                <option value="0.03">IC > 0.03</option>
+                                <option value="0.05">IC > 0.05</option>
+                                <option value="0.08">IC > 0.08</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">搜索因子</label>
+                            <input type="text" class="form-input" id="factor-search" placeholder="输入因子名称...">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid-2">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">📋 可用因子</h3>
-                            <button class="btn btn-secondary" style="padding:8px 16px; font-size:0.85rem;" onclick="selectAllFactors()">全选</button>
+                            <button class="btn btn-secondary" style="padding:10px 18px; font-size:0.85rem;" onclick="selectAllFactors()">全选</button>
                         </div>
                         <div class="factor-grid" id="available-factors">
                             <!-- Factors will be populated here -->
@@ -877,12 +1487,38 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">✅ 已选因子 (<span id="selected-count">0</span>)</h3>
-                            <button class="btn btn-secondary" style="padding:8px 16px; font-size:0.85rem;" onclick="clearFactors()">清空</button>
+                            <button class="btn btn-secondary" style="padding:10px 18px; font-size:0.85rem;" onclick="clearFactors()">清空</button>
                         </div>
                         <div class="factor-grid" id="selected-factors">
-                            <p style="color: var(--text-secondary); grid-column:1/-1; text-align:center; padding:40px;">
+                            <p style="color: var(--text-secondary); grid-column:1/-1; text-align:center; padding:60px 20px;">
                                 从左侧选择因子添加到这里
                             </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">⚖️ 因子组合配置</h3>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">因子合成方法</label>
+                            <select class="form-select" id="factor-combine">
+                                <option value="equal">等权合成</option>
+                                <option value="ic">IC加权</option>
+                                <option value="ir">IR加权</option>
+                                <option value="ml">机器学习优化</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">中性化处理</label>
+                            <select class="form-select" id="neutralization">
+                                <option value="none">不中性化</option>
+                                <option value="market">市值中性化</option>
+                                <option value="industry">行业中性化</option>
+                                <option value="both" selected>市值+行业中性化</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -890,6 +1526,233 @@
                 <div class="btn-group">
                     <button class="btn btn-secondary" onclick="navigateTo('strategy')">⬅️ 返回策略配置</button>
                     <button class="btn btn-primary" onclick="navigateTo('portfolio')">➡️ 下一步：组合优化</button>
+                </div>
+            </div>
+
+            <!-- Portfolio Optimizer Page -->
+            <div class="page" id="page-portfolio">
+                <div class="page-header">
+                    <h1 class="page-title">🎯 组合优化</h1>
+                    <p class="page-subtitle">使用专业算法优化您的投资组合</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📐 优化方法</h3>
+                        </div>
+                        <div class="template-grid" style="grid-template-columns: repeat(2, 1fr);">
+                            <div class="template-card opt-method selected" data-method="min_variance" onclick="selectOptMethod(this)">
+                                <div class="template-icon">📉</div>
+                                <div class="template-name">最小方差</div>
+                                <div class="template-desc">最小化组合波动</div>
+                            </div>
+                            <div class="template-card opt-method" data-method="max_sharpe" onclick="selectOptMethod(this)">
+                                <div class="template-icon">📈</div>
+                                <div class="template-name">最大夏普</div>
+                                <div class="template-desc">最大化风险调整收益</div>
+                            </div>
+                            <div class="template-card opt-method" data-method="risk_parity" onclick="selectOptMethod(this)">
+                                <div class="template-icon">⚖️</div>
+                                <div class="template-name">风险平价</div>
+                                <div class="template-desc">等风险贡献分配</div>
+                            </div>
+                            <div class="template-card opt-method" data-method="equal" onclick="selectOptMethod(this)">
+                                <div class="template-icon">📊</div>
+                                <div class="template-name">等权重</div>
+                                <div class="template-desc">简单平均分配</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🔒 约束条件</h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">单资产最大权重</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="max-weight" min="5" max="30" value="10">
+                                <span class="range-value" id="max-weight-value">10%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">单资产最小权重</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="min-weight" min="0" max="5" value="1">
+                                <span class="range-value" id="min-weight-value">1%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">行业最大暴露</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="industry-exposure" min="10" max="50" value="25">
+                                <span class="range-value" id="industry-exposure-value">25%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <div class="toggle active" id="toggle-long-only" onclick="toggleSwitch(this)">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                                <label class="form-label" style="margin:0;">仅做多 (Long-only)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📊 优化预览</h3>
+                        <button class="btn btn-primary" onclick="runOptimization()">🔄 运行优化</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="portfolio-chart"></canvas>
+                    </div>
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <div class="result-value">18.5%</div>
+                            <div class="result-label">预期年化收益</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value">12.3%</div>
+                            <div class="result-label">预期波动率</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value">1.50</div>
+                            <div class="result-label">预期夏普比率</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value">-8.2%</div>
+                            <div class="result-label">预期最大回撤</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('factors')">⬅️ 返回因子管理</button>
+                    <button class="btn btn-primary" onclick="navigateTo('risk')">➡️ 下一步：风险控制</button>
+                </div>
+            </div>
+
+            <!-- Risk Control Page -->
+            <div class="page" id="page-risk">
+                <div class="page-header">
+                    <h1 class="page-title">🛡️ 风险控制</h1>
+                    <p class="page-subtitle">配置您的风险管理参数</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📉 止损设置</h3>
+                        </div>
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <div class="toggle active" id="toggle-stop-loss" onclick="toggleSwitch(this)">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                                <label class="form-label" style="margin:0;">启用单笔止损</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">单笔止损比例</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="stop-loss-pct" min="1" max="20" value="8">
+                                <span class="range-value" id="stop-loss-pct-value">8%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <div class="toggle" id="toggle-take-profit" onclick="toggleSwitch(this)">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                                <label class="form-label" style="margin:0;">启用单笔止盈</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">单笔止盈比例</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="take-profit-pct" min="5" max="50" value="20">
+                                <span class="range-value" id="take-profit-pct-value">20%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">⚠️ 组合风控</h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">最大回撤限制</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="max-drawdown" min="5" max="40" value="20">
+                                <span class="range-value" id="max-drawdown-value">20%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">目标波动率</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="target-vol" min="5" max="30" value="15">
+                                <span class="range-value" id="target-vol-value">15%</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <div class="toggle active" id="toggle-vol-target" onclick="toggleSwitch(this)">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                                <label class="form-label" style="margin:0;">启用波动率目标策略</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🔥 整体风险等级</h3>
+                    </div>
+                    <div style="text-align:center; padding:32px 0;">
+                        <div style="font-size:1.1rem; margin-bottom:20px; color:var(--text-secondary);">当前风险等级</div>
+                        <div style="font-size:3.5rem; font-weight:700; color:var(--warning); margin-bottom:28px; font-family:'Playfair Display', serif;" id="risk-level-text">中等风险</div>
+                        <div style="height:14px; background:linear-gradient(90deg, var(--success) 0%, var(--warning) 50%, var(--danger) 100%); border-radius:7px; position:relative; max-width:600px; margin:0 auto;">
+                            <div class="risk-indicator" id="risk-indicator" style="position:absolute; top:-7px; width:28px; height:28px; background:white; border:4px solid var(--text-primary); border-radius:50%; transform:translateX(-50%); left:50%;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:12px; color:var(--text-muted); max-width:600px; margin-left:auto; margin-right:auto;">
+                            <span>低风险</span>
+                            <span>中风险</span>
+                            <span>高风险</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💰 交易成本</h3>
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label class="form-label">佣金率 (‰)</label>
+                            <input type="number" class="form-input" id="commission-rate" value="0.5" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">滑点 (‰)</label>
+                            <input type="number" class="form-input" id="slippage" value="1.0" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">冲击成本模型</label>
+                            <select class="form-select" id="impact-model">
+                                <option value="none">不考虑</option>
+                                <option value="simple" selected>简单模型</option>
+                                <option value="adv">基于日均成交量</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('portfolio')">⬅️ 返回组合优化</button>
+                    <button class="btn btn-primary" onclick="navigateTo('backtest')">➡️ 下一步：执行回测</button>
                 </div>
             </div>
 
@@ -924,11 +1787,19 @@
                     </div>
                 </div>
 
+                <div class="alert alert-info">
+                    <span>ℹ️</span>
+                    <div>
+                        <strong>准备就绪</strong><br>
+                        回测时间段: 2020-01-01 至 2024-12-31 (共 1215 个交易日)
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">🚀 回测控制</h3>
                     </div>
-                    <div class="btn-group" style="margin-bottom:24px;">
+                    <div class="btn-group" style="margin-bottom:28px;">
                         <button class="btn btn-success" id="btn-run-backtest" onclick="runBacktest()">
                             ▶️ 开始回测
                         </button>
@@ -950,9 +1821,10 @@
                         </div>
                     </div>
 
-                    <div class="card" style="margin-top:24px; background:rgba(0,0,0,0.2);">
-                        <div class="card-header" style="padding-bottom:12px;">
+                    <div class="card" style="margin-top:28px; background:rgba(0,0,0,0.25);">
+                        <div class="card-header" style="padding-bottom:14px;">
                             <h3 class="card-title">📝 回测日志</h3>
+                            <button class="btn btn-secondary" style="padding:8px 14px; font-size:0.8rem;" onclick="clearLog()">清空</button>
                         </div>
                         <div class="log-viewer" id="backtest-log">
                             <div class="log-entry">
@@ -1038,6 +1910,62 @@
                     <p class="page-subtitle">生成专业的量化研究报告</p>
                 </div>
 
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📄 报告配置</h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">报告标题</label>
+                            <input type="text" class="form-input" id="report-title" value="量化策略回测报告">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">作者</label>
+                            <input type="text" class="form-input" id="report-author" value="Quant Research">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">报告格式</label>
+                            <select class="form-select" id="report-format">
+                                <option value="html">HTML 网页报告</option>
+                                <option value="markdown">Markdown 文档</option>
+                                <option value="excel">Excel 数据表</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">👁️ 报告预览</h3>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.25); border-radius:12px; padding:28px; min-height:420px;">
+                            <h2 style="color:var(--gold-light); margin-bottom:12px; font-family:'Playfair Display', serif; font-size:1.6rem;">量化策略回测报告</h2>
+                            <p style="color:var(--text-secondary); margin-bottom:28px;">生成时间: 2026-03-30 | 作者: Quant Research</p>
+
+                            <h3 style="color:var(--text-primary); margin-bottom:14px; font-size:1.15rem;">📊 策略概述</h3>
+                            <p style="color:var(--text-secondary); margin-bottom:24px; line-height:1.8;">
+                                本报告对"我的量化策略"进行了完整回测分析。策略采用动量框架，
+                                结合5个精选因子，在沪深300成分股范围内进行选股，持仓30只股票，月度调仓。
+                            </p>
+
+                            <h3 style="color:var(--text-primary); margin-bottom:14px; font-size:1.15rem;">📈 核心绩效指标</h3>
+                            <div class="grid-2" style="gap:14px; margin-bottom:24px;">
+                                <div style="background:rgba(212,175,55,0.12); padding:18px; border-radius:10px; border:1px solid var(--border-gold);">
+                                    <div style="color:var(--gold-primary); font-size:1.5rem; font-weight:700; font-family:'Playfair Display', serif;">+28.5%</div>
+                                    <div style="color:var(--text-secondary); font-size:0.85rem;">累计收益率</div>
+                                </div>
+                                <div style="background:rgba(212,175,55,0.12); padding:18px; border-radius:10px; border:1px solid var(--border-gold);">
+                                    <div style="color:var(--gold-primary); font-size:1.5rem; font-weight:700; font-family:'Playfair Display', serif;">1.82</div>
+                                    <div style="color:var(--text-secondary); font-size:0.85rem;">夏普比率</div>
+                                </div>
+                            </div>
+
+                            <p style="color:var(--text-muted); font-style:italic;">
+                                [点击生成报告查看完整内容...]
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">⬇️ 导出报告</h3>
@@ -1048,6 +1976,9 @@
                         </button>
                         <button class="btn btn-secondary" onclick="generateReport('markdown')">
                             📝 生成 Markdown 报告
+                        </button>
+                        <button class="btn btn-secondary" onclick="generateReport('excel')">
+                            📊 导出 Excel 数据
                         </button>
                     </div>
                 </div>
@@ -1067,18 +1998,24 @@
     </div>
 
     <script>
+        // ==========================================
         // App State
+        // ==========================================
         const state = {
             currentPage: 'dashboard',
             selectedFactors: [],
             backtestRunning: false,
+            backtestPaused: false,
+            selectedOptMethod: 'min_variance',
             config: {
                 strategyName: '我的量化策略',
                 initialCapital: 1000000
             }
         };
 
+        // ==========================================
         // Factor Data
+        // ==========================================
         const factors = [
             { id: 'mom_20', name: '20日动量', category: 'technical', ic: 0.052 },
             { id: 'mom_60', name: '60日动量', category: 'technical', ic: 0.045 },
@@ -1086,14 +2023,26 @@
             { id: 'turnover', name: '换手率', category: 'technical', ic: -0.042 },
             { id: 'rsi_14', name: 'RSI(14)', category: 'technical', ic: 0.031 },
             { id: 'macd', name: 'MACD', category: 'technical', ic: 0.028 },
+            { id: 'bollinger', name: '布林带', category: 'technical', ic: 0.035 },
+            { id: 'kdj', name: 'KDJ', category: 'technical', ic: 0.025 },
             { id: 'pe', name: 'PE市盈率', category: 'fundamental', ic: -0.048 },
             { id: 'pb', name: 'PB市净率', category: 'fundamental', ic: -0.041 },
             { id: 'roe', name: 'ROE净资产收益率', category: 'fundamental', ic: 0.055 },
+            { id: 'eps_growth', name: 'EPS增长率', category: 'fundamental', ic: 0.047 },
+            { id: 'dividend', name: '股息率', category: 'fundamental', ic: 0.032 },
+            { id: 'leverage', name: '杠杆率', category: 'fundamental', ic: -0.029 },
             { id: 'alpha_001', name: 'Alpha001', category: 'alpha101', ic: 0.062 },
             { id: 'alpha_002', name: 'Alpha002', category: 'alpha101', ic: 0.058 },
+            { id: 'alpha_003', name: 'Alpha003', category: 'alpha101', ic: 0.045 },
+            { id: 'alpha_006', name: 'Alpha006', category: 'alpha101', ic: 0.051 },
+            { id: 'alpha_009', name: 'Alpha009', category: 'alpha101', ic: 0.048 },
+            { id: 'sentiment_1', name: '分析师情绪', category: 'sentiment', ic: 0.038 },
+            { id: 'sentiment_2', name: '新闻情绪', category: 'sentiment', ic: 0.031 },
         ];
 
+        // ==========================================
         // Navigation
+        // ==========================================
         function navigateTo(pageName) {
             state.currentPage = pageName;
 
@@ -1116,6 +2065,8 @@
                 renderFactors();
             } else if (pageName === 'results') {
                 initResultCharts();
+            } else if (pageName === 'portfolio') {
+                initPortfolioChart();
             }
         }
 
@@ -1125,10 +2076,22 @@
             });
         });
 
+        // ==========================================
         // Range Sliders
+        // ==========================================
         function setupRangeSliders() {
             const sliders = [
                 { id: 'position-count', valueId: 'position-count-value', suffix: '' },
+                { id: 'mom-period', valueId: 'mom-period-value', suffix: '' },
+                { id: 'hold-period', valueId: 'hold-period-value', suffix: '' },
+                { id: 'stock-count', valueId: 'stock-count-value', suffix: '' },
+                { id: 'max-weight', valueId: 'max-weight-value', suffix: '%' },
+                { id: 'min-weight', valueId: 'min-weight-value', suffix: '%' },
+                { id: 'industry-exposure', valueId: 'industry-exposure-value', suffix: '%' },
+                { id: 'stop-loss-pct', valueId: 'stop-loss-pct-value', suffix: '%' },
+                { id: 'take-profit-pct', valueId: 'take-profit-pct-value', suffix: '%' },
+                { id: 'max-drawdown', valueId: 'max-drawdown-value', suffix: '%' },
+                { id: 'target-vol', valueId: 'target-vol-value', suffix: '%' },
             ];
 
             sliders.forEach(({ id, valueId, suffix }) => {
@@ -1137,17 +2100,75 @@
                 if (slider && valueDisplay) {
                     slider.addEventListener('input', () => {
                         valueDisplay.textContent = slider.value + suffix;
+                        updateRiskMeter();
                     });
                 }
             });
         }
 
+        // ==========================================
+        // Toggle Switch
+        // ==========================================
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+            updateRiskMeter();
+        }
+
+        // ==========================================
+        // Risk Meter
+        // ==========================================
+        function updateRiskMeter() {
+            const stopLoss = parseInt(document.getElementById('stop-loss-pct')?.value || 8);
+            const maxDrawdown = parseInt(document.getElementById('max-drawdown')?.value || 20);
+            const targetVol = parseInt(document.getElementById('target-vol')?.value || 15);
+
+            let riskScore = 0;
+            riskScore += (20 - stopLoss) / 19 * 30;
+            riskScore += (maxDrawdown - 5) / 35 * 40;
+            riskScore += (targetVol - 5) / 25 * 30;
+
+            riskScore = Math.max(0, Math.min(100, riskScore));
+
+            const indicator = document.getElementById('risk-indicator');
+            const levelText = document.getElementById('risk-level-text');
+
+            if (indicator) {
+                indicator.style.left = `${riskScore}%`;
+            }
+
+            if (levelText) {
+                if (riskScore < 33) {
+                    levelText.textContent = '低风险';
+                    levelText.style.color = 'var(--success)';
+                } else if (riskScore < 66) {
+                    levelText.textContent = '中等风险';
+                    levelText.style.color = 'var(--warning)';
+                } else {
+                    levelText.textContent = '高风险';
+                    levelText.style.color = 'var(--danger)';
+                }
+            }
+        }
+
+        // ==========================================
         // Factors
+        // ==========================================
         function renderFactors() {
             const container = document.getElementById('available-factors');
             if (!container) return;
 
-            container.innerHTML = factors.map(f => `
+            const category = document.getElementById('factor-category')?.value || 'all';
+            const icFilter = parseFloat(document.getElementById('factor-ic-filter')?.value || '0');
+            const search = (document.getElementById('factor-search')?.value || '').toLowerCase();
+
+            const filtered = factors.filter(f => {
+                if (category !== 'all' && f.category !== category) return false;
+                if (icFilter > 0 && Math.abs(f.ic) < icFilter) return false;
+                if (search && !f.name.toLowerCase().includes(search) && !f.id.toLowerCase().includes(search)) return false;
+                return true;
+            });
+
+            container.innerHTML = filtered.map(f => `
                 <div class="factor-item ${state.selectedFactors.includes(f.id) ? 'selected' : ''}"
                      onclick="toggleFactor('${f.id}')">
                     <div class="factor-name">${f.name}</div>
@@ -1163,6 +2184,7 @@
             const labels = {
                 technical: '技术因子',
                 fundamental: '基本面',
+                sentiment: '情绪因子',
                 alpha101: 'Alpha101'
             };
             return labels[category] || category;
@@ -1189,7 +2211,7 @@
             if (!container) return;
 
             if (state.selectedFactors.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary); grid-column:1/-1; text-align:center; padding:40px;">从左侧选择因子添加到这里</p>';
+                container.innerHTML = '<p style="color: var(--text-secondary); grid-column:1/-1; text-align:center; padding:60px 20px;">从左侧选择因子添加到这里</p>';
                 return;
             }
 
@@ -1204,7 +2226,9 @@
         }
 
         function selectAllFactors() {
-            state.selectedFactors = factors.map(f => f.id);
+            const category = document.getElementById('factor-category')?.value || 'all';
+            const filtered = factors.filter(f => category === 'all' || f.category === category);
+            state.selectedFactors = filtered.map(f => f.id);
             renderFactors();
         }
 
@@ -1213,7 +2237,87 @@
             renderFactors();
         }
 
+        // Setup factor filters
+        document.addEventListener('DOMContentLoaded', () => {
+            const categorySelect = document.getElementById('factor-category');
+            const icSelect = document.getElementById('factor-ic-filter');
+            const searchInput = document.getElementById('factor-search');
+
+            if (categorySelect) categorySelect.addEventListener('change', renderFactors);
+            if (icSelect) icSelect.addEventListener('change', renderFactors);
+            if (searchInput) searchInput.addEventListener('input', renderFactors);
+        });
+
+        // ==========================================
+        // Optimization Method Selection
+        // ==========================================
+        function selectOptMethod(element) {
+            document.querySelectorAll('.opt-method').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            state.selectedOptMethod = element.dataset.method;
+        }
+
+        // ==========================================
+        // Portfolio Chart
+        // ==========================================
+        let portfolioChart;
+
+        function initPortfolioChart() {
+            const ctx = document.getElementById('portfolio-chart');
+            if (!ctx) return;
+
+            if (portfolioChart) {
+                portfolioChart.destroy();
+            }
+
+            portfolioChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['银行', '非银金融', '医药', '消费', '科技', '新能源', '军工', '其他'],
+                    datasets: [{
+                        label: '权重配置 (%)',
+                        data: [12, 15, 10, 18, 14, 12, 8, 11],
+                        backgroundColor: 'rgba(212, 175, 55, 0.6)',
+                        borderColor: 'rgba(212, 175, 55, 1)',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#e0e0e0',
+                                font: { family: "'Noto Sans SC', sans-serif" }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#888',
+                                font: { family: "'Noto Sans SC', sans-serif" }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#888',
+                                font: { family: "'Noto Sans SC', sans-serif" }
+                            },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
         // Tab handling for results
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             setupRangeSliders();
 
@@ -1228,7 +2332,9 @@
             });
         });
 
+        // ==========================================
         // Result Charts
+        // ==========================================
         let equityChart, drawdownChart;
 
         function initResultCharts() {
@@ -1240,8 +2346,10 @@
                 let val = 1.0;
                 let bm = 1.0;
                 for (let i = 0; i < 60; i++) {
-                    dates.push(`2023-${String(Math.floor(i/30)+1).padStart(2,'0')}-${String(i%30+1).padStart(2,'0')}`);
-                    val *= (1 + (Math.random() - 0.45) * 0.03);
+                    const month = Math.floor(i / 5) + 1;
+                    const day = (i % 5) * 6 + 1;
+                    dates.push(`2023-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`);
+                    val *= (1 + (Math.random() - 0.42) * 0.032);
                     bm *= (1 + (Math.random() - 0.5) * 0.025);
                     strategy.push(val);
                     benchmark.push(bm);
@@ -1256,29 +2364,65 @@
                                 label: '策略净值',
                                 data: strategy,
                                 borderColor: 'rgba(212, 175, 55, 1)',
-                                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                                backgroundColor: 'rgba(212, 175, 55, 0.12)',
                                 fill: true,
-                                tension: 0.4
+                                tension: 0.4,
+                                borderWidth: 2.5,
+                                pointRadius: 0,
+                                pointHoverRadius: 6
                             },
                             {
                                 label: '基准',
                                 data: benchmark,
                                 borderColor: 'rgba(106, 176, 243, 1)',
-                                backgroundColor: 'rgba(106, 176, 243, 0.05)',
+                                backgroundColor: 'rgba(106, 176, 243, 0.06)',
                                 fill: true,
-                                tension: 0.4
+                                tension: 0.4,
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                pointHoverRadius: 6
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
                         plugins: {
-                            legend: { labels: { color: '#e0e0e0' } }
+                            legend: {
+                                labels: {
+                                    color: '#e0e0e0',
+                                    font: { family: "'Noto Sans SC', sans-serif", size: 13 }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(10, 10, 15, 0.95)',
+                                titleColor: '#f4e4bc',
+                                bodyColor: '#e0e0e0',
+                                borderColor: 'rgba(212, 175, 55, 0.3)',
+                                borderWidth: 1,
+                                padding: 12
+                            }
                         },
                         scales: {
-                            y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                            x: { ticks: { color: '#888', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                            y: {
+                                ticks: {
+                                    color: '#888',
+                                    font: { family: "'Noto Sans SC', sans-serif" }
+                                },
+                                grid: { color: 'rgba(255,255,255,0.05)' }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#888',
+                                    maxTicksLimit: 10,
+                                    font: { family: "'Noto Sans SC', sans-serif" }
+                                },
+                                grid: { color: 'rgba(255,255,255,0.05)' }
+                            }
                         }
                     }
                 });
@@ -1289,9 +2433,23 @@
                 const dates = [];
                 const drawdowns = [];
                 let dd = 0;
+                let inDrawdown = false;
                 for (let i = 0; i < 60; i++) {
-                    dates.push(`2023-${String(Math.floor(i/30)+1).padStart(2,'0')}-${String(i%30+1).padStart(2,'0')}`);
-                    dd = Math.max(-0.2, Math.min(0, dd + (Math.random() - 0.4) * 0.02));
+                    const month = Math.floor(i / 5) + 1;
+                    const day = (i % 5) * 6 + 1;
+                    dates.push(`2023-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`);
+
+                    if (!inDrawdown && Math.random() > 0.85) {
+                        inDrawdown = true;
+                    }
+                    if (inDrawdown) {
+                        dd = Math.max(-0.22, dd - Math.random() * 0.015);
+                        if (dd > -0.02 && Math.random() > 0.7) {
+                            inDrawdown = false;
+                        }
+                    } else {
+                        dd = Math.min(0, dd + Math.random() * 0.01);
+                    }
                     drawdowns.push(dd);
                 }
 
@@ -1303,27 +2461,50 @@
                             label: '回撤',
                             data: drawdowns,
                             borderColor: 'rgba(248, 113, 113, 1)',
-                            backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                            backgroundColor: 'rgba(248, 113, 113, 0.18)',
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHoverRadius: 5
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: { labels: { color: '#e0e0e0' } }
+                            legend: {
+                                labels: {
+                                    color: '#e0e0e0',
+                                    font: { family: "'Noto Sans SC', sans-serif" }
+                                }
+                            }
                         },
                         scales: {
-                            y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                            x: { ticks: { color: '#888', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                            y: {
+                                ticks: {
+                                    color: '#888',
+                                    font: { family: "'Noto Sans SC', sans-serif" }
+                                },
+                                grid: { color: 'rgba(255,255,255,0.05)' }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#888',
+                                    maxTicksLimit: 10,
+                                    font: { family: "'Noto Sans SC', sans-serif" }
+                                },
+                                grid: { color: 'rgba(255,255,255,0.05)' }
+                            }
                         }
                     }
                 });
             }
         }
 
+        // ==========================================
         // Backtest simulation
+        // ==========================================
         let backtestInterval = null;
         let backtestProgress = 0;
 
@@ -1339,13 +2520,16 @@
 
             addLog('info', '开始回测...');
             addLog('info', '初始化回测引擎...');
+            addLog('success', '回测引擎初始化完成');
             addLog('info', '加载历史数据...');
+            addLog('success', '加载 1215 个交易日数据');
 
             backtestInterval = setInterval(() => {
-                backtestProgress += Math.random() * 5 + 1;
+                backtestProgress += Math.random() * 4 + 1;
                 if (backtestProgress >= 100) {
                     backtestProgress = 100;
                     clearInterval(backtestInterval);
+                    backtestInterval = null;
                     finishBacktest();
                 }
 
@@ -1353,24 +2537,26 @@
                 document.getElementById('progress-percent').textContent = Math.floor(backtestProgress) + '%';
                 document.getElementById('progress-label').textContent = getProgressLabel(backtestProgress);
 
-                if (Math.random() > 0.7) {
+                if (Math.random() > 0.65) {
                     const types = ['info', 'success', 'info', 'info'];
                     const msgs = [
                         '正在计算因子暴露...',
+                        '计算因子: ' + factors[Math.floor(Math.random() * factors.length)].name,
                         '生成交易信号...',
-                        '执行订单...',
+                        '执行订单: 买入 ' + Math.floor(Math.random() * 10) + ' 只股票',
                         '更新组合持仓...',
-                        '计算绩效指标...'
+                        '计算绩效指标...',
+                        '完成调仓: ' + (Math.floor(backtestProgress / 8) + 1) + ' / 48'
                     ];
                     addLog(types[Math.floor(Math.random() * types.length)], msgs[Math.floor(Math.random() * msgs.length)]);
                 }
-            }, 200);
+            }, 180);
         }
 
         function getProgressLabel(p) {
             if (p < 20) return '加载数据中...';
             if (p < 50) return '计算因子中...';
-            if (p < 80) return '执行回测中...';
+            if (p < 85) return '执行回测中...';
             return '生成报告中...';
         }
 
@@ -1379,7 +2565,25 @@
             if (backtestInterval) {
                 clearInterval(backtestInterval);
                 backtestInterval = null;
+                state.backtestPaused = true;
+                document.getElementById('btn-pause-backtest').textContent = '▶️ 继续';
                 addLog('warning', '回测已暂停');
+            } else {
+                state.backtestPaused = false;
+                document.getElementById('btn-pause-backtest').textContent = '⏸️ 暂停';
+                addLog('info', '回测继续...');
+                backtestInterval = setInterval(() => {
+                    backtestProgress += Math.random() * 4 + 1;
+                    if (backtestProgress >= 100) {
+                        backtestProgress = 100;
+                        clearInterval(backtestInterval);
+                        backtestInterval = null;
+                        finishBacktest();
+                    }
+                    document.getElementById('backtest-progress').style.width = backtestProgress + '%';
+                    document.getElementById('progress-percent').textContent = Math.floor(backtestProgress) + '%';
+                    document.getElementById('progress-label').textContent = getProgressLabel(backtestProgress);
+                }, 180);
             }
         }
 
@@ -1389,12 +2593,15 @@
                 backtestInterval = null;
             }
             state.backtestRunning = false;
+            state.backtestPaused = false;
             backtestProgress = 0;
             document.getElementById('btn-run-backtest').disabled = false;
             document.getElementById('btn-pause-backtest').disabled = true;
             document.getElementById('btn-stop-backtest').disabled = true;
+            document.getElementById('btn-pause-backtest').textContent = '⏸️ 暂停';
             document.getElementById('backtest-progress').style.width = '0%';
             document.getElementById('progress-percent').textContent = '0%';
+            document.getElementById('progress-label').textContent = '等待开始...';
             addLog('error', '回测已停止');
         }
 
@@ -1408,6 +2615,7 @@
             addLog('success', '累计收益率: +28.5%');
             addLog('success', '夏普比率: 1.82');
             addLog('success', '最大回撤: -15.3%');
+            addLog('info', '详细结果请查看"结果分析"页面');
         }
 
         function addLog(type, msg) {
@@ -1428,27 +2636,67 @@
             }
         }
 
+        // ==========================================
         // Other utility functions
+        // ==========================================
         function loadTemplate(template) {
             navigateTo('strategy');
         }
 
         function saveConfig() {
-            alert('配置已保存！');
-        }
-
-        function generateReport(format) {
-            alert(`正在生成 ${format.toUpperCase()} 报告...\n\n(这是演示版本，实际报告需要连接后端Python系统)`);
+            showLoading('保存配置中...');
+            setTimeout(() => {
+                hideLoading();
+                showAlert('success', '配置已保存！');
+            }, 800);
         }
 
         function runOptimization() {
-            document.getElementById('loading-overlay').classList.add('active');
-            document.getElementById('loading-text').textContent = '优化组合中...';
+            showLoading('优化组合中...');
             setTimeout(() => {
-                document.getElementById('loading-overlay').classList.remove('active');
-                alert('组合优化完成！');
+                hideLoading();
+                showAlert('success', '组合优化完成！');
             }, 1500);
         }
+
+        function generateReport(format) {
+            showLoading(`生成 ${format.toUpperCase()} 报告中...`);
+            setTimeout(() => {
+                hideLoading();
+                alert(`报告生成成功！\n\n(这是演示版本，实际报告需要连接后端Python系统)\n\n格式: ${format.toUpperCase()}`);
+            }, 1200);
+        }
+
+        function showLoading(text) {
+            const overlay = document.getElementById('loading-overlay');
+            const textEl = document.getElementById('loading-text');
+            if (textEl) textEl.textContent = text;
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.cssText = 'position:fixed; top:24px; right:24px; max-width:400px; z-index:3000; animation:pageSlideIn 0.3s ease;';
+            alertDiv.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span><div>${message}</div>`;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                alertDiv.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setupRangeSliders();
+            updateRiskMeter();
+        });
     </script>
 </body>
 </html>
