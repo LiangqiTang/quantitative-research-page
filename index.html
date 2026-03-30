@@ -3,1158 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quant Monitor - 专业量化监控面板</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <title>个人量化系统 v4.0</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #0f1117;
-            --bg-card: #151923;
-            --bg-card-hover: #1a1f2e;
-            --accent-primary: #00d4ff;
-            --accent-secondary: #7c3aed;
-            --accent-success: #10b981;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
-            --accent-benchmark: #f97316;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border-color: #1e293b;
-            --glow-primary: rgba(0, 212, 255, 0.3);
-            --glow-secondary: rgba(124, 58, 237, 0.3);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--bg-primary) 0%, #0d0f15 50%, var(--bg-primary) 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Animated background grid */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 24px;
-            position: relative;
-            z-index: 1;
+            padding: 40px 20px;
         }
 
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 0 32px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 32px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
         }
 
         .logo {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -0.02em;
+            margin-bottom: 10px;
         }
 
-        .header-meta {
-            display: flex;
-            gap: 24px;
-            align-items: center;
+        .version {
+            font-size: 1.2rem;
+            color: #d4af37;
+            letter-spacing: 3px;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+        .tagline {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #888;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--glow-primary); }
-            50% { opacity: 0.8; box-shadow: 0 0 0 8px transparent; }
-        }
-
-        .timestamp {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            background: var(--bg-card);
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-            background: var(--bg-card);
-            padding: 6px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            width: fit-content;
-        }
-
-        .nav-tab {
-            padding: 10px 20px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-
-        .nav-tab:hover {
-            color: var(--text-primary);
-            background: var(--bg-card-hover);
-        }
-
-        .nav-tab.active {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15));
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
-
-        /* Section */
-        .section {
-            display: none;
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Metrics Grid */
-        .metrics-grid {
+        .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
         }
 
-        .metric-card {
-            background: linear-gradient(135deg, var(--bg-card), rgba(21, 25, 35, 0.8));
-            border: 1px solid var(--border-color);
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
+            padding: 30px;
             transition: all 0.3s ease;
         }
 
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            opacity: 0;
-            transition: opacity 0.3s;
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .metric-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent-primary);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.1);
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
         }
 
-        .metric-card:hover::before {
-            opacity: 1;
+        .feature-title {
+            font-size: 1.3rem;
+            color: #d4af37;
+            margin-bottom: 10px;
         }
 
-        .metric-label {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
-            font-weight: 500;
+        .feature-desc {
+            color: #aaa;
+            font-size: 0.95rem;
         }
 
-        .metric-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
+        .feature-list {
+            margin-top: 15px;
+            padding-left: 20px;
         }
 
-        .metric-change {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 8px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            padding: 3px 8px;
-            border-radius: 4px;
+        .feature-list li {
+            color: #888;
+            margin: 5px 0;
+            font-size: 0.9rem;
         }
 
-        .metric-change.positive {
-            color: var(--accent-success);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .metric-change.negative {
-            color: var(--accent-danger);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        /* Charts Row */
-        .charts-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 1200px) {
-            .charts-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Card */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+        .directory-section {
+            margin-top: 60px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.15);
             border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
         }
 
-        .card:hover {
-            border-color: rgba(0, 212, 255, 0.3);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 2px;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 320px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 16px;
-            border: 1px solid var(--border-color);
-        }
-
-        .chart-container.small {
-            height: 280px;
-        }
-
-        /* Two Column Grid */
-        .two-col {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-            gap: 20px;
-        }
-
-        .three-col {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 1024px) {
-            .three-col {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .two-col, .three-col {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Table */
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        th, td {
-            padding: 12px 14px;
-            text-align: left;
-        }
-
-        th {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
-            color: var(--accent-primary);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        td {
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-secondary);
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: rgba(0, 212, 255, 0.05);
-            color: var(--text-primary);
-        }
-
-        /* Badge */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .badge.success {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-success);
-        }
-
-        .badge.warning {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent-warning);
-        }
-
-        .badge.info {
-            background: rgba(0, 212, 255, 0.15);
-            color: var(--accent-primary);
-        }
-
-        .badge.benchmark {
-            background: rgba(249, 115, 22, 0.15);
-            color: var(--accent-benchmark);
-        }
-
-        /* Return Grid */
-        .returns-grid {
-            display: grid;
-            gap: 8px;
-        }
-
-        .return-row {
-            display: grid;
-            grid-template-columns: 80px repeat(12, 1fr);
-            gap: 4px;
-            align-items: center;
-        }
-
-        .return-cell {
-            padding: 8px 6px;
+        .section-title {
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 30px;
             text-align: center;
+        }
+
+        .directory-tree {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            color: #b8b8b8;
+            line-height: 1.8;
+        }
+
+        .directory-tree .folder {
+            color: #d4af37;
+        }
+
+        .directory-tree .file {
+            color: #6ab0f3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            color: #666;
+        }
+
+        .quick-start {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #d4af37;
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .quick-start code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
             border-radius: 4px;
-            font-size: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 500;
-        }
-
-        .return-cell.header {
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .return-cell.year {
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        .return-cell.positive {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--accent-success);
-        }
-
-        .return-cell.negative {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--accent-danger);
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 40px;
-        }
-
-        .footer .logo {
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
-
-        /* Legend */
-        .legend {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .legend-dot.strategy {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-        }
-
-        .legend-dot.benchmark {
-            background: var(--accent-benchmark);
+            color: #d4af37;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <div class="logo">QUANT MONITOR</div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div class="status-dot"></div>
-                    <span style="color: var(--text-secondary); font-size: 0.85rem;">实时监控中</span>
-                </div>
-            </div>
-            <div class="header-meta">
-                <div class="timestamp">📅 2026-03-24 11:36:10</div>
-            </div>
+        <header>
+            <div class="logo">Quant System</div>
+            <div class="version">v4.0</div>
+            <p class="tagline">专业的量化交易分析系统</p>
         </header>
 
-        <!-- Navigation Tabs -->
-        <nav class="nav-tabs">
-            <div class="nav-tab active" data-section="overview">📊 概览</div>
-            <div class="nav-tab" data-section="performance">📈 绩效分析</div>
-            <div class="nav-tab" data-section="risk">⚠️ 风险分析</div>
-            <div class="nav-tab" data-section="factors">🧬 因子分析</div>
-        </nav>
-
-        <!-- Overview Section -->
-        <section class="section active" id="overview">
-            <!-- Key Metrics -->
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-label">总收益率</div>
-                    <div class="metric-value">1.46%</div>
-                    <div class="metric-change positive">
-                        ↑ 1.46%
-                    </div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">年化收益率</div>
-                    <div class="metric-value">1.41%</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">夏普比率</div>
-                    <div class="metric-value">-1.672</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">最大回撤</div>
-                    <div class="metric-value">0.52%</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">卡尔马比率</div>
-                    <div class="metric-value">2.704</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">波动率</div>
-                    <div class="metric-value">0.95%</div>
-                </div>
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h2 class="feature-title">数据管理</h2>
+                <p class="feature-desc">稳定可靠的数据来源</p>
+                <ul class="feature-list">
+                    <li>Tushare + Baostock 双数据源</li>
+                    <li>财务指标（PE/PB/ROE/EPS）</li>
+                    <li>行业分类与指数成分</li>
+                    <li>内置缓存机制</li>
+                </ul>
             </div>
 
-            <!-- Equity Curve -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">净值曲线</div>
-                    <div class="legend">
-                        <div class="legend-item">
-                            <div class="legend-dot strategy"></div>
-                            <span>策略</span>
-                        </div>
-                        <div class="legend-item">
-                            <div class="legend-dot benchmark"></div>
-                            <span>基准(沪深300)</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="equityChart"></canvas>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧮</div>
+                <h2 class="feature-title">因子挖掘</h2>
+                <p class="feature-desc">专业的因子库与评价体系</p>
+                <ul class="feature-list">
+                    <li>30+ 基础技术因子</li>
+                    <li>60+ Alpha101 风格因子</li>
+                    <li>IC/IR 因子评价</li>
+                    <li>分组回测与因子衰减</li>
+                    <li>市值/行业/Barra 中性化</li>
+                </ul>
             </div>
 
-            <!-- Two Columns -->
-            <div class="two-col">
-                <!-- Drawdown -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">回撤分析</div>
-                    </div>
-                    <div class="chart-container small">
-                        <canvas id="drawdownChart"></canvas>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h2 class="feature-title">策略构建</h2>
+                <p class="feature-desc">灵活的策略框架</p>
+                <ul class="feature-list">
+                    <li>组合优化（5种专业算法）</li>
+                    <li>风险控制（止损/回撤/波动率）</li>
+                    <li>动量策略</li>
+                    <li>均值回归策略</li>
+                    <li>配对交易策略</li>
+                </ul>
+            </div>
 
-                <!-- Monthly Returns -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">月度收益率</div>
-                    </div>
-                    <div class="chart-container small">
-                        <canvas id="monthlyChart"></canvas>
-                    </div>
-                </div>
+            <div class="feature-card">
+                <div class="feature-icon">💹</div>
+                <h2 class="feature-title">回测引擎</h2>
+                <p class="feature-desc">事件驱动回测系统</p>
+                <ul class="feature-list">
+                    <li>事件驱动架构</li>
+                    <li>交易成本模型</li>
+                    <li>仓位管理</li>
+                    <li>涨跌停/停牌处理</li>
+                    <li>滑点与冲击成本</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h2 class="feature-title">绩效分析</h2>
+                <p class="feature-desc">全面的绩效指标</p>
+                <ul class="feature-list">
+                    <li>15+ 专业绩效指标</li>
+                    <li>Sortino/Omega/Calmar 比率</li>
+                    <li>VaR/CVaR 风险度量</li>
+                    <li>Brinson 业绩归因</li>
+                    <li>因子归因分析</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h2 class="feature-title">过拟合检测</h2>
+                <p class="feature-desc">策略稳健性验证</p>
+                <ul class="feature-list">
+                    <li>样本内/外对比</li>
+                    <li>Walk Forward 滚动验证</li>
+                    <li>参数敏感性分析</li>
+                    <li>策略退化检测</li>
+                </ul>
             </div>
         </section>
 
-        <!-- Performance Section -->
-        <section class="section" id="performance">
-            <!-- Detailed Metrics -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">绩效指标详情</div>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>指标类别</th>
-                                <th>指标名称</th>
-                                <th>数值</th>
-                                <th>评价</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td rowspan="3"><strong>收益指标</strong></td>
-                                <td>总收益率</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1.46%</td>
-                                <td><span class="badge warning">一般</span></td>
-                            </tr>
-                            <tr>
-                                <td>年化收益率</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1.41%</td>
-                                <td><span class="badge warning">一般</span></td>
-                            </tr>
-                            <tr>
-                                <td>期末资产</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1,014,622.66</td>
-                                <td><span class="badge info">基准: 1,000,000.00</span></td>
-                            </tr>
-                            <tr>
-                                <td rowspan="3"><strong>风险指标</strong></td>
-                                <td>波动率</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.95%</td>
-                                <td><span class="badge success">稳健</span></td>
-                            </tr>
-                            <tr>
-                                <td>最大回撤</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">-0.52%</td>
-                                <td><span class="badge success">优秀</span></td>
-                            </tr>
-                            <tr>
-                                <td>交易日数</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">262</td>
-                                <td><span class="badge info">2024-01-01 ~ 2024-12-31</span></td>
-                            </tr>
-                            <tr>
-                                <td rowspan="2"><strong>风险调整收益</strong></td>
-                                <td>夏普比率</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">-1.672</td>
-                                <td><span class="badge danger">不足</span></td>
-                            </tr>
-                            <tr>
-                                <td>卡尔马比率</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">2.704</td>
-                                <td><span class="badge success">优秀</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="directory-section">
+            <h2 class="section-title">📁 目录结构</h2>
+            <div class="directory-tree">
+                <div><span class="folder">data_modules/</span> - 数据模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">data_module.py</span> - 基础数据管理</div>
+                <div>&nbsp;&nbsp;└── <span class="file">data_extended.py</span> - 扩展数据管理</div>
+                <br>
+                <div><span class="folder">factor_modules/</span> - 因子模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">factor_module.py</span> - 基础因子库</div>
+                <div>&nbsp;&nbsp;├── <span class="file">alpha_factors.py</span> - Alpha因子库</div>
+                <div>&nbsp;&nbsp;├── <span class="file">factor_evaluator.py</span> - 因子评价引擎</div>
+                <div>&nbsp;&nbsp;└── <span class="file">factor_neutralizer.py</span> - 因子中性化</div>
+                <br>
+                <div><span class="folder">strategy_modules/</span> - 策略模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">portfolio_optimizer.py</span> - 组合优化器</div>
+                <div>&nbsp;&nbsp;├── <span class="file">risk_controller.py</span> - 风险控制器</div>
+                <div>&nbsp;&nbsp;└── <span class="file">advanced_strategies.py</span> - 高级策略</div>
+                <br>
+                <div><span class="folder">backtest_modules/</span> - 回测模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">backtest_module.py</span> - 回测引擎</div>
+                <div>&nbsp;&nbsp;├── <span class="file">transaction_cost.py</span> - 交易成本模型</div>
+                <div>&nbsp;&nbsp;└── <span class="file">position_manager.py</span> - 仓位管理</div>
+                <br>
+                <div><span class="folder">analysis_modules/</span> - 分析模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">metrics_extended.py</span> - 扩展绩效指标</div>
+                <div>&nbsp;&nbsp;├── <span class="file">performance_attribution.py</span> - 业绩归因</div>
+                <div>&nbsp;&nbsp;└── <span class="file">overfitting_detector.py</span> - 过拟合检测</div>
+                <br>
+                <div><span class="folder">report_modules/</span> - 报告模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">report_module.py</span> - 报告生成</div>
+                <div>&nbsp;&nbsp;└── <span class="file">pipeline.py</span> - 研究Pipeline</div>
+                <br>
+                <div><span class="folder">quant_system/</span> - 向后兼容层</div>
+                <div><span class="folder">docs/</span> - 文档</div>
             </div>
 
-            <!-- Annual Returns -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">年度收益率</div>
-                </div>
-                <div class="chart-container small">
-                    <canvas id="annualChart"></canvas>
-                </div>
+            <div class="quick-start">
+                <h3 style="color: #d4af37; margin-bottom: 15px;">🚀 快速开始</h3>
+                <p style="margin-bottom: 10px;">新代码推荐使用：</p>
+                <code>from data_modules import DataManager</code><br>
+                <code>from factor_modules import FactorEvaluator</code><br>
+                <code>from backtest_modules import BacktestEngine</code>
+                <p style="margin-top: 15px; margin-bottom: 10px;">保持向后兼容：</p>
+                <code>from quant_system import DataManager, BacktestEngine</code>
             </div>
-        </section>
+        </div>
 
-        <!-- Risk Section -->
-        <section class="section" id="risk">
-            <!-- Drawdown Detail -->
-            <div class="two-col">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">回撤曲线</div>
-                    </div>
-                    <div class="chart-container small">
-                        <canvas id="drawdownDetailChart"></canvas>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">风险-收益矩阵</div>
-                    </div>
-                    <div style="padding: 20px;">
-                        <div style="margin-bottom: 20px;">
-                            <h4 style="color: var(--accent-primary); margin-bottom: 12px; font-size: 0.95rem;">收益能力</h4>
-                            <p style="color: var(--text-secondary); line-height: 1.8;">
-                                <span style="color: var(--accent-warning);">⚠️ 需要提升</span> — 年化收益率不足10%
-                            </p>
-                        </div>
-                        <div style="margin-bottom: 20px;">
-                            <h4 style="color: var(--accent-primary); margin-bottom: 12px; font-size: 0.95rem;">风险控制</h4>
-                            <p style="color: var(--text-secondary); line-height: 1.8;">
-                                <span style="color: var(--accent-success);">✅ 良好</span> — 最大回撤控制在20%以内
-                            </p>
-                        </div>
-                        <div>
-                            <h4 style="color: var(--accent-primary); margin-bottom: 12px; font-size: 0.95rem;">风险调整收益</h4>
-                            <p style="color: var(--text-secondary); line-height: 1.8;">
-                                <span style="color: var(--accent-warning);">⚠️ 需要优化</span> — 夏普比率不足1.0
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Optimization Suggestions -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">优化建议</div>
-                </div>
-                <div class="two-col">
-                    <div style="padding: 10px;">
-                        <h4 style="color: var(--accent-primary); margin-bottom: 12px; font-size: 0.95rem;">📈 收益优化方向</h4>
-                        <ul style="color: var(--text-secondary); padding-left: 20px; line-height: 2;">
-                            <li>考虑增加持仓周期</li>
-                            <li>尝试因子组合优化</li>
-                            <li>测试不同的选股阈值</li>
-                        </ul>
-                    </div>
-                    <div style="padding: 10px;">
-                        <h4 style="color: var(--accent-success); margin-bottom: 12px; font-size: 0.95rem;">🛡️ 风险控制方向</h4>
-                        <ul style="color: var(--text-secondary); padding-left: 20px; line-height: 2;">
-                            <li>当前回撤控制良好</li>
-                            <li>当前波动率适中</li>
-                            <li>加强持仓分散化</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Factors Section -->
-        <section class="section" id="factors">
-            <!-- Top Factors -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">🏆 Top 10 因子</div>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>排名</th>
-                                <th>因子名称</th>
-                                <th>类型</th>
-                                <th>质量得分</th>
-                                <th>IC值</th>
-                                <th>ICIR</th>
-                                <th>显著性</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#1</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">ATR20</td>
-                                <td><span class="badge info">volatility</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">82.33</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.0271</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1.314</td>
-                                <td><span class="badge warning">⚠️ 一般</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#2</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">RSI28</td>
-                                <td><span class="badge info">momentum</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">72.50</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">-0.0443</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1.975</td>
-                                <td><span class="badge warning">⚠️ 一般</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#3</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">RSI14</td>
-                                <td><span class="badge info">momentum</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">69.97</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">-0.1375</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1.396</td>
-                                <td><span class="badge success">✅ 显著</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#4</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">MA5</td>
-                                <td><span class="badge info">price</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">69.71</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.1000</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.266</td>
-                                <td><span class="badge warning">⚠️ 一般</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#5</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">VOL20</td>
-                                <td><span class="badge info">volatility</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">66.11</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">-0.2069</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.565</td>
-                                <td><span class="badge success">✅ 显著</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#6</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">MOM10</td>
-                                <td><span class="badge info">momentum</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">66.04</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.0005</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">1.585</td>
-                                <td><span class="badge warning">⚠️ 一般</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#7</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">ATR14</td>
-                                <td><span class="badge info">volatility</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">64.02</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">-0.2173</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.566</td>
-                                <td><span class="badge success">✅ 显著</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#8</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">MA60</td>
-                                <td><span class="badge info">price</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">58.08</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.1671</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.559</td>
-                                <td><span class="badge success">✅ 显著</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#9</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">MA10</td>
-                                <td><span class="badge info">price</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">57.67</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.0456</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.634</td>
-                                <td><span class="badge warning">⚠️ 一般</span></td>
-                            </tr>
-
-                            <tr>
-                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">#10</td>
-                                <td style="font-weight: 600; color: var(--text-primary);">VOL60</td>
-                                <td><span class="badge info">volatility</span></td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">49.86</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.0234</td>
-                                <td style="font-family: 'JetBrains Mono', monospace;">0.533</td>
-                                <td><span class="badge warning">⚠️ 一般</span></td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Factor Combinations -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">💡 推荐因子组合</div>
-                </div>
-                <div class="three-col">
-                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <h4 style="color: var(--accent-primary); margin-bottom: 12px; font-size: 0.95rem;">📊 价格动量组合</h4>
-                        <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.85rem;">
-                            <strong style="color: var(--text-primary);">因子：</strong>MA5, MA10, MA20 (价格类) + MOM5, MOM10 (动量类)<br>
-                            <strong style="color: var(--text-primary);">适用：</strong>趋势跟踪策略
-                        </p>
-                    </div>
-                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <h4 style="color: var(--accent-success); margin-bottom: 12px; font-size: 0.95rem;">🔄 均值回归组合</h4>
-                        <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.85rem;">
-                            <strong style="color: var(--text-primary);">因子：</strong>RSI6, RSI14 (动量类) + BBWIDTH, ATR14 (波动率类)<br>
-                            <strong style="color: var(--text-primary);">适用：</strong>反转策略
-                        </p>
-                    </div>
-                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <h4 style="color: var(--accent-secondary); margin-bottom: 12px; font-size: 0.95rem;">🛡️ 稳健组合</h4>
-                        <p style="color: var(--text-secondary); line-height: 1.8; font-size: 0.85rem;">
-                            <strong style="color: var(--text-primary);">因子：</strong>MA20, MA60 (价格类) + VOL20, ATR14 (波动率类)<br>
-                            <strong style="color: var(--text-primary);">适用：</strong>风险控制
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="logo">QUANT MONITOR v2.0.0</div>
-            <p>专业量化交易监控面板 · 科技风可视化</p>
-            <p style="margin-top: 10px; font-size: 0.8rem;">⚠️ 本报告仅供研究学习，不构成投资建议</p>
+        <footer>
+            <p>个人量化系统 v4.0 | 专业量化交易分析</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                GitHub Pages 演示页面
+            </p>
         </footer>
     </div>
-
-    <script>
-        // Chart Data
-        const equityData = [100.0, 99.58594487826068, 100.02326598867504, 98.85578431166898, 100.16523854685603, 100.51145660229665, 100.56356317925535, 100.85629090538642, 100.78691906359946, 100.41561190100794, 100.44164132826992, 100.26789530307099, 100.50550529260082, 101.27460954744409, 102.34331641668167, 102.74014682740456, 101.53377779706783, 101.06317812460979, 99.36378515505744, 98.12588870365472, 98.95416027473215, 98.12836194776311, 99.89362014111553, 100.48450821661316, 98.79864628102902, 99.29932051657381, 98.26506662237148, 97.08575544062839, 97.34927813590869, 97.57792877061107, 97.08886140096736, 97.45559256345157, 96.87520686724366, 95.91174011665348, 95.53798419169901, 94.95732475895934, 93.988199839062, 94.85124228556731, 93.95253026527205, 94.71458428287386, 94.35217265499499, 93.77746356586414, 93.34264329658816, 92.71856395946963, 92.53928355372796, 92.58054843110283, 92.20657446979037, 92.35004602175374, 92.49568542467848, 93.81326279032207, 94.2960183127461, 94.40678299960412, 94.92744064245922, 94.63707774575518, 94.83132856919816, 94.66157886898914, 95.00652323405784, 95.98267525007117, 95.6997712922894, 95.7841315314401, 94.2622543545047, 94.81230997848158, 95.14894361827155, 94.84332653475411, 94.63456595386754, 94.3533628511499, 95.33512205798739, 93.3261609592731, 94.13719500089088, 93.94435804978416, 93.92787510553275, 94.49040237430158, 93.88341494520897, 92.96870676088568, 92.20055729392601, 90.60840815350575, 91.42915740912935, 92.26380825486609, 91.50082454321281, 92.13323279429873, 92.31086080717874, 91.8647525698319, 92.2232772366891, 91.5243668472519, 91.00936572176687, 90.91749166892598, 90.55025596655129, 90.594311921184, 89.52494948488422, 90.22349182937936, 89.61303075495819, 89.7972380273734, 88.96042157771467, 90.37817084224805, 91.37827931720746, 91.1268676489617, 90.80265141194705, 90.58322884747417, 91.7387545241898, 92.64554941928014, 92.93117604479876, 91.58966940036662, 91.90014683417206, 93.26856886835515, 93.03465966238979, 92.51633903638911, 94.2521135084406, 95.20731161718189, 94.73652904253312, 95.14051091583039, 95.50507944071992, 95.85131038587438, 95.63385406928772, 95.58528157167798, 96.12091888822692, 96.89496657436922, 98.60057630727214, 98.35885961416614, 97.74129911110002, 98.20221361017153, 97.8626898194561, 98.0120467519884, 97.00316807998706, 96.14168433162779, 96.24342382968817, 95.69191306836649, 94.6904582831529, 95.31030892139073, 94.28348475927599, 95.46498218563723, 94.91699821277723, 93.08966065260323, 93.81207538519838, 94.63020643207226, 94.90245710688443, 95.90034130799805, 96.18235148615975, 96.13139660230432, 96.15491425821416, 95.05176252671053, 94.05238188118047, 94.11605982194155, 93.83348211427695, 95.49011469942957, 96.2200790233383, 96.44255441191665, 97.39686014493903, 97.10909378420213, 97.64818405477939, 97.04418373177047, 96.2972802352348, 96.14131976431288, 96.36332569485755, 97.55787957472008, 97.85046648508373, 96.92331719449844, 98.34885065847214, 100.65398743696697, 101.41982844153729, 99.60901581021606, 99.58102577924465, 99.62092014726255, 99.62729730119246, 98.50841883188329, 98.60776822086618, 98.95484702464283, 99.08763332252875, 98.68169235587045, 99.45865409494952, 99.03370875697902, 99.0334090191709, 100.65938748224848, 99.94204374558333, 100.1680060942642, 100.24225877615808, 101.61856298061714, 101.76309330249644, 101.40517736047188, 101.79570852059962, 101.71555573616335, 102.32039821883198, 100.92753473364148, 100.63570629557397, 100.29964181277414, 100.28741120791173, 100.91964324356054, 100.21648194865949, 100.6481735125273, 100.45865473534893, 100.89039626827699, 100.83542755340162, 99.9893478114345, 100.73202567321852, 100.78762212235598, 101.11054691017529, 101.0927003885346, 101.17689962166999, 100.34071438219193, 100.92134403664082, 101.25227988729371, 100.78921260836806, 100.9965796083377, 101.46792488581869, 102.08422976555987, 101.34518598121554, 100.15825403034324, 100.0679169880468, 98.87295248548844, 97.62805611788946, 97.25104108189751, 97.20181614637599, 96.47382391769465, 97.04982962364144, 95.77566090909609, 95.30365967754287, 96.08139192476348, 96.11364744596266, 95.5733765984097, 96.04980571733036, 96.12334627537822, 94.33060492415204, 94.80698842729842, 93.83824571562455, 92.7954778163672, 92.61104476228074, 93.33622870335772, 93.42823190059596, 93.51381427397456, 94.23166389922972, 94.04811780953472, 93.4485938255811, 93.23143187529237, 93.3517936396697, 93.2781678534469, 93.97052801996769, 94.1744886424809, 94.34217756135288, 95.94520216350891, 96.57371808310349, 96.04960145310108, 95.9721750109084, 96.73498593400889, 97.69189979160217, 98.57457930115046, 98.53154461980881, 99.45788468477713, 99.87367898467153, 100.8749510846189, 99.98092060039559, 99.55004082905005, 99.88610794142774, 101.17144169340085, 100.73142730825235, 101.43221559926609, 103.10108105195518, 103.59917189465293, 103.55017954095612, 102.6664200570329, 102.09641972994818, 102.84923728738494, 102.37582321141466, 103.49100587308746];
-        const benchmarkData = [100.0, 100.86929764447166, 100.63839351659716, 100.63837377166688, 100.39576448558086, 101.00706105795345, 102.730725854472, 100.7157344951995, 100.38613093408928, 99.91508860502277, 100.34533450520101, 100.93908139051678, 98.96627417852447, 99.42225205540078, 101.95492032123535, 102.68689846753502, 101.25058680971243, 101.36169609577036, 102.71453571965093, 103.82671999150465, 102.24820941543175, 100.71506623946011, 99.2610199302223, 99.01135406880142, 98.6268013766053, 98.91556951927932, 98.1811655862641, 98.7131160787158, 99.53426088578112, 98.79883870302818, 100.07608669313107, 101.30855016052658, 103.06489095246994, 101.11864560758453, 101.09015447110961, 102.54219480074117, 104.44098803917576, 106.91843486030308, 106.63800595437328, 107.70934208990809, 109.41416272344581, 108.60764902822673, 110.283542985851, 109.63308096583063, 109.1163236661617, 109.41554973901037, 108.3062687018967, 107.18455103389641, 106.67677748867199, 106.07655099626042, 106.5947639832655, 107.80606861484294, 106.56674659977249, 107.5567663000485, 106.12275677650626, 105.20149603215987, 106.08143774064033, 106.26586242979074, 106.39176950554614, 108.62925785048984, 111.16229110363318, 109.34443686749903, 109.413991287477, 107.61834198242228, 110.90759639007788, 110.08169576515479, 110.20333543697528, 111.59596604695886, 114.56872256166146, 112.91569255785686, 115.13684376203408, 115.50459973979743, 114.64352267697011, 116.31013761116401, 116.50932750811353, 117.34025230269184, 115.6755719715019, 113.91119313173239, 113.1417022333747, 113.70461085865776, 114.14726761792367, 113.04064335016815, 110.89987801449254, 112.12105691675892, 111.52566563391683, 110.64338473425431, 110.14584523484568, 110.07172432217324, 111.64297842188847, 114.21064540857901, 113.0176623896721, 112.0857376168415, 111.67574000149959, 111.39609340732045, 112.33570756613386, 114.23316447241733, 114.23337505489843, 115.28731687499251, 116.4786320083343, 116.24630608490017, 115.14318168942835, 118.16055526279722, 118.30615085264752, 118.11964351735882, 115.65737693192412, 115.92060770023524, 117.1459932842058, 118.63245631295625, 118.50023952688022, 115.74406144063236, 115.35869619584939, 116.19149517211977, 118.09713575988492, 116.41179419856398, 116.62622553565491, 117.37341428089483, 118.49723132323345, 117.22525722944081, 118.25969431793446, 119.57503006659134, 119.25076658712499, 119.77219811383472, 118.5172200214099, 118.95993732827117, 116.64295089639668, 117.46423987271494, 116.3876808568198, 117.28361976197675, 116.24693914912932, 117.89593726424557, 119.36562765199379, 118.0630879711116, 118.01493640567708, 117.06575289166847, 117.65183877402346, 116.69021711434054, 117.41224459010765, 116.5319368306257, 116.81314320844855, 115.69936823486205, 113.95893035550144, 114.76112995792245, 114.93199616565587, 116.10801743209306, 116.35464321680712, 116.98431375418535, 116.58936032176649, 116.17785750945737, 116.15033713934228, 115.22623172643223, 115.90579613442459, 117.93712246443638, 118.0861490545453, 117.53175940382401, 117.01611967584797, 119.01125252100934, 116.80059145392586, 117.94036825411986, 117.15491386321523, 117.13430808211089, 114.67824421753963, 115.57888922537532, 112.95322788387291, 114.25371802638497, 112.42519118015105, 112.72147028836505, 111.21336447175959, 111.28454804433652, 111.58728696267939, 112.66372976170345, 114.90317628777963, 116.61780285099346, 117.3534421864991, 120.93372266634003, 121.62387937372408, 121.93600108582393, 121.62215105793129, 121.11335318201009, 121.93271064712913, 123.12406995362545, 123.91459719241399, 123.60011363169443, 123.13112881505283, 125.82321593025064, 127.4501968458607, 132.05706102068035, 132.09917930992222, 131.32929236204592, 133.0361192807522, 132.81970454693868, 131.04982597604453, 131.77338121523078, 130.47151755951108, 132.74472257261337, 130.0229729171191, 130.15538343981342, 130.63416165545206, 130.71564427445793, 133.32401261050074, 133.89521254062214, 136.27459432306517, 136.32652253863893, 133.4986955634949, 133.30371963057996, 133.34069350721373, 132.72689700076697, 130.3002058351636, 131.3753418619356, 133.64723655714772, 136.27792269801094, 134.6933592257289, 134.9875846434193, 137.05667795044548, 137.14354351119144, 137.73529399148356, 136.2604788320635, 136.45764155485645, 137.60413877173477, 139.80770828099753, 140.95166259158603, 141.59575852699234, 141.25168284956777, 135.45740938047487, 135.8440862690916, 136.8044856537277, 136.77630135094083, 138.84152455517705, 140.43126934579894, 139.4100075694896, 140.98120305460247, 140.76173545035311, 141.2656370742463, 140.257443739216, 140.1421091322958, 142.42029395606593, 143.75550541330685, 141.83065817351076, 144.03527723468395, 144.25233987650094, 148.82580718133173, 145.88128070861873, 144.59621948406726, 142.8872526202742, 141.2602516038679, 140.2393010065859, 141.4945155056608, 143.9679492828022, 146.0821980391571, 143.6795590819965, 145.07795086722297, 144.0274876490375, 142.15329606990582, 138.41758971936275, 137.96472086404833, 137.94963442884455, 138.26679167354843, 135.94601436854725, 134.06966079467674, 134.03134671663324, 135.30428706224893, 132.9679817091405, 130.13364450583848];
-        const monthlyReturns = [-3.4439489250733413, 0.8785808695427804, 4.562516846754518, -0.946768772166533, -0.5975101448997773, -0.025066400045295367, -1.7969119718507223, -0.7384775577271547, 2.2516814682795943, 4.895327308519921, 6.669261084659302, 4.035508024035506];
-        const drawdownData = [-0.2992215970174511, -0.6832283770147388, -0.6577775366041296, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7332876761992867, -0.7570322705134012, -0.7798766708093049, -0.6779404833781921, -0.6281389112648155, -0.6636914738811135, -0.7562078341604511, -0.7250121862940601, -0.7344644001759952, -0.6628268700364814, -0.7798766708093049, -0.7644382425262883, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6867000866874615, -0.7798766708093049, -0.7798766708093049, -0.6152720966292419, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7017267692081142, -0.54437843621982, -0.7798766708093049, -0.680318145169856, -0.7268619803275242, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7173881985515866, -0.5448864772998799, -0.7135341636116376, -0.7798766708093049, -0.7798766708093049, -0.6911079747032015, -0.7798766708093049, -0.7798766708093049, -0.701872775738829, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6368875693553493, -0.5440457582989787, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6916380799098848, -0.7798766708093049, -0.6544796655736184, -0.48458512178391366, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6109722215433002, -0.6951662485646684, -0.7798766708093049, -0.5820247963268396, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7177614527692746, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.5922921658992373, -0.6502364490365108, -0.7798766708093049, -0.6167870518324827, -0.7798766708093049, -0.7798766708093049, -0.660524440639157, -0.7798766708093049, -0.7798766708093049, -0.7632561940617518, -0.7798766708093049, -0.763949484445888, -0.7798766708093049, -0.6930315790261601, -0.6535690354691572, -0.601455882135279, -0.7798766708093049, -0.683263613832253, -0.7798766708093049, -0.5973559199707444, -0.753662623831237, -0.6489800973376372, -0.6774653507758674, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.708095812677846, -0.518875292896635, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7186963107005594, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.645979942998359, -0.739658921146626, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7053955724380059, -0.6834811815472065, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6309839910008436, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.683495428844902, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6696708862326746, -0.5503009737512208, -0.39703603150853023, -0.5819852999653794, -0.5863036601139548, -0.5967191306241139, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6006384682822343, -0.7794377196600751, -0.7798766708093049, -0.7752061905087644, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.752283228889613, -0.7798766708093049, -0.7798766708093049, -0.6744010956159083, -0.6599337539426232, -0.7798766708093049, -0.7196949739140981, -0.7798766708093049, -0.7513015963541443, -0.7798766708093049, -0.6210068271167203, -0.7488638738346778, -0.7798766708093049, -0.6310376870526074, -0.6576788598455853, -0.6430115249979175, -0.7798766708093049, -0.7798766708093049, -0.7032829450679959, -0.7798766708093049, -0.7798766708093049, -0.7745283536119584, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6550149842797174, -0.7798766708093049, -0.7798766708093049, -0.7323908823820706, -0.7798766708093049, -0.7641768523784259, -0.7798766708093049, -0.7798766708093049, -0.6248068624639991, -0.6353300456896049, -0.4817301451154283, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6095311697513948, -0.6571229409166979, -0.7207839250844833, -0.6480521047151555, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.7798766708093049, -0.6989733556894064, -0.7798766708093049, -0.7360547988049481, -0.6877171514696561, -0.7798766708093049, -0.7798766708093049, -0.7104739269226387, -0.5249072036100758, -0.7798766708093049, -0.7798766708093049];
-        const annualReturns = [{"year": "2020", "return": 22.396857667001978}, {"year": "2021", "return": -8.024748372924462}, {"year": "2022", "return": 3.7391683097019026}, {"year": "2023", "return": 1.3467337416713185}, {"year": "2024", "return": 1.4622663499999966}];
-
-        // Tab navigation
-        const tabs = document.querySelectorAll('.nav-tab');
-        const sections = document.querySelectorAll('.section');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetSection = tab.dataset.section;
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                sections.forEach(s => s.classList.remove('active'));
-                document.getElementById(targetSection).classList.add('active');
-            });
-        });
-
-        // Chart.js configuration
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = '#1e293b';
-        Chart.defaults.font.family = "'JetBrains Mono', monospace";
-
-        // Equity Curve Chart
-        const equityCtx = document.getElementById('equityChart').getContext('2d');
-        new Chart(equityCtx, {
-            type: 'line',
-            data: {
-                labels: equityData.map((_, i) => i),
-                datasets: [
-                    {
-                        label: '策略',
-                        data: equityData,
-                        borderColor: '#00d4ff',
-                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 0,
-                        borderWidth: 2
-                    },
-                    {
-                        label: '基准',
-                        data: benchmarkData,
-                        borderColor: '#f97316',
-                        backgroundColor: 'rgba(249, 115, 22, 0.05)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 0,
-                        borderWidth: 2,
-                        borderDash: [5, 5]
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#151923',
-                        titleColor: '#00d4ff',
-                        bodyColor: '#f8fafc',
-                        borderColor: '#1e293b',
-                        borderWidth: 1,
-                        padding: 12
-                    }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        grid: { color: 'rgba(30, 41, 59, 0.5)' },
-                        ticks: { maxTicksLimit: 10 }
-                    },
-                    y: {
-                        display: true,
-                        grid: { color: 'rgba(30, 41, 59, 0.5)' }
-                    }
-                }
-            }
-        });
-
-        // Drawdown Chart
-        const drawdownCtx = document.getElementById('drawdownChart').getContext('2d');
-        new Chart(drawdownCtx, {
-            type: 'line',
-            data: {
-                labels: drawdownData.map((_, i) => i),
-                datasets: [{
-                    label: '回撤',
-                    data: drawdownData,
-                    borderColor: '#ef4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#151923',
-                        titleColor: '#ef4444',
-                        bodyColor: '#f8fafc',
-                        borderColor: '#1e293b',
-                        borderWidth: 1
-                    }
-                },
-                scales: {
-                    x: { display: true, grid: { color: 'rgba(30, 41, 59, 0.5)' }, ticks: { maxTicksLimit: 8 } },
-                    y: { display: true, grid: { color: 'rgba(30, 41, 59, 0.5)' } }
-                }
-            }
-        });
-
-        // Monthly Returns Chart
-        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-        new Chart(monthlyCtx, {
-            type: 'bar',
-            data: {
-                labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                datasets: [{
-                    label: '月度收益率',
-                    data: monthlyReturns,
-                    backgroundColor: monthlyReturns.map(v => v >= 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
-                    borderColor: monthlyReturns.map(v => v >= 0 ? '#10b981' : '#ef4444'),
-                    borderWidth: 1,
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#151923',
-                        titleColor: '#00d4ff',
-                        bodyColor: '#f8fafc',
-                        borderColor: '#1e293b',
-                        borderWidth: 1
-                    }
-                },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: { grid: { color: 'rgba(30, 41, 59, 0.5)' } }
-                }
-            }
-        });
-
-        // Annual Returns Chart
-        const annualCtx = document.getElementById('annualChart').getContext('2d');
-        new Chart(annualCtx, {
-            type: 'bar',
-            data: {
-                labels: annualReturns.map(r => r.year),
-                datasets: [{
-                    label: '年度收益率',
-                    data: annualReturns.map(r => r.return),
-                    backgroundColor: annualReturns.map(r => r.return >= 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
-                    borderColor: annualReturns.map(r => r.return >= 0 ? '#10b981' : '#ef4444'),
-                    borderWidth: 2,
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#151923',
-                        titleColor: '#00d4ff',
-                        bodyColor: '#f8fafc',
-                        borderColor: '#1e293b',
-                        borderWidth: 1
-                    }
-                },
-                scales: {
-                    x: { grid: { color: 'rgba(30, 41, 59, 0.5)' } },
-                    y: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Drawdown Detail Chart
-        const drawdownDetailCtx = document.getElementById('drawdownDetailChart').getContext('2d');
-        new Chart(drawdownDetailCtx, {
-            type: 'line',
-            data: {
-                labels: drawdownData.map((_, i) => i),
-                datasets: [{
-                    label: '回撤',
-                    data: drawdownData,
-                    borderColor: '#ef4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#151923',
-                        titleColor: '#ef4444',
-                        bodyColor: '#f8fafc',
-                        borderColor: '#1e293b',
-                        borderWidth: 1
-                    }
-                },
-                scales: {
-                    x: { display: true, grid: { color: 'rgba(30, 41, 59, 0.5)' }, ticks: { maxTicksLimit: 8 } },
-                    y: { display: true, grid: { color: 'rgba(30, 41, 59, 0.5)' } }
-                }
-            }
-        });
-
-        // Animate metrics on load
-        const metricValues = document.querySelectorAll('.metric-value');
-        metricValues.forEach((value, index) => {
-            value.style.opacity = '0';
-            value.style.transform = 'translateY(10px)';
-            setTimeout(() => {
-                value.style.transition = 'all 0.5s ease-out';
-                value.style.opacity = '1';
-                value.style.transform = 'translateY(0)';
-            }, 100 + index * 100);
-        });
-    </script>
 </body>
 </html>
