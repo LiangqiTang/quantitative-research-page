@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人量化系统 v4.0</title>
+    <title>Quant System v4.0 | 个人量化交易系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -11,290 +12,1443 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --gold-primary: #d4af37;
+            --gold-light: #f4e4bc;
+            --gold-dark: #b8962c;
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.05);
+            --border-gold: rgba(212, 175, 55, 0.3);
+            --border-gold-strong: rgba(212, 175, 55, 0.5);
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --text-muted: #666;
+            --accent-blue: #6ab0f3;
+            --success: #4ade80;
+            --danger: #f87171;
+            --warning: #fbbf24;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #e0e0e0;
+            color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
+        .app-container {
+            display: flex;
+            min-height: 100vh;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-            padding: 40px 0;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 1px solid var(--border-gold);
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        .logo {
-            font-size: 3rem;
+        .sidebar-header {
+            padding: 0 20px 24px;
+            border-bottom: 1px solid var(--border-gold);
+            margin-bottom: 24px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%);
+            background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-light) 50%, var(--gold-primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 10px;
         }
 
-        .version {
-            font-size: 1.2rem;
-            color: #d4af37;
-            letter-spacing: 3px;
+        .sidebar-version {
+            color: var(--gold-primary);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-top: 4px;
         }
 
-        .tagline {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            color: #888;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            padding: 30px;
+        .nav-item {
+            padding: 14px 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.5);
-            background: rgba(255, 255, 255, 0.05);
+        .nav-item:hover {
+            background: var(--bg-card);
+            border-left-color: var(--gold-primary);
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.1);
+            border-left-color: var(--gold-primary);
+            color: var(--gold-primary);
         }
 
-        .feature-title {
-            font-size: 1.3rem;
-            color: #d4af37;
-            margin-bottom: 10px;
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
         }
 
-        .feature-desc {
-            color: #aaa;
+        .nav-text {
             font-size: 0.95rem;
         }
 
-        .feature-list {
-            margin-top: 15px;
-            padding-left: 20px;
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 32px;
         }
 
-        .feature-list li {
-            color: #888;
-            margin: 5px 0;
-            font-size: 0.9rem;
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
 
-        .directory-section {
-            margin-top: 60px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(212, 175, 55, 0.15);
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
             border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
         }
 
-        .section-title {
-            font-size: 1.8rem;
-            color: #d4af37;
-            margin-bottom: 30px;
+        .card:hover {
+            border-color: var(--border-gold-strong);
+            background: var(--bg-card-hover);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        /* Grid Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        /* Stats */
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 24px;
             text-align: center;
         }
 
-        .directory-tree {
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            color: #b8b8b8;
-            line-height: 1.8;
         }
 
-        .directory-tree .folder {
-            color: #d4af37;
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        .directory-tree .file {
-            color: #6ab0f3;
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            color: #666;
-        }
-
-        .quick-start {
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 4px solid #d4af37;
-            padding: 20px 25px;
-            margin: 30px 0;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .quick-start code {
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
             background: rgba(0, 0, 0, 0.3);
-            padding: 2px 8px;
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Range Slider */
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .range-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+            color: #0a0a0a;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-gold);
+            color: var(--text-primary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Factor Grid */
+        .factor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .factor-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .factor-item:hover {
+            border-color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .factor-item.selected {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--gold-primary);
+        }
+
+        .factor-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .factor-category {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .factor-ic {
+            font-size: 0.8rem;
+            color: var(--gold-primary);
+            margin-top: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+
+        /* Template Cards */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .template-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold-primary);
+        }
+
+        .template-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .template-name {
+            font-size: 1.2rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .template-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            background: rgba(212, 175, 55, 0.15);
             border-radius: 4px;
-            color: #d4af37;
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+        }
+
+        /* Progress */
+        .progress-container {
+            margin: 24px 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-primary) 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Log Viewer */
+        .log-viewer {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .log-time {
+            color: var(--text-muted);
+            margin-right: 12px;
+        }
+
+        .log-info {
+            color: var(--accent-blue);
+        }
+
+        .log-success {
+            color: var(--success);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-gold);
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 14px 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--gold-primary);
+            border-bottom-color: var(--gold-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 24px;
+        }
+
+        .chart-container.large {
+            height: 400px;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .result-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 4px;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Stats Bar */
+        .quick-stats {
+            display: flex;
+            gap: 32px;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .quick-stat {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quick-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .quick-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(212, 175, 55, 0.2);
+            border-top-color: var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--gold-primary);
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">Quant System</div>
-            <div class="version">v4.0</div>
-            <p class="tagline">专业的量化交易分析系统</p>
-        </header>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">Quant System</div>
+                <div class="sidebar-version">v4.0</div>
+            </div>
+            <nav>
+                <div class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">仪表盘</span>
+                </div>
+                <div class="nav-item" data-page="strategy">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">策略配置</span>
+                </div>
+                <div class="nav-item" data-page="factors">
+                    <span class="nav-icon">🧮</span>
+                    <span class="nav-text">因子管理</span>
+                </div>
+                <div class="nav-item" data-page="portfolio">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-text">组合优化</span>
+                </div>
+                <div class="nav-item" data-page="risk">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="nav-text">风险控制</span>
+                </div>
+                <div class="nav-item" data-page="backtest">
+                    <span class="nav-icon">💹</span>
+                    <span class="nav-text">回测执行</span>
+                </div>
+                <div class="nav-item" data-page="results">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">结果分析</span>
+                </div>
+                <div class="nav-item" data-page="report">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">报告导出</span>
+                </div>
+            </nav>
+        </aside>
 
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h2 class="feature-title">数据管理</h2>
-                <p class="feature-desc">稳定可靠的数据来源</p>
-                <ul class="feature-list">
-                    <li>Tushare + Baostock 双数据源</li>
-                    <li>财务指标（PE/PB/ROE/EPS）</li>
-                    <li>行业分类与指数成分</li>
-                    <li>内置缓存机制</li>
-                </ul>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h1 class="page-title">📊 系统仪表盘</h1>
+                    <p class="page-subtitle">欢迎使用个人量化交易系统 v4.0 - 黑金科技风格</p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <span class="quick-stat-icon">💰</span>
+                        <div>
+                            <div class="quick-stat-value" id="quick-capital">¥1,000,000</div>
+                            <div class="quick-stat-label">初始资金</div>
+                        </div>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-stat-icon">📈</span>
+                        <div>
+                            <div class="quick-stat-value" id="quick-strategies">5</div>
+                            <div class="quick-stat-label">可用策略</div>
+                        </div>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-stat-icon">🧮</span>
+                        <div>
+                            <div class="quick-stat-value" id="quick-factors">90+</div>
+                            <div class="quick-stat-label">因子数量</div>
+                        </div>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="quick-stat-icon">⚡</span>
+                        <div>
+                            <div class="quick-stat-value">就绪</div>
+                            <div class="quick-stat-label">系统状态</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🚀 快速开始</h3>
+                        </div>
+                        <div class="template-grid">
+                            <div class="template-card" onclick="loadTemplate('momentum')">
+                                <div class="template-icon">📊</div>
+                                <div class="template-name">动量策略</div>
+                                <div class="template-desc">基于价格动量的经典趋势跟踪策略</div>
+                                <div class="template-tags">
+                                    <span class="tag">趋势</span>
+                                    <span class="tag">高波动</span>
+                                </div>
+                            </div>
+                            <div class="template-card" onclick="loadTemplate('mean_reversion')">
+                                <div class="template-icon">🔄</div>
+                                <div class="template-name">均值回归</div>
+                                <div class="template-desc">基于布林带的反转策略</div>
+                                <div class="template-tags">
+                                    <span class="tag">反转</span>
+                                    <span class="tag">低波动</span>
+                                </div>
+                            </div>
+                            <div class="template-card" onclick="loadTemplate('multi_factor')">
+                                <div class="template-icon">🧮</div>
+                                <div class="template-name">多因子组合</div>
+                                <div class="template-desc">综合多维度因子的稳健策略</div>
+                                <div class="template-tags">
+                                    <span class="tag">多因子</span>
+                                    <span class="tag">稳健</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📊 最近回测</h3>
+                        </div>
+                        <table style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">策略名称</th>
+                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">收益率</th>
+                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">夏普比率</th>
+                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">最大回撤</th>
+                                    <th style="padding:12px; text-align:left; border-bottom:1px solid var(--border-gold); color:var(--gold-primary);">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">动量策略演示</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--success);">+28.5%</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">1.82</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--danger);">-15.3%</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);"><span style="padding:4px 10px; background:rgba(74,222,128,0.2); color:var(--success); border-radius:4px; font-size:0.8rem;">完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">多因子组合</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--success);">+18.2%</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);">2.15</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold); color:var(--danger);">-8.7%</td>
+                                    <td style="padding:12px; border-bottom:1px solid var(--border-gold);"><span style="padding:4px 10px; background:rgba(74,222,128,0.2); color:var(--success); border-radius:4px; font-size:0.8rem;">完成</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">💡 使用提示</h3>
+                    </div>
+                    <div class="grid-3">
+                        <div>
+                            <h4 style="color: var(--gold-primary); margin-bottom: 8px;">1️⃣ 配置策略</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">前往"策略配置"选择策略模板，设置参数</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--gold-primary); margin-bottom: 8px;">2️⃣ 选择因子</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">在"因子管理"中挑选并组合您需要的因子</p>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--gold-primary); margin-bottom: 8px;">3️⃣ 运行回测</h4>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">到"回测执行"一键运行，查看分析结果和报告</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🧮</div>
-                <h2 class="feature-title">因子挖掘</h2>
-                <p class="feature-desc">专业的因子库与评价体系</p>
-                <ul class="feature-list">
-                    <li>30+ 基础技术因子</li>
-                    <li>60+ Alpha101 风格因子</li>
-                    <li>IC/IR 因子评价</li>
-                    <li>分组回测与因子衰减</li>
-                    <li>市值/行业/Barra 中性化</li>
-                </ul>
+            <!-- Strategy Config Page -->
+            <div class="page" id="page-strategy">
+                <div class="page-header">
+                    <h1 class="page-title">⚙️ 策略配置</h1>
+                    <p class="page-subtitle">自定义您的量化策略参数</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">💼 基本设置</h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">策略名称</label>
+                            <input type="text" class="form-input" id="strategy-name" value="我的量化策略">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">初始资金 (¥)</label>
+                            <input type="number" class="form-input" id="initial-capital" value="1000000">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">回测开始日期</label>
+                                <input type="date" class="form-input" id="start-date" value="2020-01-01">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">回测结束日期</label>
+                                <input type="date" class="form-input" id="end-date" value="2024-12-31">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">基准指数</label>
+                            <select class="form-select" id="benchmark">
+                                <option value="000300.SH">沪深300</option>
+                                <option value="000905.SH">中证500</option>
+                                <option value="000852.SH">中证1000</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📊 策略选择</h3>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">策略类型</label>
+                            <select class="form-select" id="strategy-type">
+                                <option value="momentum">动量策略</option>
+                                <option value="mean_reversion">均值回归策略</option>
+                                <option value="multi_factor">多因子策略</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">选股范围</label>
+                            <select class="form-select" id="universe">
+                                <option value="hs300">沪深300成分股</option>
+                                <option value="zz500">中证500成分股</option>
+                                <option value="zz1000">中证1000成分股</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">持仓数量</label>
+                            <div class="range-container">
+                                <input type="range" class="range-slider" id="position-count" min="5" max="100" value="30">
+                                <span class="range-value" id="position-count-value">30</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">调仓频率</label>
+                            <select class="form-select" id="rebalance-freq">
+                                <option value="daily">每日</option>
+                                <option value="weekly">每周</option>
+                                <option value="monthly" selected>每月</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="saveConfig()">💾 保存配置</button>
+                    <button class="btn btn-primary" onclick="navigateTo('factors')">➡️ 下一步：选择因子</button>
+                </div>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🎯</div>
-                <h2 class="feature-title">策略构建</h2>
-                <p class="feature-desc">灵活的策略框架</p>
-                <ul class="feature-list">
-                    <li>组合优化（5种专业算法）</li>
-                    <li>风险控制（止损/回撤/波动率）</li>
-                    <li>动量策略</li>
-                    <li>均值回归策略</li>
-                    <li>配对交易策略</li>
-                </ul>
+            <!-- Factors Page -->
+            <div class="page" id="page-factors">
+                <div class="page-header">
+                    <h1 class="page-title">🧮 因子管理</h1>
+                    <p class="page-subtitle">选择和配置您的因子组合</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📋 可用因子</h3>
+                            <button class="btn btn-secondary" style="padding:8px 16px; font-size:0.85rem;" onclick="selectAllFactors()">全选</button>
+                        </div>
+                        <div class="factor-grid" id="available-factors">
+                            <!-- Factors will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">✅ 已选因子 (<span id="selected-count">0</span>)</h3>
+                            <button class="btn btn-secondary" style="padding:8px 16px; font-size:0.85rem;" onclick="clearFactors()">清空</button>
+                        </div>
+                        <div class="factor-grid" id="selected-factors">
+                            <p style="color: var(--text-secondary); grid-column:1/-1; text-align:center; padding:40px;">
+                                从左侧选择因子添加到这里
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('strategy')">⬅️ 返回策略配置</button>
+                    <button class="btn btn-primary" onclick="navigateTo('portfolio')">➡️ 下一步：组合优化</button>
+                </div>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">💹</div>
-                <h2 class="feature-title">回测引擎</h2>
-                <p class="feature-desc">事件驱动回测系统</p>
-                <ul class="feature-list">
-                    <li>事件驱动架构</li>
-                    <li>交易成本模型</li>
-                    <li>仓位管理</li>
-                    <li>涨跌停/停牌处理</li>
-                    <li>滑点与冲击成本</li>
-                </ul>
+            <!-- Backtest Page -->
+            <div class="page" id="page-backtest">
+                <div class="page-header">
+                    <h1 class="page-title">💹 回测执行</h1>
+                    <p class="page-subtitle">检查配置并运行回测</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">📋 配置摘要</h3>
+                    </div>
+                    <div class="grid-4">
+                        <div class="stat-card">
+                            <div class="stat-value" id="summary-capital">¥1,000,000</div>
+                            <div class="stat-label">初始资金</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="summary-strategy">动量策略</div>
+                            <div class="stat-label">策略类型</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="summary-factors">5</div>
+                            <div class="stat-label">因子数量</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="summary-stocks">30</div>
+                            <div class="stat-label">持仓数量</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">🚀 回测控制</h3>
+                    </div>
+                    <div class="btn-group" style="margin-bottom:24px;">
+                        <button class="btn btn-success" id="btn-run-backtest" onclick="runBacktest()">
+                            ▶️ 开始回测
+                        </button>
+                        <button class="btn btn-secondary" id="btn-pause-backtest" onclick="pauseBacktest()" disabled>
+                            ⏸️ 暂停
+                        </button>
+                        <button class="btn btn-danger" id="btn-stop-backtest" onclick="stopBacktest()" disabled>
+                            ⏹️ 停止
+                        </button>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="backtest-progress" style="width:0%;"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span id="progress-label">等待开始...</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top:24px; background:rgba(0,0,0,0.2);">
+                        <div class="card-header" style="padding-bottom:12px;">
+                            <h3 class="card-title">📝 回测日志</h3>
+                        </div>
+                        <div class="log-viewer" id="backtest-log">
+                            <div class="log-entry">
+                                <span class="log-time">[--:--:--]</span>
+                                <span class="log-info">系统就绪，等待回测开始...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('risk')">⬅️ 返回风险控制</button>
+                    <button class="btn btn-primary" id="btn-view-results" onclick="navigateTo('results')" disabled>
+                        ➡️ 查看结果
+                    </button>
+                </div>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">📈</div>
-                <h2 class="feature-title">绩效分析</h2>
-                <p class="feature-desc">全面的绩效指标</p>
-                <ul class="feature-list">
-                    <li>15+ 专业绩效指标</li>
-                    <li>Sortino/Omega/Calmar 比率</li>
-                    <li>VaR/CVaR 风险度量</li>
-                    <li>Brinson 业绩归因</li>
-                    <li>因子归因分析</li>
-                </ul>
+            <!-- Results Page -->
+            <div class="page" id="page-results">
+                <div class="page-header">
+                    <h1 class="page-title">📈 结果分析</h1>
+                    <p class="page-subtitle">深入分析您的策略表现</p>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-value">+28.5%</div>
+                        <div class="result-label">累计收益率</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">1.82</div>
+                        <div class="result-label">夏普比率</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">-15.3%</div>
+                        <div class="result-label">最大回撤</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value">14.2%</div>
+                        <div class="result-label">年化波动率</div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="equity">📊 净值曲线</div>
+                    <div class="tab" data-tab="drawdown">📉 回撤分析</div>
+                </div>
+
+                <div class="tab-content active" id="tab-equity">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📊 策略净值 vs 基准</h3>
+                        </div>
+                        <div class="chart-container large">
+                            <canvas id="equity-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-drawdown">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">📉 回撤曲线</h3>
+                        </div>
+                        <div class="chart-container large">
+                            <canvas id="drawdown-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('backtest')">⬅️ 返回回测</button>
+                    <button class="btn btn-primary" onclick="navigateTo('report')">➡️ 下一步：生成报告</button>
+                </div>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🔍</div>
-                <h2 class="feature-title">过拟合检测</h2>
-                <p class="feature-desc">策略稳健性验证</p>
-                <ul class="feature-list">
-                    <li>样本内/外对比</li>
-                    <li>Walk Forward 滚动验证</li>
-                    <li>参数敏感性分析</li>
-                    <li>策略退化检测</li>
-                </ul>
-            </div>
-        </section>
+            <!-- Report Page -->
+            <div class="page" id="page-report">
+                <div class="page-header">
+                    <h1 class="page-title">📋 报告导出</h1>
+                    <p class="page-subtitle">生成专业的量化研究报告</p>
+                </div>
 
-        <div class="directory-section">
-            <h2 class="section-title">📁 目录结构</h2>
-            <div class="directory-tree">
-                <div><span class="folder">data_modules/</span> - 数据模块</div>
-                <div>&nbsp;&nbsp;├── <span class="file">data_module.py</span> - 基础数据管理</div>
-                <div>&nbsp;&nbsp;└── <span class="file">data_extended.py</span> - 扩展数据管理</div>
-                <br>
-                <div><span class="folder">factor_modules/</span> - 因子模块</div>
-                <div>&nbsp;&nbsp;├── <span class="file">factor_module.py</span> - 基础因子库</div>
-                <div>&nbsp;&nbsp;├── <span class="file">alpha_factors.py</span> - Alpha因子库</div>
-                <div>&nbsp;&nbsp;├── <span class="file">factor_evaluator.py</span> - 因子评价引擎</div>
-                <div>&nbsp;&nbsp;└── <span class="file">factor_neutralizer.py</span> - 因子中性化</div>
-                <br>
-                <div><span class="folder">strategy_modules/</span> - 策略模块</div>
-                <div>&nbsp;&nbsp;├── <span class="file">portfolio_optimizer.py</span> - 组合优化器</div>
-                <div>&nbsp;&nbsp;├── <span class="file">risk_controller.py</span> - 风险控制器</div>
-                <div>&nbsp;&nbsp;└── <span class="file">advanced_strategies.py</span> - 高级策略</div>
-                <br>
-                <div><span class="folder">backtest_modules/</span> - 回测模块</div>
-                <div>&nbsp;&nbsp;├── <span class="file">backtest_module.py</span> - 回测引擎</div>
-                <div>&nbsp;&nbsp;├── <span class="file">transaction_cost.py</span> - 交易成本模型</div>
-                <div>&nbsp;&nbsp;└── <span class="file">position_manager.py</span> - 仓位管理</div>
-                <br>
-                <div><span class="folder">analysis_modules/</span> - 分析模块</div>
-                <div>&nbsp;&nbsp;├── <span class="file">metrics_extended.py</span> - 扩展绩效指标</div>
-                <div>&nbsp;&nbsp;├── <span class="file">performance_attribution.py</span> - 业绩归因</div>
-                <div>&nbsp;&nbsp;└── <span class="file">overfitting_detector.py</span> - 过拟合检测</div>
-                <br>
-                <div><span class="folder">report_modules/</span> - 报告模块</div>
-                <div>&nbsp;&nbsp;├── <span class="file">report_module.py</span> - 报告生成</div>
-                <div>&nbsp;&nbsp;└── <span class="file">pipeline.py</span> - 研究Pipeline</div>
-                <br>
-                <div><span class="folder">quant_system/</span> - 向后兼容层</div>
-                <div><span class="folder">docs/</span> - 文档</div>
-            </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">⬇️ 导出报告</h3>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateReport('html')">
+                            📄 生成 HTML 报告
+                        </button>
+                        <button class="btn btn-secondary" onclick="generateReport('markdown')">
+                            📝 生成 Markdown 报告
+                        </button>
+                    </div>
+                </div>
 
-            <div class="quick-start">
-                <h3 style="color: #d4af37; margin-bottom: 15px;">🚀 快速开始</h3>
-                <p style="margin-bottom: 10px;">新代码推荐使用：</p>
-                <code>from data_modules import DataManager</code><br>
-                <code>from factor_modules import FactorEvaluator</code><br>
-                <code>from backtest_modules import BacktestEngine</code>
-                <p style="margin-top: 15px; margin-bottom: 10px;">保持向后兼容：</p>
-                <code>from quant_system import DataManager, BacktestEngine</code>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('results')">⬅️ 返回结果分析</button>
+                    <button class="btn btn-primary" onclick="navigateTo('dashboard')">🏠 返回仪表盘</button>
+                </div>
             </div>
-        </div>
-
-        <footer>
-            <p>个人量化系统 v4.0 | 专业量化交易分析</p>
-            <p style="margin-top: 10px; font-size: 0.9rem;">
-                GitHub Pages 演示页面
-            </p>
-        </footer>
+        </main>
     </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">处理中...</div>
+    </div>
+
+    <script>
+        // App State
+        const state = {
+            currentPage: 'dashboard',
+            selectedFactors: [],
+            backtestRunning: false,
+            config: {
+                strategyName: '我的量化策略',
+                initialCapital: 1000000
+            }
+        };
+
+        // Factor Data
+        const factors = [
+            { id: 'mom_20', name: '20日动量', category: 'technical', ic: 0.052 },
+            { id: 'mom_60', name: '60日动量', category: 'technical', ic: 0.045 },
+            { id: 'vol_20', name: '20日波动率', category: 'technical', ic: -0.038 },
+            { id: 'turnover', name: '换手率', category: 'technical', ic: -0.042 },
+            { id: 'rsi_14', name: 'RSI(14)', category: 'technical', ic: 0.031 },
+            { id: 'macd', name: 'MACD', category: 'technical', ic: 0.028 },
+            { id: 'pe', name: 'PE市盈率', category: 'fundamental', ic: -0.048 },
+            { id: 'pb', name: 'PB市净率', category: 'fundamental', ic: -0.041 },
+            { id: 'roe', name: 'ROE净资产收益率', category: 'fundamental', ic: 0.055 },
+            { id: 'alpha_001', name: 'Alpha001', category: 'alpha101', ic: 0.062 },
+            { id: 'alpha_002', name: 'Alpha002', category: 'alpha101', ic: 0.058 },
+        ];
+
+        // Navigation
+        function navigateTo(pageName) {
+            state.currentPage = pageName;
+
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageName) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(`page-${pageName}`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            if (pageName === 'factors') {
+                renderFactors();
+            } else if (pageName === 'results') {
+                initResultCharts();
+            }
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.page);
+            });
+        });
+
+        // Range Sliders
+        function setupRangeSliders() {
+            const sliders = [
+                { id: 'position-count', valueId: 'position-count-value', suffix: '' },
+            ];
+
+            sliders.forEach(({ id, valueId, suffix }) => {
+                const slider = document.getElementById(id);
+                const valueDisplay = document.getElementById(valueId);
+                if (slider && valueDisplay) {
+                    slider.addEventListener('input', () => {
+                        valueDisplay.textContent = slider.value + suffix;
+                    });
+                }
+            });
+        }
+
+        // Factors
+        function renderFactors() {
+            const container = document.getElementById('available-factors');
+            if (!container) return;
+
+            container.innerHTML = factors.map(f => `
+                <div class="factor-item ${state.selectedFactors.includes(f.id) ? 'selected' : ''}"
+                     onclick="toggleFactor('${f.id}')">
+                    <div class="factor-name">${f.name}</div>
+                    <div class="factor-category">${getCategoryLabel(f.category)}</div>
+                    <div class="factor-ic">IC: ${f.ic > 0 ? '+' : ''}${(f.ic * 100).toFixed(1)}%</div>
+                </div>
+            `).join('');
+
+            renderSelectedFactors();
+        }
+
+        function getCategoryLabel(category) {
+            const labels = {
+                technical: '技术因子',
+                fundamental: '基本面',
+                alpha101: 'Alpha101'
+            };
+            return labels[category] || category;
+        }
+
+        function toggleFactor(factorId) {
+            const idx = state.selectedFactors.indexOf(factorId);
+            if (idx >= 0) {
+                state.selectedFactors.splice(idx, 1);
+            } else {
+                state.selectedFactors.push(factorId);
+            }
+            renderFactors();
+        }
+
+        function renderSelectedFactors() {
+            const container = document.getElementById('selected-factors');
+            const countDisplay = document.getElementById('selected-count');
+
+            if (countDisplay) {
+                countDisplay.textContent = state.selectedFactors.length;
+            }
+
+            if (!container) return;
+
+            if (state.selectedFactors.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); grid-column:1/-1; text-align:center; padding:40px;">从左侧选择因子添加到这里</p>';
+                return;
+            }
+
+            const selected = factors.filter(f => state.selectedFactors.includes(f.id));
+            container.innerHTML = selected.map(f => `
+                <div class="factor-item selected" onclick="toggleFactor('${f.id}')">
+                    <div class="factor-name">${f.name}</div>
+                    <div class="factor-category">${getCategoryLabel(f.category)}</div>
+                    <div class="factor-ic">IC: ${f.ic > 0 ? '+' : ''}${(f.ic * 100).toFixed(1)}%</div>
+                </div>
+            `).join('');
+        }
+
+        function selectAllFactors() {
+            state.selectedFactors = factors.map(f => f.id);
+            renderFactors();
+        }
+
+        function clearFactors() {
+            state.selectedFactors = [];
+            renderFactors();
+        }
+
+        // Tab handling for results
+        document.addEventListener('DOMContentLoaded', () => {
+            setupRangeSliders();
+
+            document.querySelectorAll('.tabs .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    const tabId = tab.dataset.tab;
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                });
+            });
+        });
+
+        // Result Charts
+        let equityChart, drawdownChart;
+
+        function initResultCharts() {
+            const equityCtx = document.getElementById('equity-chart');
+            if (equityCtx && !equityChart) {
+                const dates = [];
+                const strategy = [];
+                const benchmark = [];
+                let val = 1.0;
+                let bm = 1.0;
+                for (let i = 0; i < 60; i++) {
+                    dates.push(`2023-${String(Math.floor(i/30)+1).padStart(2,'0')}-${String(i%30+1).padStart(2,'0')}`);
+                    val *= (1 + (Math.random() - 0.45) * 0.03);
+                    bm *= (1 + (Math.random() - 0.5) * 0.025);
+                    strategy.push(val);
+                    benchmark.push(bm);
+                }
+
+                equityChart = new Chart(equityCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [
+                            {
+                                label: '策略净值',
+                                data: strategy,
+                                borderColor: 'rgba(212, 175, 55, 1)',
+                                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            },
+                            {
+                                label: '基准',
+                                data: benchmark,
+                                borderColor: 'rgba(106, 176, 243, 1)',
+                                backgroundColor: 'rgba(106, 176, 243, 0.05)',
+                                fill: true,
+                                tension: 0.4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#e0e0e0' } }
+                        },
+                        scales: {
+                            y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { ticks: { color: '#888', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+            }
+
+            const ddCtx = document.getElementById('drawdown-chart');
+            if (ddCtx && !drawdownChart) {
+                const dates = [];
+                const drawdowns = [];
+                let dd = 0;
+                for (let i = 0; i < 60; i++) {
+                    dates.push(`2023-${String(Math.floor(i/30)+1).padStart(2,'0')}-${String(i%30+1).padStart(2,'0')}`);
+                    dd = Math.max(-0.2, Math.min(0, dd + (Math.random() - 0.4) * 0.02));
+                    drawdowns.push(dd);
+                }
+
+                drawdownChart = new Chart(ddCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: '回撤',
+                            data: drawdowns,
+                            borderColor: 'rgba(248, 113, 113, 1)',
+                            backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { labels: { color: '#e0e0e0' } }
+                        },
+                        scales: {
+                            y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            x: { ticks: { color: '#888', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Backtest simulation
+        let backtestInterval = null;
+        let backtestProgress = 0;
+
+        function runBacktest() {
+            if (state.backtestRunning) return;
+
+            state.backtestRunning = true;
+            backtestProgress = 0;
+
+            document.getElementById('btn-run-backtest').disabled = true;
+            document.getElementById('btn-pause-backtest').disabled = false;
+            document.getElementById('btn-stop-backtest').disabled = false;
+
+            addLog('info', '开始回测...');
+            addLog('info', '初始化回测引擎...');
+            addLog('info', '加载历史数据...');
+
+            backtestInterval = setInterval(() => {
+                backtestProgress += Math.random() * 5 + 1;
+                if (backtestProgress >= 100) {
+                    backtestProgress = 100;
+                    clearInterval(backtestInterval);
+                    finishBacktest();
+                }
+
+                document.getElementById('backtest-progress').style.width = backtestProgress + '%';
+                document.getElementById('progress-percent').textContent = Math.floor(backtestProgress) + '%';
+                document.getElementById('progress-label').textContent = getProgressLabel(backtestProgress);
+
+                if (Math.random() > 0.7) {
+                    const types = ['info', 'success', 'info', 'info'];
+                    const msgs = [
+                        '正在计算因子暴露...',
+                        '生成交易信号...',
+                        '执行订单...',
+                        '更新组合持仓...',
+                        '计算绩效指标...'
+                    ];
+                    addLog(types[Math.floor(Math.random() * types.length)], msgs[Math.floor(Math.random() * msgs.length)]);
+                }
+            }, 200);
+        }
+
+        function getProgressLabel(p) {
+            if (p < 20) return '加载数据中...';
+            if (p < 50) return '计算因子中...';
+            if (p < 80) return '执行回测中...';
+            return '生成报告中...';
+        }
+
+        function pauseBacktest() {
+            if (!state.backtestRunning) return;
+            if (backtestInterval) {
+                clearInterval(backtestInterval);
+                backtestInterval = null;
+                addLog('warning', '回测已暂停');
+            }
+        }
+
+        function stopBacktest() {
+            if (backtestInterval) {
+                clearInterval(backtestInterval);
+                backtestInterval = null;
+            }
+            state.backtestRunning = false;
+            backtestProgress = 0;
+            document.getElementById('btn-run-backtest').disabled = false;
+            document.getElementById('btn-pause-backtest').disabled = true;
+            document.getElementById('btn-stop-backtest').disabled = true;
+            document.getElementById('backtest-progress').style.width = '0%';
+            document.getElementById('progress-percent').textContent = '0%';
+            addLog('error', '回测已停止');
+        }
+
+        function finishBacktest() {
+            state.backtestRunning = false;
+            document.getElementById('btn-pause-backtest').disabled = true;
+            document.getElementById('btn-stop-backtest').disabled = true;
+            document.getElementById('btn-view-results').disabled = false;
+            document.getElementById('progress-label').textContent = '回测完成！';
+            addLog('success', '回测完成！');
+            addLog('success', '累计收益率: +28.5%');
+            addLog('success', '夏普比率: 1.82');
+            addLog('success', '最大回撤: -15.3%');
+        }
+
+        function addLog(type, msg) {
+            const log = document.getElementById('backtest-log');
+            if (!log) return;
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${msg}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            const log = document.getElementById('backtest-log');
+            if (log) {
+                log.innerHTML = '<div class="log-entry"><span class="log-time">[--:--:--]</span> <span class="log-info">日志已清空</span></div>';
+            }
+        }
+
+        // Other utility functions
+        function loadTemplate(template) {
+            navigateTo('strategy');
+        }
+
+        function saveConfig() {
+            alert('配置已保存！');
+        }
+
+        function generateReport(format) {
+            alert(`正在生成 ${format.toUpperCase()} 报告...\n\n(这是演示版本，实际报告需要连接后端Python系统)`);
+        }
+
+        function runOptimization() {
+            document.getElementById('loading-overlay').classList.add('active');
+            document.getElementById('loading-text').textContent = '优化组合中...';
+            setTimeout(() => {
+                document.getElementById('loading-overlay').classList.remove('active');
+                alert('组合优化完成！');
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
