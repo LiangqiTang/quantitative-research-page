@@ -6,19 +6,19 @@ import numpy as np
 from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
 
-from .data_module import DataManager
-from .data_extended import ExtendedDataManager
-from .backtest_module import (
+from data_modules.data_module import DataManager
+from data_modules.data_extended import ExtendedDataManager
+from backtest_modules.backtest_module import (
     Strategy, BacktestEngine, EnhancedBacktestEngine,
     Portfolio, PerformanceMetrics
 )
-from .alpha_factors import AlphaFactorCalculator
-from .factor_evaluator import FactorEvaluator
-from .factor_neutralizer import FactorNeutralizer
-from .transaction_cost import TransactionCostModel
-from .position_manager import PositionManager
-from .metrics_extended import ExtendedPerformanceMetrics
-from .overfitting_detector import OverfittingDetector
+from factor_modules.alpha_factors import AlphaFactorCalculator
+from factor_modules.factor_evaluator import FactorEvaluator
+from factor_modules.factor_neutralizer import FactorNeutralizer
+from backtest_modules.transaction_cost import TransactionCostModel
+from backtest_modules.position_manager import PositionManager
+from analysis_modules.metrics_extended import ExtendedPerformanceMetrics
+from analysis_modules.overfitting_detector import OverfittingDetector
 
 
 class QuantResearchPipeline:

@@ -1,117 +1,70 @@
-# 个人量化系统 v2.0.0
+# 个人量化系统 v4.0
 
-## 概述
+专业的量化交易分析系统 - 黑金科技风格
 
-这是一个完整可用的个人量化交易系统，基于成熟量化框架（Qlib、Backtrader等）的设计经验构建。
-
-## 系统架构
+## 目录结构
 
 ```
-quant_system/
-├── __init__.py          # 包初始化
-├── data_module.py       # 数据管理模块
-├── factor_module.py     # 因子计算模块（30+因子）
-├── backtest_module.py   # 回测引擎模块
-└── report_module.py     # 报告生成模块
+quant-daily-report/
+├── 01_data/                    # 数据获取相关
+├── 02_factors/                 # 因子挖掘相关
+├── 03_strategy/                # 策略构架相关
+├── 04_backtest/                # 回测引擎相关
+├── 05_analysis/                # 分析工具相关
+├── 06_report/                  # 报告生成相关
+├── 07_ui/                      # 可视化界面（Next.js + FastAPI）
+│   ├── apps/
+│   │   └── web/               # Next.js 前端应用
+│   └── packages/
+│       └── api/               # FastAPI 后端
+├── 08_tests/                   # 系统功能测试
+├── 09_docs/                    # 功能介绍和设计文档
+├── 10_demos/                   # 演示脚本
+└── quant_system/               # 共享核心包（原 quant_system）
 ```
 
-## 核心功能
+## 功能特性
 
-### 1. 数据层 (data_module.py)
-- **多源数据支持**: Tushare + Baostock双源
-- **智能缓存**: MD5哈希缓存，支持过期时间
-- **数据类型**: 股票列表、日线行情、指数行情
-- **模拟数据**: 真实数据不可用时生成高质量模拟数据
-
-### 2. 因子层 (factor_module.py) - 30+因子库
-- **价格类因子**: MA5/10/20/60, ROC5/10/20
-- **动量类因子**: MOM5/10/20, RSI6/14/28
-- **波动率类因子**: VOL10/20/60, ATR14/20, BBWIDTH
-- **成交量类因子**: VOL_MA5/10, VOL_RATIO, OBV, AD
-- **趋势类因子**: MACD_DIF/DEA/HIST, BOLL_UPPER/LOWER/MID
-
-### 3. 回测层 (backtest_module.py) - 事件驱动引擎
-- **策略基类**: Strategy基类，支持自定义策略
-- **内置策略**: EqualWeightStrategy（等权重）、FactorStrategy（因子策略）
-- **组合管理**: Portfolio类，完整持仓追踪
-- **绩效指标**: 总收益率、年化收益率、波动率、夏普比率、最大回撤、卡尔马比率
-
-### 4. 报告层 (report_module.py) - 可视化报告
-- **Markdown报告**: 因子分析报告、回测分析报告
-- **HTML报告**: 完整可视化综合报告
-- **报告内容**: 因子排名、因子类型分布、策略绩效、风险分析等
+- **数据管理**: Tushare + Baostock 双重数据源
+- **因子库**: 60+ 专业因子，包括 Alpha101 风格
+- **回测引擎**: 事件驱动回测，支持交易成本和仓位管理
+- **组合优化**: 最小方差、最大夏普、风险平价等 5 种优化方法
+- **风险控制**: 止损止盈、回撤控制、波动率目标
+- **业绩归因**: Brinson 归因、因子归因
+- **过拟合检测**: 样本内外对比、Walk Forward 分析
 
 ## 快速开始
 
-### 运行完整系统
+### 运行演示
 
 ```bash
-# 使用conda Python（已安装所有依赖）
-/opt/miniconda3/bin/python main_quant_system.py
+cd 10_demos
+python3 main_v4.py
 ```
 
-### 手动使用各模块
+### 启动后端 API
 
-```python
-from quant_system import (
-    DataManager,
-    FactorManager,
-    BacktestEngine,
-    ReportGenerator
-)
-
-# 1. 初始化数据管理器
-data_manager = DataManager(
-    token="your_tushare_token",
-    cache_dir="quant_cache"
-)
-
-# 2. 计算因子
-factor_manager = FactorManager(data_manager)
-factor_results = factor_manager.calculate_factors(stock_list)
-factor_eval = factor_manager.evaluate_factors(factor_results)
-
-# 3. 运行回测
-backtester = BacktestEngine(
-    data_manager=data_manager,
-    initial_capital=1000000.0,
-    start_date="20240101",
-    end_date="20241231"
-)
-backtest_results = backtester.run(stock_list)
-
-# 4. 生成报告
-report_generator = ReportGenerator(output_dir="quant_output")
-summary = report_generator.generate_summary_report(
-    factor_eval, backtest_results, factor_results
-)
+```bash
+cd 07_ui/packages/api
+pip install -r requirements.txt
+python3 main.py
 ```
 
-## 输出文件
+### 启动前端
 
-运行 `main_quant_system.py` 后会在 `quant_output/` 目录生成：
-
-1. **factor_analysis_report.md** - 因子分析详细报告
-2. **backtest_report.md** - 回测分析详细报告
-3. **quant_report.html** - HTML可视化综合报告
-4. **SUMMARY.md** - 综合总结
+```bash
+cd 07_ui/apps/web
+npm install
+npm run dev
+```
 
 ## 技术栈
 
-- **数据处理**: Pandas, NumPy
-- **数据源**: Tushare, Baostock
-- **报告生成**: Markdown, HTML, Jinja2
+- **前端**: Next.js 14, React, TypeScript, Tailwind CSS
+- **后端**: FastAPI, Python
+- **可视化**: Recharts, Plotly
+- **核心引擎**: 自研量化系统
 
-## 注意事项
+## 版本
 
-1. **Tushare Token**: 如需真实数据，请配置有效的Tushare token
-2. **模拟数据**: Token无效时系统会自动生成高质量模拟数据
-3. **缓存机制**: 数据默认缓存24小时，可手动删除 `quant_cache/` 刷新
-
-## 系统特点
-
-✅ **稳定可靠**: 多源数据 + 智能缓存 + 模拟数据兜底
-✅ **完整功能**: 数据获取 → 因子计算 → 策略回测 → 报告生成
-✅ **易扩展**: 模块化设计，支持自定义策略和因子
-✅ **可视化**: 完整的Markdown和HTML报告
-✅ **生产级**: 参考Qlib等成熟框架设计
+v4.0.0

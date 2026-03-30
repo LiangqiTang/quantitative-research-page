@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量化系统 UI 设计方案展示 - 黑金风格全集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #333;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #f7d04d 0%, #c9a227 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+        .design-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .design-card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .design-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+        .design-label {
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .design-preview {
+            min-height: 420px;
+            padding: 20px;
+        }
+        .preview-content {
+            border-radius: 12px;
+            padding: 18px;
+            min-height: 360px;
+        }
+        .preview-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .preview-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .preview-nav-links {
+            display: flex;
+            gap: 12px;
+        }
+        .preview-nav-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .preview-card {
+            border-radius: 8px;
+            padding: 14px;
+        }
+        .preview-card-title {
+            font-size: 0.78rem;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .preview-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .preview-chart {
+            margin-top: 15px;
+            height: 90px;
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            padding: 0 5px;
+            border-radius: 6px;
+        }
+        .preview-chart-bar {
+            flex: 1;
+            border-radius: 2px 2px 0 0;
+            min-height: 15px;
+        }
+
+        /* ========== 方案 1: 经典黑金交易所风 ========== */
+        .style-1 {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+        }
+        .style-1 .design-label {
+            background: linear-gradient(135deg, #f7d04d 0%, #c9a227 100%);
+            color: #0a0a0a;
+        }
+        .style-1 .preview-content {
+            background: linear-gradient(180deg, #0d0d0d 0%, #111 100%);
+            border: 1px solid rgba(247, 208, 77, 0.2);
+            box-shadow: 0 0 40px rgba(247, 208, 77, 0.1), inset 0 0 60px rgba(0,0,0,0.5);
+        }
+        .style-1 .preview-navbar {
+            border-bottom: 1px solid rgba(247, 208, 77, 0.2);
+        }
+        .style-1 .preview-logo {
+            background: linear-gradient(135deg, #f7d04d 0%, #ff6b35 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .style-1 .preview-nav-link {
+            color: #888;
+            transition: all 0.3s ease;
+        }
+        .style-1 .preview-nav-link:hover, .style-1 .preview-nav-link.active {
+            color: #f7d04d;
+            background: rgba(247, 208, 77, 0.1);
+        }
+        .style-1 .preview-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(247, 208, 77, 0.15);
+            transition: all 0.3s ease;
+        }
+        .style-1 .preview-card:hover {
+            border-color: rgba(247, 208, 77, 0.4);
+            box-shadow: 0 0 30px rgba(247, 208, 77, 0.1);
+        }
+        .style-1 .preview-card-title {
+            color: #888;
+        }
+        .style-1 .preview-card-value {
+            color: #f7d04d;
+        }
+        .style-1 .preview-card-value.positive {
+            color: #00d4aa;
+        }
+        .style-1 .preview-chart {
+            background: linear-gradient(180deg, rgba(247, 208, 77, 0.1) 0%, transparent 100%);
+        }
+        .style-1 .preview-chart-bar {
+            background: linear-gradient(180deg, #f7d04d 0%, #c9a227 100%);
+        }
+
+        /* ========== 方案 2: 玫瑰金奢华风 ========== */
+        .style-2 {
+            background: linear-gradient(135deg, #1a1414 0%, #2a1f1f 100%);
+        }
+        .style-2 .design-label {
+            background: linear-gradient(135deg, #e8b4b4 0%, #d49494 100%);
+            color: #1a1414;
+        }
+        .style-2 .preview-content {
+            background: #1e1616;
+            border: 1px solid rgba(232, 180, 180, 0.2);
+        }
+        .style-2 .preview-navbar {
+            border-bottom: 1px solid rgba(232, 180, 180, 0.15);
+        }
+        .style-2 .preview-logo {
+            color: #e8b4b4;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        .style-2 .preview-nav-link {
+            color: #999;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+        .style-2 .preview-nav-link:hover, .style-2 .preview-nav-link.active {
+            color: #e8b4b4;
+        }
+        .style-2 .preview-card {
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid #e8b4b4;
+        }
+        .style-2 .preview-card-title {
+            color: #888;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        .style-2 .preview-card-value {
+            color: #fff;
+            font-weight: 200;
+        }
+        .style-2 .preview-card-value.positive {
+            color: #e8b4b4;
+        }
+        .style-2 .preview-chart-bar {
+            background: linear-gradient(180deg, rgba(232, 180, 180, 0.7) 0%, rgba(232, 180, 180, 0.3) 100%);
+        }
+
+        /* ========== 方案 3: 翡翠金玉石风 ========== */
+        .style-3 {
+            background: linear-gradient(135deg, #0a1210 0%, #14201c 100%);
+        }
+        .style-3 .design-label {
+            background: linear-gradient(135deg, #50c878 0%, #3da160 100%);
+            color: #0a1210;
+        }
+        .style-3 .preview-content {
+            background: #0d1614;
+            border: 1px solid rgba(80, 200, 120, 0.3);
+            box-shadow: 0 0 30px rgba(80, 200, 120, 0.1);
+        }
+        .style-3 .preview-navbar {
+            border-bottom: 1px solid rgba(80, 200, 120, 0.2);
+        }
+        .style-3 .preview-logo {
+            color: #50c878;
+        }
+        .style-3 .preview-nav-link {
+            color: #669988;
+        }
+        .style-3 .preview-nav-link:hover, .style-3 .preview-nav-link.active {
+            color: #50c878;
+            background: rgba(80, 200, 120, 0.15);
+        }
+        .style-3 .preview-card {
+            background: rgba(80, 200, 120, 0.05);
+            border: 1px solid rgba(80, 200, 120, 0.2);
+        }
+        .style-3 .preview-card-title {
+            color: #669988;
+        }
+        .style-3 .preview-card-value {
+            color: #50c878;
+        }
+        .style-3 .preview-card-value.positive {
+            color: #70e898;
+        }
+        .style-3 .preview-chart {
+            background: linear-gradient(180deg, rgba(80, 200, 120, 0.1) 0%, transparent 100%);
+        }
+        .style-3 .preview-chart-bar {
+            background: linear-gradient(180deg, #50c878 0%, #3da160 100%);
+        }
+
+        /* ========== 方案 4: 蓝宝石风 ========== */
+        .style-4 {
+            background: linear-gradient(135deg, #0a0d14 0%, #141a25 100%);
+        }
+        .style-4 .design-label {
+            background: linear-gradient(135deg, #4169e1 0%, #2e4fa8 100%);
+            color: #fff;
+        }
+        .style-4 .preview-content {
+            background: #0d121a;
+            border: 1px solid rgba(65, 105, 225, 0.3);
+            box-shadow: 0 0 30px rgba(65, 105, 225, 0.1);
+        }
+        .style-4 .preview-navbar {
+            border-bottom: 1px solid rgba(65, 105, 225, 0.2);
+        }
+        .style-4 .preview-logo {
+            color: #6495ed;
+        }
+        .style-4 .preview-nav-link {
+            color: #667799;
+        }
+        .style-4 .preview-nav-link:hover, .style-4 .preview-nav-link.active {
+            color: #6495ed;
+            background: rgba(65, 105, 225, 0.15);
+        }
+        .style-4 .preview-card {
+            background: rgba(65, 105, 225, 0.05);
+            border: 1px solid rgba(65, 105, 225, 0.2);
+        }
+        .style-4 .preview-card-title {
+            color: #667799;
+        }
+        .style-4 .preview-card-value {
+            color: #6495ed;
+        }
+        .style-4 .preview-card-value.positive {
+            color: #87ceeb;
+        }
+        .style-4 .preview-chart {
+            background: linear-gradient(180deg, rgba(65, 105, 225, 0.1) 0%, transparent 100%);
+        }
+        .style-4 .preview-chart-bar {
+            background: linear-gradient(180deg, #4169e1 0%, #2e4fa8 100%);
+        }
+
+        /* ========== 方案 5: 紫铜风 ========== */
+        .style-5 {
+            background: linear-gradient(135deg, #120a14 0%, #1f1424 100%);
+        }
+        .style-5 .design-label {
+            background: linear-gradient(135deg, #b873d6 0%, #8b5ca8 100%);
+            color: #120a14;
+        }
+        .style-5 .preview-content {
+            background: #150d18;
+            border: 1px solid rgba(184, 115, 214, 0.25);
+        }
+        .style-5 .preview-navbar {
+            border-bottom: 1px solid rgba(184, 115, 214, 0.15);
+        }
+        .style-5 .preview-logo {
+            color: #b873d6;
+        }
+        .style-5 .preview-nav-link {
+            color: #887799;
+        }
+        .style-5 .preview-nav-link:hover, .style-5 .preview-nav-link.active {
+            color: #b873d6;
+            background: rgba(184, 115, 214, 0.15);
+        }
+        .style-5 .preview-card {
+            background: rgba(184, 115, 214, 0.05);
+            border: 1px solid rgba(184, 115, 214, 0.2);
+        }
+        .style-5 .preview-card-title {
+            color: #887799;
+        }
+        .style-5 .preview-card-value {
+            color: #b873d6;
+        }
+        .style-5 .preview-card-value.positive {
+            color: #d4a3ec;
+        }
+        .style-5 .preview-chart {
+            background: linear-gradient(180deg, rgba(184, 115, 214, 0.1) 0%, transparent 100%);
+        }
+        .style-5 .preview-chart-bar {
+            background: linear-gradient(180deg, #b873d6 0%, #8b5ca8 100%);
+        }
+
+        /* ========== 方案 6: 哑光古铜风 ========== */
+        .style-6 {
+            background: linear-gradient(135deg, #1a1510 0%, #2a2520 100%);
+        }
+        .style-6 .design-label {
+            background: linear-gradient(135deg, #cd7f32 0%, #a06528 100%);
+            color: #1a1510;
+        }
+        .style-6 .preview-content {
+            background: #1f1a15;
+            border: 1px solid rgba(205, 127, 50, 0.2);
+        }
+        .style-6 .preview-navbar {
+            border-bottom: 1px solid rgba(205, 127, 50, 0.15);
+        }
+        .style-6 .preview-logo {
+            color: #cd7f32;
+            font-family: Georgia, serif;
+        }
+        .style-6 .preview-nav-link {
+            color: #998877;
+            font-family: Georgia, serif;
+        }
+        .style-6 .preview-nav-link:hover, .style-6 .preview-nav-link.active {
+            color: #cd7f32;
+        }
+        .style-6 .preview-card {
+            background: rgba(205, 127, 50, 0.03);
+            border: 1px solid rgba(205, 127, 50, 0.15);
+        }
+        .style-6 .preview-card-title {
+            color: #998877;
+            font-family: Georgia, serif;
+        }
+        .style-6 .preview-card-value {
+            color: #cd7f32;
+            font-family: Georgia, serif;
+        }
+        .style-6 .preview-card-value.positive {
+            color: #e8a060;
+        }
+        .style-6 .preview-chart {
+            background: linear-gradient(180deg, rgba(205, 127, 50, 0.08) 0%, transparent 100%);
+        }
+        .style-6 .preview-chart-bar {
+            background: linear-gradient(180deg, #cd7f32 0%, #a06528 100%);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            margin-top: 40px;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ 量化系统 UI 设计方案 - 黑金风格全集</h1>
+        <p>6种黑金配色方案，请选择您最喜欢的风格</p>
+    </div>
+
+    <div class="design-grid">
+
+        <!-- 方案 1: 经典黑金交易所风 -->
+        <div class="design-card style-1">
+            <div class="design-label">1. 经典黑金交易所风</div>
+            <div class="design-preview">
+                <div class="preview-content">
+                    <div class="preview-navbar">
+                        <div class="preview-logo">QUANT PRO</div>
+                        <div class="preview-nav-links">
+                            <a href="#" class="preview-nav-link active">回测</a>
+                            <a href="#" class="preview-nav-link">因子</a>
+                            <a href="#" class="preview-nav-link">组合</a>
+                        </div>
+                    </div>
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <div class="preview-card-title">总收益率</div>
+                            <div class="preview-card-value positive">+24.8%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">夏普比率</div>
+                            <div class="preview-card-value">1.82</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">最大回撤</div>
+                            <div class="preview-card-value">-8.3%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">年化波动率</div>
+                            <div class="preview-card-value">12.4%</div>
+                        </div>
+                    </div>
+                    <div class="preview-chart">
+                        <div class="preview-chart-bar" style="height: 40%"></div>
+                        <div class="preview-chart-bar" style="height: 55%"></div>
+                        <div class="preview-chart-bar" style="height: 45%"></div>
+                        <div class="preview-chart-bar" style="height: 70%"></div>
+                        <div class="preview-chart-bar" style="height: 65%"></div>
+                        <div class="preview-chart-bar" style="height: 85%"></div>
+                        <div class="preview-chart-bar" style="height: 75%"></div>
+                        <div class="preview-chart-bar" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 方案 2: 玫瑰金奢华风 -->
+        <div class="design-card style-2">
+            <div class="design-label">2. 玫瑰金奢华风</div>
+            <div class="design-preview">
+                <div class="preview-content">
+                    <div class="preview-navbar">
+                        <div class="preview-logo">QUANT RESEARCH</div>
+                        <div class="preview-nav-links">
+                            <a href="#" class="preview-nav-link active">Backtest</a>
+                            <a href="#" class="preview-nav-link">Factors</a>
+                            <a href="#" class="preview-nav-link">Portfolio</a>
+                        </div>
+                    </div>
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <div class="preview-card-title">Total Return</div>
+                            <div class="preview-card-value positive">24.8%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Sharpe Ratio</div>
+                            <div class="preview-card-value">1.82</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Max Drawdown</div>
+                            <div class="preview-card-value">-8.3%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Annual Vol</div>
+                            <div class="preview-card-value">12.4%</div>
+                        </div>
+                    </div>
+                    <div class="preview-chart">
+                        <div class="preview-chart-bar" style="height: 40%"></div>
+                        <div class="preview-chart-bar" style="height: 55%"></div>
+                        <div class="preview-chart-bar" style="height: 45%"></div>
+                        <div class="preview-chart-bar" style="height: 70%"></div>
+                        <div class="preview-chart-bar" style="height: 65%"></div>
+                        <div class="preview-chart-bar" style="height: 85%"></div>
+                        <div class="preview-chart-bar" style="height: 75%"></div>
+                        <div class="preview-chart-bar" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 方案 3: 翡翠金玉石风 -->
+        <div class="design-card style-3">
+            <div class="design-label">3. 翡翠金玉石风</div>
+            <div class="design-preview">
+                <div class="preview-content">
+                    <div class="preview-navbar">
+                        <div class="preview-logo">JADE QUANT</div>
+                        <div class="preview-nav-links">
+                            <a href="#" class="preview-nav-link active">回测</a>
+                            <a href="#" class="preview-nav-link">因子</a>
+                            <a href="#" class="preview-nav-link">组合</a>
+                        </div>
+                    </div>
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <div class="preview-card-title">总收益率</div>
+                            <div class="preview-card-value positive">+24.8%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">夏普比率</div>
+                            <div class="preview-card-value">1.82</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">最大回撤</div>
+                            <div class="preview-card-value">-8.3%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">年化波动率</div>
+                            <div class="preview-card-value">12.4%</div>
+                        </div>
+                    </div>
+                    <div class="preview-chart">
+                        <div class="preview-chart-bar" style="height: 40%"></div>
+                        <div class="preview-chart-bar" style="height: 55%"></div>
+                        <div class="preview-chart-bar" style="height: 45%"></div>
+                        <div class="preview-chart-bar" style="height: 70%"></div>
+                        <div class="preview-chart-bar" style="height: 65%"></div>
+                        <div class="preview-chart-bar" style="height: 85%"></div>
+                        <div class="preview-chart-bar" style="height: 75%"></div>
+                        <div class="preview-chart-bar" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 方案 4: 蓝宝石风 -->
+        <div class="design-card style-4">
+            <div class="design-label">4. 蓝宝石风</div>
+            <div class="design-preview">
+                <div class="preview-content">
+                    <div class="preview-navbar">
+                        <div class="preview-logo">SAPPHIRE QUANT</div>
+                        <div class="preview-nav-links">
+                            <a href="#" class="preview-nav-link active">Backtest</a>
+                            <a href="#" class="preview-nav-link">Factors</a>
+                            <a href="#" class="preview-nav-link">Portfolio</a>
+                        </div>
+                    </div>
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <div class="preview-card-title">Total Return</div>
+                            <div class="preview-card-value positive">+24.8%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Sharpe Ratio</div>
+                            <div class="preview-card-value">1.82</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Max Drawdown</div>
+                            <div class="preview-card-value">-8.3%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Annual Vol</div>
+                            <div class="preview-card-value">12.4%</div>
+                        </div>
+                    </div>
+                    <div class="preview-chart">
+                        <div class="preview-chart-bar" style="height: 40%"></div>
+                        <div class="preview-chart-bar" style="height: 55%"></div>
+                        <div class="preview-chart-bar" style="height: 45%"></div>
+                        <div class="preview-chart-bar" style="height: 70%"></div>
+                        <div class="preview-chart-bar" style="height: 65%"></div>
+                        <div class="preview-chart-bar" style="height: 85%"></div>
+                        <div class="preview-chart-bar" style="height: 75%"></div>
+                        <div class="preview-chart-bar" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 方案 5: 紫铜风 -->
+        <div class="design-card style-5">
+            <div class="design-label">5. 紫铜风</div>
+            <div class="design-preview">
+                <div class="preview-content">
+                    <div class="preview-navbar">
+                        <div class="preview-logo">AMETHYST QUANT</div>
+                        <div class="preview-nav-links">
+                            <a href="#" class="preview-nav-link active">回测</a>
+                            <a href="#" class="preview-nav-link">因子</a>
+                            <a href="#" class="preview-nav-link">组合</a>
+                        </div>
+                    </div>
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <div class="preview-card-title">总收益率</div>
+                            <div class="preview-card-value positive">+24.8%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">夏普比率</div>
+                            <div class="preview-card-value">1.82</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">最大回撤</div>
+                            <div class="preview-card-value">-8.3%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">年化波动率</div>
+                            <div class="preview-card-value">12.4%</div>
+                        </div>
+                    </div>
+                    <div class="preview-chart">
+                        <div class="preview-chart-bar" style="height: 40%"></div>
+                        <div class="preview-chart-bar" style="height: 55%"></div>
+                        <div class="preview-chart-bar" style="height: 45%"></div>
+                        <div class="preview-chart-bar" style="height: 70%"></div>
+                        <div class="preview-chart-bar" style="height: 65%"></div>
+                        <div class="preview-chart-bar" style="height: 85%"></div>
+                        <div class="preview-chart-bar" style="height: 75%"></div>
+                        <div class="preview-chart-bar" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 方案 6: 哑光古铜风 -->
+        <div class="design-card style-6">
+            <div class="design-label">6. 哑光古铜风</div>
+            <div class="design-preview">
+                <div class="preview-content">
+                    <div class="preview-navbar">
+                        <div class="preview-logo">BRONZE QUANT</div>
+                        <div class="preview-nav-links">
+                            <a href="#" class="preview-nav-link active">Backtest</a>
+                            <a href="#" class="preview-nav-link">Factors</a>
+                            <a href="#" class="preview-nav-link">Portfolio</a>
+                        </div>
+                    </div>
+                    <div class="preview-grid">
+                        <div class="preview-card">
+                            <div class="preview-card-title">Total Return</div>
+                            <div class="preview-card-value positive">24.8%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Sharpe Ratio</div>
+                            <div class="preview-card-value">1.82</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Max Drawdown</div>
+                            <div class="preview-card-value">-8.3%</div>
+                        </div>
+                        <div class="preview-card">
+                            <div class="preview-card-title">Annual Vol</div>
+                            <div class="preview-card-value">12.4%</div>
+                        </div>
+                    </div>
+                    <div class="preview-chart">
+                        <div class="preview-chart-bar" style="height: 40%"></div>
+                        <div class="preview-chart-bar" style="height: 55%"></div>
+                        <div class="preview-chart-bar" style="height: 45%"></div>
+                        <div class="preview-chart-bar" style="height: 70%"></div>
+                        <div class="preview-chart-bar" style="height: 65%"></div>
+                        <div class="preview-chart-bar" style="height: 85%"></div>
+                        <div class="preview-chart-bar" style="height: 75%"></div>
+                        <div class="preview-chart-bar" style="height: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>请在浏览器中查看6种黑金配色方案，然后告诉我您最喜欢哪个方案</p>
+    </div>
+</body>
+</html>

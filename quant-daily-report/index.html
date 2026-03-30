@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人量化系统 v4.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .version {
+            font-size: 1.2rem;
+            color: #d4af37;
+            letter-spacing: 3px;
+        }
+
+        .tagline {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #888;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .feature-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .feature-list li {
+            color: #888;
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .directory-section {
+            margin-top: 60px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .directory-tree {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            color: #b8b8b8;
+            line-height: 1.8;
+        }
+
+        .directory-tree .folder {
+            color: #d4af37;
+        }
+
+        .directory-tree .file {
+            color: #6ab0f3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            color: #666;
+        }
+
+        .quick-start {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #d4af37;
+            padding: 20px 25px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .quick-start code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #d4af37;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Quant System</div>
+            <div class="version">v4.0</div>
+            <p class="tagline">专业的量化交易分析系统</p>
+        </header>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h2 class="feature-title">数据管理</h2>
+                <p class="feature-desc">稳定可靠的数据来源</p>
+                <ul class="feature-list">
+                    <li>Tushare + Baostock 双数据源</li>
+                    <li>财务指标（PE/PB/ROE/EPS）</li>
+                    <li>行业分类与指数成分</li>
+                    <li>内置缓存机制</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧮</div>
+                <h2 class="feature-title">因子挖掘</h2>
+                <p class="feature-desc">专业的因子库与评价体系</p>
+                <ul class="feature-list">
+                    <li>30+ 基础技术因子</li>
+                    <li>60+ Alpha101 风格因子</li>
+                    <li>IC/IR 因子评价</li>
+                    <li>分组回测与因子衰减</li>
+                    <li>市值/行业/Barra 中性化</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h2 class="feature-title">策略构建</h2>
+                <p class="feature-desc">灵活的策略框架</p>
+                <ul class="feature-list">
+                    <li>组合优化（5种专业算法）</li>
+                    <li>风险控制（止损/回撤/波动率）</li>
+                    <li>动量策略</li>
+                    <li>均值回归策略</li>
+                    <li>配对交易策略</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💹</div>
+                <h2 class="feature-title">回测引擎</h2>
+                <p class="feature-desc">事件驱动回测系统</p>
+                <ul class="feature-list">
+                    <li>事件驱动架构</li>
+                    <li>交易成本模型</li>
+                    <li>仓位管理</li>
+                    <li>涨跌停/停牌处理</li>
+                    <li>滑点与冲击成本</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h2 class="feature-title">绩效分析</h2>
+                <p class="feature-desc">全面的绩效指标</p>
+                <ul class="feature-list">
+                    <li>15+ 专业绩效指标</li>
+                    <li>Sortino/Omega/Calmar 比率</li>
+                    <li>VaR/CVaR 风险度量</li>
+                    <li>Brinson 业绩归因</li>
+                    <li>因子归因分析</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h2 class="feature-title">过拟合检测</h2>
+                <p class="feature-desc">策略稳健性验证</p>
+                <ul class="feature-list">
+                    <li>样本内/外对比</li>
+                    <li>Walk Forward 滚动验证</li>
+                    <li>参数敏感性分析</li>
+                    <li>策略退化检测</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="directory-section">
+            <h2 class="section-title">📁 目录结构</h2>
+            <div class="directory-tree">
+                <div><span class="folder">data_modules/</span> - 数据模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">data_module.py</span> - 基础数据管理</div>
+                <div>&nbsp;&nbsp;└── <span class="file">data_extended.py</span> - 扩展数据管理</div>
+                <br>
+                <div><span class="folder">factor_modules/</span> - 因子模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">factor_module.py</span> - 基础因子库</div>
+                <div>&nbsp;&nbsp;├── <span class="file">alpha_factors.py</span> - Alpha因子库</div>
+                <div>&nbsp;&nbsp;├── <span class="file">factor_evaluator.py</span> - 因子评价引擎</div>
+                <div>&nbsp;&nbsp;└── <span class="file">factor_neutralizer.py</span> - 因子中性化</div>
+                <br>
+                <div><span class="folder">strategy_modules/</span> - 策略模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">portfolio_optimizer.py</span> - 组合优化器</div>
+                <div>&nbsp;&nbsp;├── <span class="file">risk_controller.py</span> - 风险控制器</div>
+                <div>&nbsp;&nbsp;└── <span class="file">advanced_strategies.py</span> - 高级策略</div>
+                <br>
+                <div><span class="folder">backtest_modules/</span> - 回测模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">backtest_module.py</span> - 回测引擎</div>
+                <div>&nbsp;&nbsp;├── <span class="file">transaction_cost.py</span> - 交易成本模型</div>
+                <div>&nbsp;&nbsp;└── <span class="file">position_manager.py</span> - 仓位管理</div>
+                <br>
+                <div><span class="folder">analysis_modules/</span> - 分析模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">metrics_extended.py</span> - 扩展绩效指标</div>
+                <div>&nbsp;&nbsp;├── <span class="file">performance_attribution.py</span> - 业绩归因</div>
+                <div>&nbsp;&nbsp;└── <span class="file">overfitting_detector.py</span> - 过拟合检测</div>
+                <br>
+                <div><span class="folder">report_modules/</span> - 报告模块</div>
+                <div>&nbsp;&nbsp;├── <span class="file">report_module.py</span> - 报告生成</div>
+                <div>&nbsp;&nbsp;└── <span class="file">pipeline.py</span> - 研究Pipeline</div>
+                <br>
+                <div><span class="folder">quant_system/</span> - 向后兼容层</div>
+                <div><span class="folder">docs/</span> - 文档</div>
+            </div>
+
+            <div class="quick-start">
+                <h3 style="color: #d4af37; margin-bottom: 15px;">🚀 快速开始</h3>
+                <p style="margin-bottom: 10px;">新代码推荐使用：</p>
+                <code>from data_modules import DataManager</code><br>
+                <code>from factor_modules import FactorEvaluator</code><br>
+                <code>from backtest_modules import BacktestEngine</code>
+                <p style="margin-top: 15px; margin-bottom: 10px;">保持向后兼容：</p>
+                <code>from quant_system import DataManager, BacktestEngine</code>
+            </div>
+        </div>
+
+        <footer>
+            <p>个人量化系统 v4.0 | 专业量化交易分析</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                GitHub Pages 演示页面
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

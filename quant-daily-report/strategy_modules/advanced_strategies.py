@@ -7,7 +7,7 @@ from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
-from .backtest_module import (
+from backtest_modules.backtest_module import (
     Strategy, Order, OrderType, OrderDirection, Position
 )
 
