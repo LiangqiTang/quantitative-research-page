@@ -41,13 +41,8 @@
             --border-light: rgba(255, 255, 255, 0.08);
             --divider: rgba(255, 255, 255, 0.04);
 
-            --glow-gold: 0 0 30px rgba(240, 201, 92, 0.3);
-            --glow-gold-soft: 0 0 20px rgba(240, 201, 92, 0.15);
-            --glow-success: 0 0 25px rgba(22, 163, 74, 0.25);
-            --glow-danger: 0 0 25px rgba(220, 38, 38, 0.25);
-
-            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.5);
-            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 40px rgba(240, 201, 92, 0.1);
         }
 
         * {
@@ -61,98 +56,93 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* 背景效果 */
-        .bg-animated {
+        /* 背景装饰 */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+            right: 0;
+            bottom: 0;
             background:
                 radial-gradient(ellipse at 20% 20%, rgba(240, 201, 92, 0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 80%, rgba(8, 145, 178, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(10, 13, 20, 1) 0%, var(--bg-primary) 100%);
+                radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .bg-grid {
+        /* 噪点纹理 */
+        body::after {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-image:
-                linear-gradient(rgba(240, 201, 92, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(240, 201, 92, 0.03) 1px, transparent 1px);
-            background-size: 80px 80px;
-            animation: gridMove 25s linear infinite;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
         }
 
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(80px, 80px); }
-        }
-
-        /* 容器 */
         .app-container {
             display: flex;
             min-height: 100vh;
+            position: relative;
+            z-index: 2;
         }
 
         /* 侧边栏 */
         .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, rgba(10, 13, 20, 0.98) 0%, rgba(5, 5, 5, 0.98) 100%);
+            width: 260px;
+            background: linear-gradient(180deg, rgba(10, 13, 20, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%);
             border-right: 1px solid var(--border-gold);
+            padding: 32px 20px;
             display: flex;
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            left: 0;
+            top: 0;
             z-index: 100;
         }
 
-        .sidebar-header {
-            padding: 32px 24px 24px;
-            border-bottom: 1px solid var(--divider);
-        }
-
         .logo {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
 
         .logo-subtitle {
             font-size: 0.75rem;
             color: var(--text-muted);
-            letter-spacing: 0.2em;
             text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 40px;
         }
 
         .nav-section {
-            padding: 24px 16px;
-            flex: 1;
-            overflow-y: auto;
+            margin-bottom: 24px;
         }
 
-        .nav-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            letter-spacing: 0.15em;
+        .nav-section-title {
+            font-size: 0.65rem;
             text-transform: uppercase;
-            margin: 0 0 12px 8px;
-            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            padding-left: 12px;
         }
 
         .nav-item {
@@ -160,9 +150,9 @@
             align-items: center;
             gap: 12px;
             padding: 12px 16px;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             margin-bottom: 4px;
             position: relative;
             overflow: hidden;
@@ -173,51 +163,46 @@
             position: absolute;
             left: 0;
             top: 0;
-            height: 100%;
+            bottom: 0;
             width: 3px;
             background: var(--gold-gradient);
             transform: scaleY(0);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
+            border-radius: 0 2px 2px 0;
         }
 
         .nav-item:hover {
-            background: var(--gold-soft);
+            background: var(--bg-glass);
         }
 
         .nav-item.active {
             background: var(--gold-soft);
-            border-color: var(--gold-primary);
+            border: 1px solid var(--border-gold);
         }
 
         .nav-item.active::before {
             transform: scaleY(1);
         }
 
-        .nav-item.active .nav-icon {
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .nav-item.active .nav-label {
             color: var(--gold-primary);
         }
 
-        .nav-item.active .nav-text {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            width: 24px;
-            text-align: center;
-            color: var(--text-secondary);
-            transition: color 0.3s ease;
-        }
-
-        .nav-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-        }
-
         .sidebar-footer {
-            padding: 20px 24px;
+            margin-top: auto;
+            padding-top: 24px;
             border-top: 1px solid var(--divider);
         }
 
@@ -225,167 +210,55 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 14px;
-            background: rgba(22, 163, 74, 0.1);
-            border: 1px solid rgba(22, 163, 74, 0.3);
+            padding: 12px 16px;
+            background: var(--bg-glass);
             border-radius: 8px;
+            border: 1px solid var(--border-light);
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
-            background: var(--success);
             border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: var(--glow-success);
+            background: var(--success);
+            animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.9); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .status-text {
             font-size: 0.8rem;
-            color: var(--success);
-            font-weight: 600;
+            color: var(--text-secondary);
         }
 
         /* 主内容区 */
         .main-content {
             flex: 1;
-            margin-left: 280px;
-            min-height: 100vh;
-        }
-
-        /* 顶部栏 */
-        .topbar {
-            background: rgba(10, 13, 20, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--divider);
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .page-title {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .page-breadcrumb {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .topbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* 按钮样式 */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: var(--gold-gradient);
-            color: #050505;
-            box-shadow: var(--glow-gold-soft);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--glow-gold);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid var(--border-light);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--border-gold);
-        }
-
-        /* 内容区域 */
-        .content-area {
+            margin-left: 260px;
             padding: 32px 40px;
         }
 
-        /* 玻璃拟态卡片 */
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-gold);
-            border-radius: 16px;
-            box-shadow: var(--shadow-card);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+        .page-header {
+            margin-bottom: 32px;
         }
 
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(240, 201, 92, 0.4), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .glass-card:hover {
-            border-color: rgba(240, 201, 92, 0.4);
-            transform: translateY(-4px);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 40px rgba(240, 201, 92, 0.08);
-        }
-
-        .glass-card:hover::before {
-            opacity: 1;
-        }
-
-        .card-header {
-            padding: 24px 24px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-title {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.25rem;
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
             font-weight: 600;
-            color: var(--text-primary);
+            margin-bottom: 8px;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .card-body {
-            padding: 24px;
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
 
         /* 页面网格 */
@@ -406,62 +279,115 @@
             grid-template-columns: repeat(4, 1fr);
         }
 
+        /* 玻璃卡片 */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--gold-primary) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--border-gold);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .glass-card:hover::before {
+            opacity: 0.5;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-action {
+            font-size: 0.8rem;
+            color: var(--gold-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .card-action:hover {
+            color: var(--gold-primary);
+        }
+
         /* 指标卡片 */
         .metric-card {
-            padding: 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(240, 201, 92, 0.1) 0%, transparent 70%);
+            transform: translate(40%, -40%);
         }
 
         .metric-label {
             font-size: 0.8rem;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
             margin-bottom: 8px;
         }
 
         .metric-value {
-            font-family: 'Playfair Display', Georgia, serif;
             font-size: 2rem;
             font-weight: 700;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
-        }
-
-        .metric-value.positive {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .metric-value.negative {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-family: 'Playfair Display', serif;
+            color: var(--gold-primary);
+            margin-bottom: 4px;
         }
 
         .metric-change {
-            display: inline-flex;
+            font-size: 0.85rem;
+            display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 0.85rem;
-            margin-top: 8px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 600;
         }
 
         .metric-change.up {
-            background: var(--success-soft);
             color: var(--success);
         }
 
         .metric-change.down {
-            background: var(--danger-soft);
             color: var(--danger);
         }
 
@@ -476,36 +402,30 @@
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .form-input {
             width: 100%;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--bg-glass);
             border: 1px solid var(--border-light);
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 0.95rem;
             transition: all 0.3s ease;
-            font-family: inherit;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: var(--gold-primary);
+            border-color: var(--gold-secondary);
             box-shadow: 0 0 0 3px rgba(240, 201, 92, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
         }
 
         /* 滑块 */
         .slider-container {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .slider-header {
@@ -515,19 +435,24 @@
             margin-bottom: 12px;
         }
 
+        .slider-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
         .slider-value {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: 600;
             color: var(--gold-primary);
+            font-family: 'Playfair Display', serif;
         }
 
         .slider {
             -webkit-appearance: none;
             width: 100%;
             height: 6px;
-            background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
+            background: var(--bg-glass);
             outline: none;
             cursor: pointer;
         }
@@ -536,16 +461,15 @@
             -webkit-appearance: none;
             width: 20px;
             height: 20px;
-            background: var(--gold-gradient);
             border-radius: 50%;
+            background: var(--gold-gradient);
             cursor: pointer;
-            box-shadow: var(--glow-gold-soft);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(240, 201, 92, 0.3);
+            transition: transform 0.2s ease;
         }
 
         .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: var(--glow-gold);
+            transform: scale(1.15);
         }
 
         /* 开关 */
@@ -553,19 +477,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 0;
+            padding: 12px 0;
             border-bottom: 1px solid var(--divider);
         }
 
         .toggle-label {
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
-
-        .toggle-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 2px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         .toggle {
@@ -587,8 +505,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(255, 255, 255, 0.1);
-            transition: 0.3s;
+            background-color: var(--bg-glass);
+            transition: 0.4s;
             border-radius: 28px;
             border: 1px solid var(--border-light);
         }
@@ -600,48 +518,40 @@
             width: 20px;
             left: 3px;
             bottom: 3px;
-            background-color: var(--text-secondary);
-            transition: 0.3s;
+            background-color: var(--text-muted);
+            transition: 0.4s;
             border-radius: 50%;
         }
 
         .toggle input:checked + .toggle-slider {
             background: var(--gold-soft);
-            border-color: var(--gold-primary);
+            border-color: var(--gold-secondary);
         }
 
         .toggle input:checked + .toggle-slider:before {
             transform: translateX(24px);
             background: var(--gold-primary);
-            box-shadow: var(--glow-gold-soft);
         }
 
-        /* 选择卡片 */
-        .option-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
+        /* 选项卡片 */
         .option-card {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-glass);
             border: 2px solid var(--border-light);
             border-radius: 12px;
+            padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
         }
 
         .option-card:hover {
-            border-color: rgba(240, 201, 92, 0.4);
-            background: var(--gold-soft);
+            border-color: var(--border-gold);
+            transform: translateY(-2px);
         }
 
         .option-card.selected {
-            border-color: var(--gold-primary);
             background: var(--gold-soft);
-            box-shadow: var(--glow-gold-soft);
+            border-color: var(--gold-secondary);
         }
 
         .option-icon {
@@ -650,9 +560,10 @@
         }
 
         .option-name {
+            font-size: 0.95rem;
             font-weight: 600;
-            color: var(--text-primary);
             margin-bottom: 4px;
+            color: var(--text-primary);
         }
 
         .option-desc {
@@ -660,30 +571,89 @@
             color: var(--text-muted);
         }
 
+        /* 按钮 */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gold-gradient);
+            color: #0a0d14;
+            box-shadow: 0 4px 16px rgba(240, 201, 92, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(240, 201, 92, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-gold);
+            color: var(--gold-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
         /* 因子网格 */
         .factor-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 16px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .factor-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .factor-grid::-webkit-scrollbar-track {
+            background: var(--bg-glass);
+            border-radius: 3px;
+        }
+
+        .factor-grid::-webkit-scrollbar-thumb {
+            background: var(--border-gold);
+            border-radius: 3px;
         }
 
         .factor-card {
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-glass);
             border: 1px solid var(--border-light);
             border-radius: 10px;
+            padding: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .factor-card:hover {
-            border-color: rgba(240, 201, 92, 0.4);
-            background: rgba(240, 201, 92, 0.05);
+            border-color: var(--border-gold);
+            transform: translateY(-2px);
         }
 
         .factor-card.selected {
-            border-color: var(--gold-primary);
             background: var(--gold-soft);
+            border-color: var(--gold-secondary);
         }
 
         .factor-header {
@@ -694,129 +664,259 @@
         }
 
         .factor-name {
+            font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-primary);
-            font-size: 0.95rem;
         }
 
         .factor-category {
             font-size: 0.7rem;
             padding: 2px 8px;
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--bg-glass);
             border-radius: 4px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .factor-card.selected .factor-category {
+            background: rgba(240, 201, 92, 0.2);
+            color: var(--gold-secondary);
         }
 
         .factor-desc {
             font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
         }
 
         .factor-stats {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             font-size: 0.75rem;
         }
 
         .factor-stat {
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
-        .factor-stat-value {
-            font-weight: 700;
+        .factor-stat strong {
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--border-gold);
             color: var(--gold-primary);
         }
 
-        /* 图表容器 */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            padding: 16px 0;
+        .filter-tab.active {
+            background: var(--gold-soft);
+            border-color: var(--gold-secondary);
+            color: var(--gold-primary);
         }
 
-        /* 进度条 */
-        .progress-container {
-            margin-bottom: 24px;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+        /* 回测进度 */
+        .backtest-progress {
+            margin: 24px 0;
         }
 
         .progress-bar {
             height: 8px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--bg-glass);
             border-radius: 4px;
             overflow: hidden;
+            margin-bottom: 12px;
         }
 
         .progress-fill {
             height: 100%;
             background: var(--gold-gradient);
             border-radius: 4px;
-            transition: width 0.5s ease;
-            box-shadow: var(--glow-gold-soft);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            right: -50%;
+            height: 2px;
+            background: var(--border-light);
+            z-index: 0;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-glass);
+            border: 2px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active .step-number {
+            background: var(--gold-soft);
+            border-color: var(--gold-primary);
+            color: var(--gold-primary);
+            animation: stepPulse 1s infinite;
+        }
+
+        .progress-step.completed .step-number {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        @keyframes stepPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(240, 201, 92, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(240, 201, 92, 0); }
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--gold-primary);
+        }
+
+        .progress-step.completed .step-label {
+            color: var(--success);
         }
 
         /* 日志查看器 */
         .log-viewer {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-light);
             border-radius: 8px;
             padding: 16px;
-            height: 300px;
-            overflow-y: auto;
             font-family: 'Monaco', 'Menlo', monospace;
             font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-viewer::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .log-viewer::-webkit-scrollbar-thumb {
+            background: var(--border-gold);
+            border-radius: 3px;
         }
 
         .log-entry {
-            padding: 4px 0;
-            border-bottom: 1px solid var(--divider);
+            margin-bottom: 4px;
+            display: flex;
+            gap: 12px;
         }
 
         .log-time {
             color: var(--text-muted);
-            margin-right: 8px;
         }
 
-        .log-info { color: var(--info); }
-        .log-success { color: var(--success); }
-        .log-warning { color: var(--warning); }
-        .log-error { color: var(--danger); }
+        .log-message {
+            color: var(--text-secondary);
+        }
 
-        /* 表格 */
-        .data-table {
+        .log-message.info {
+            color: var(--info);
+        }
+
+        .log-message.success {
+            color: var(--success);
+        }
+
+        .log-message.warning {
+            color: var(--warning);
+        }
+
+        .log-message.error {
+            color: var(--danger);
+        }
+
+        /* 图表 */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* 结果表格 */
+        .results-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .data-table th {
+        .results-table th,
+        .results-table td {
+            padding: 12px 16px;
             text-align: left;
-            padding: 12px 16px;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .results-table th {
             font-size: 0.75rem;
-            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
             color: var(--text-muted);
-            border-bottom: 1px solid var(--divider);
+            font-weight: 600;
         }
 
-        .data-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--divider);
+        .results-table td {
             font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
-        .data-table tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
+        .results-table tr:hover td {
+            background: var(--bg-glass);
         }
 
-        /* 隐藏页面 */
+        /* 页面切换 */
         .page {
             display: none;
             animation: fadeIn 0.4s ease;
@@ -827,765 +927,775 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 回测控制 */
-        .backtest-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .btn-icon {
-            width: 44px;
-            height: 44px;
-            padding: 0;
-            border-radius: 50%;
-            font-size: 1.2rem;
-        }
-
-        /* 标签 */
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .tag-gold {
-            background: var(--gold-soft);
-            color: var(--gold-primary);
-            border: 1px solid var(--border-gold);
-        }
-
-        .tag-success {
-            background: var(--success-soft);
-            color: var(--success);
-            border: 1px solid rgba(22, 163, 74, 0.3);
-        }
-
-        .tag-danger {
-            background: var(--danger-soft);
-            color: var(--danger);
-            border: 1px solid rgba(220, 38, 38, 0.3);
-        }
-
-        /* 过滤器搜索 */
-        .filter-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-search {
-            flex: 1;
-            min-width: 200px;
-            position: relative;
-        }
-
-        .filter-search input {
-            width: 100%;
-            padding-left: 40px;
-        }
-
-        .filter-search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        .filter-tabs {
-            display: flex;
-            gap: 4px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 4px;
-            border-radius: 8px;
-        }
-
-        .filter-tab {
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            border: none;
-            background: none;
-            font-family: inherit;
-        }
-
-        .filter-tab:hover {
-            color: var(--text-primary);
-        }
-
-        .filter-tab.active {
-            background: var(--gold-soft);
-            color: var(--gold-primary);
-            font-weight: 600;
-        }
-
-        /* 策略预览 */
-        .strategy-preview {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 24px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .preview-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 4px;
-        }
-
-        .preview-value {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.1rem;
-            color: var(--gold-primary);
-            font-weight: 600;
-        }
-
-        /* 分步指示器 */
-        .wizard-steps {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 32px;
-            justify-content: center;
-        }
-
-        .wizard-step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--border-light);
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-        }
-
-        .wizard-step.active {
-            background: var(--gold-soft);
-            border-color: var(--gold-primary);
-            color: var(--gold-primary);
-            box-shadow: var(--glow-gold-soft);
-        }
-
-        .wizard-step.completed {
-            background: var(--success-soft);
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .wizard-connector {
-            width: 40px;
-            height: 2px;
-            background: var(--border-light);
-            align-self: center;
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* 响应式 */
         @media (max-width: 1200px) {
-            .grid-4 { grid-template-columns: repeat(2, 1fr); }
-            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media (max-width: 900px) {
-            .sidebar { transform: translateX(-100%); }
-            .main-content { margin-left: 0; }
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
-            .strategy-preview { grid-template-columns: 1fr; }
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-animated"></div>
-    <div class="bg-grid"></div>
-
     <div class="app-container">
         <!-- 侧边栏 -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">Quant System</div>
-                <div class="logo-subtitle">v4.0 Professional</div>
-            </div>
+            <div class="logo">Quant System</div>
+            <div class="logo-subtitle">Version 4.0</div>
 
             <nav class="nav-section">
-                <div class="nav-label">主要功能</div>
-                <div class="nav-item active" data-page="dashboard">
+                <div class="nav-section-title">主功能</div>
+                <div class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
                     <span class="nav-icon">📊</span>
-                    <span class="nav-text">仪表盘</span>
+                    <span class="nav-label">仪表盘</span>
                 </div>
-                <div class="nav-item" data-page="strategy">
+                <div class="nav-item" data-page="strategy" onclick="navigateTo('strategy')">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-text">策略配置</span>
+                    <span class="nav-label">策略配置</span>
                 </div>
-                <div class="nav-item" data-page="factors">
+                <div class="nav-item" data-page="factors" onclick="navigateTo('factors')">
                     <span class="nav-icon">🧮</span>
-                    <span class="nav-text">因子管理</span>
+                    <span class="nav-label">因子管理</span>
                 </div>
-                <div class="nav-item" data-page="optimizer">
-                    <span class="nav-icon">🎯</span>
-                    <span class="nav-text">组合优化</span>
-                </div>
-                <div class="nav-item" data-page="risk">
-                    <span class="nav-icon">🛡️</span>
-                    <span class="nav-text">风险控制</span>
-                </div>
-
-                <div class="nav-label" style="margin-top: 24px;">回测分析</div>
-                <div class="nav-item" data-page="backtest">
-                    <span class="nav-icon">💹</span>
-                    <span class="nav-text">回测执行</span>
-                </div>
-                <div class="nav-item" data-page="results">
+                <div class="nav-item" data-page="portfolio" onclick="navigateTo('portfolio')">
                     <span class="nav-icon">📈</span>
-                    <span class="nav-text">结果分析</span>
+                    <span class="nav-label">组合优化</span>
                 </div>
-                <div class="nav-item" data-page="report">
-                    <span class="nav-icon">📑</span>
-                    <span class="nav-text">报告导出</span>
+                <div class="nav-item" data-page="risk" onclick="navigateTo('risk')">
+                    <span class="nav-icon">🛡️</span>
+                    <span class="nav-label">风险控制</span>
+                </div>
+            </nav>
+
+            <nav class="nav-section">
+                <div class="nav-section-title">回测分析</div>
+                <div class="nav-item" data-page="backtest" onclick="navigateTo('backtest')">
+                    <span class="nav-icon">▶️</span>
+                    <span class="nav-label">回测执行</span>
+                </div>
+                <div class="nav-item" data-page="results" onclick="navigateTo('results')">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">结果分析</span>
+                </div>
+                <div class="nav-item" data-page="report" onclick="navigateTo('report')">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-label">报告导出</span>
                 </div>
             </nav>
 
             <div class="sidebar-footer">
                 <div class="status-badge">
                     <div class="status-dot"></div>
-                    <span class="status-text">系统就绪</span>
+                    <div class="status-text">系统就绪</div>
                 </div>
             </div>
         </aside>
 
         <!-- 主内容区 -->
         <main class="main-content">
-            <!-- 顶部栏 -->
-            <header class="topbar">
-                <div>
-                    <h1 class="page-title" id="pageTitle">仪表盘</h1>
-                    <div class="page-breadcrumb" id="pageBreadcrumb">首页 / 系统概览</div>
+            <!-- 仪表盘页面 -->
+            <div class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h1 class="page-title">系统概览</h1>
+                    <p class="page-subtitle">个人量化交易系统 v4.0 - 黑金科技风格</p>
                 </div>
-                <div class="topbar-actions">
-                    <button class="btn btn-secondary">
-                        <span>📁</span>
-                        <span>保存策略</span>
-                    </button>
-                    <button class="btn btn-primary" onclick="startQuickBacktest()">
-                        <span>🚀</span>
-                        <span>快速回测</span>
-                    </button>
-                </div>
-            </header>
 
-            <!-- 内容区域 -->
-            <div class="content-area">
-                <!-- 仪表盘页面 -->
-                <div class="page active" id="page-dashboard">
-                    <div class="page-grid grid-4" style="margin-bottom: 24px;">
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">总收益率</div>
-                            <div class="metric-value positive">+87.42%</div>
-                            <div class="metric-change up">
-                                <span>↑</span>
-                                <span>较基准 +12.3%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">年化收益率</div>
-                            <div class="metric-value">24.8%</div>
-                            <div class="metric-change up">
-                                <span>↑</span>
-                                <span>目标 20%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">最大回撤</div>
-                            <div class="metric-value negative">-12.4%</div>
-                            <div class="metric-change down">
-                                <span>↓</span>
-                                <span>阈值 15%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">夏普比率</div>
-                            <div class="metric-value">1.87</div>
-                            <div class="metric-change up">
-                                <span>↑</span>
-                                <span>优秀</span>
-                            </div>
+                <div class="page-grid grid-4">
+                    <div class="metric-card">
+                        <div class="metric-label">总收益率</div>
+                        <div class="metric-value" id="dash-total-return">+87.3%</div>
+                        <div class="metric-change up">
+                            <span>↑</span>
+                            <span>优秀</span>
                         </div>
                     </div>
-
-                    <div class="page-grid grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">净值曲线</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="equityChart"></canvas>
-                                </div>
-                            </div>
+                    <div class="metric-card">
+                        <div class="metric-label">夏普比率</div>
+                        <div class="metric-value" id="dash-sharpe">1.87</div>
+                        <div class="metric-change up">
+                            <span>↑</span>
+                            <span>优秀</span>
                         </div>
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">回撤分析</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="drawdownChart"></canvas>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">最大回撤</div>
+                        <div class="metric-value" id="dash-maxdd">-12.4%</div>
+                        <div class="metric-change down">
+                            <span>↓</span>
+                            <span>可控</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">胜率</div>
+                        <div class="metric-value" id="dash-winrate">58.3%</div>
+                        <div class="metric-change up">
+                            <span>↑</span>
+                            <span>良好</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 策略配置页面 -->
-                <div class="page" id="page-strategy">
-                    <div class="page-grid grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">基础设置</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label class="form-label">策略名称</label>
-                                    <input type="text" class="form-input" id="strategyName" value="多因子动量策略 v4.0">
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="form-label">初始资金 (¥)</label>
-                                        <input type="number" class="form-input" id="initialCapital" value="1000000">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label">基准指数</label>
-                                        <select class="form-input" id="benchmark">
-                                            <option value="000300.SH">沪深300</option>
-                                            <option value="000905.SH">中证500</option>
-                                            <option value="000852.SH">中证1000</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">策略类型</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="option-grid">
-                                    <div class="option-card selected" data-strategy="momentum">
-                                        <div class="option-icon">🚀</div>
-                                        <div class="option-name">动量策略</div>
-                                        <div class="option-desc">追踪趋势，强者恒强</div>
-                                    </div>
-                                    <div class="option-card" data-strategy="mean-reversion">
-                                        <div class="option-icon">📊</div>
-                                        <div class="option-name">均值回归</div>
-                                        <div class="option-desc">物极必反，反转交易</div>
-                                    </div>
-                                    <div class="option-card" data-strategy="pair-trading">
-                                        <div class="option-icon">⚖️</div>
-                                        <div class="option-name">配对交易</div>
-                                        <div class="option-desc">统计套利，市场中性</div>
-                                    </div>
-                                    <div class="option-card" data-strategy="multi-factor">
-                                        <div class="option-icon">🧮</div>
-                                        <div class="option-name">多因子策略</div>
-                                        <div class="option-desc">复合因子，综合选股</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 因子管理页面 -->
-                <div class="page" id="page-factors">
-                    <div class="glass-card" style="margin-bottom: 24px;">
+                <div class="page-grid grid-2" style="margin-top: 24px;">
+                    <div class="glass-card">
                         <div class="card-header">
-                            <h3 class="card-title">因子库</h3>
-                            <div style="display: flex; gap: 8px;">
-                                <span class="tag tag-gold" id="selectedFactorCount">已选择 0 个因子</span>
-                            </div>
+                            <h3 class="card-title">净值曲线</h3>
                         </div>
                         <div class="card-body">
-                            <div class="filter-bar">
-                                <div class="filter-search">
-                                    <span class="filter-search-icon">🔍</span>
-                                    <input type="text" class="form-input" id="factorSearch" placeholder="搜索因子...">
+                            <div class="chart-container">
+                                <canvas id="equityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">回撤分析</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="drawdownChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 策略配置页面 -->
+            <div class="page" id="page-strategy">
+                <div class="page-header">
+                    <h1 class="page-title">策略配置</h1>
+                    <p class="page-subtitle">配置您的量化交易策略参数</p>
+                </div>
+
+                <div class="page-grid grid-2">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">基础设置</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="form-label">策略名称</label>
+                                <input type="text" class="form-input" id="strategyName" value="多因子动量策略 v4.0" onchange="saveStrategyConfig()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">初始资金 (元)</label>
+                                <input type="number" class="form-input" id="initialCapital" value="1000000" onchange="saveStrategyConfig()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">回测开始日期</label>
+                                <input type="date" class="form-input" id="startDate" value="2020-01-01" onchange="saveStrategyConfig()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">回测结束日期</label>
+                                <input type="date" class="form-input" id="endDate" value="2024-12-31" onchange="saveStrategyConfig()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">策略类型</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="page-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                                <div class="option-card selected" data-strategy="momentum" onclick="selectStrategyType('momentum')">
+                                    <div class="option-icon">🚀</div>
+                                    <div class="option-name">动量策略</div>
+                                    <div class="option-desc">追涨杀跌，趋势跟踪</div>
                                 </div>
-                                <div class="filter-tabs">
-                                    <button class="filter-tab active" data-filter="all">全部</button>
-                                    <button class="filter-tab" data-filter="momentum">动量</button>
-                                    <button class="filter-tab" data-filter="reversal">反转</button>
-                                    <button class="filter-tab" data-filter="volatility">波动率</button>
-                                    <button class="filter-tab" data-filter="technical">技术</button>
+                                <div class="option-card" data-strategy="mean_reversion" onclick="selectStrategyType('mean_reversion')">
+                                    <div class="option-icon">📉</div>
+                                    <div class="option-name">均值回归</div>
+                                    <div class="option-desc">超买超卖，反转交易</div>
+                                </div>
+                                <div class="option-card" data-strategy="pair_trading" onclick="selectStrategyType('pair_trading')">
+                                    <div class="option-icon">⚖️</div>
+                                    <div class="option-name">配对交易</div>
+                                    <div class="option-desc">统计套利，市场中性</div>
+                                </div>
+                                <div class="option-card" data-strategy="multifactor" onclick="selectStrategyType('multifactor')">
+                                    <div class="option-icon">🧬</div>
+                                    <div class="option-name">多因子</div>
+                                    <div class="option-desc">综合因子，分散风险</div>
                                 </div>
                             </div>
-                            <div class="factor-grid" id="factorGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 因子管理页面 -->
+            <div class="page" id="page-factors">
+                <div class="page-header">
+                    <h1 class="page-title">因子管理</h1>
+                    <p class="page-subtitle">选择和管理您的Alpha因子库</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h3 class="card-title">因子库</h3>
+                        <span class="card-action" id="selectedFactorCount">已选择 0 个因子</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="text" class="form-input" id="factorSearch" placeholder="搜索因子..." oninput="filterFactors()">
+                        </div>
+
+                        <div class="filter-tabs">
+                            <div class="filter-tab active" data-filter="all" onclick="setFactorFilter('all')">全部</div>
+                            <div class="filter-tab" data-filter="momentum" onclick="setFactorFilter('momentum')">动量</div>
+                            <div class="filter-tab" data-filter="value" onclick="setFactorFilter('value')">价值</div>
+                            <div class="filter-tab" data-filter="quality" onclick="setFactorFilter('quality')">质量</div>
+                            <div class="filter-tab" data-filter="volatility" onclick="setFactorFilter('volatility')">波动率</div>
+                            <div class="filter-tab" data-filter="liquidity" onclick="setFactorFilter('liquidity')">流动性</div>
+                        </div>
+
+                        <div class="factor-grid" id="factorGrid">
+                            <!-- 因子卡片将通过JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 组合优化页面 -->
+            <div class="page" id="page-portfolio">
+                <div class="page-header">
+                    <h1 class="page-title">组合优化</h1>
+                    <p class="page-subtitle">选择优化算法和约束条件</p>
+                </div>
+
+                <div class="page-grid grid-2">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">优化方法</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="page-grid" style="gap: 12px;">
+                                <div class="option-card selected" data-optimizer="min_variance" onclick="selectOptimizer('min_variance')">
+                                    <div class="option-icon">📊</div>
+                                    <div class="option-name">最小方差</div>
+                                    <div class="option-desc">最小化组合波动</div>
+                                </div>
+                                <div class="option-card" data-optimizer="max_sharpe" onclick="selectOptimizer('max_sharpe')">
+                                    <div class="option-icon">🎯</div>
+                                    <div class="option-name">最大夏普</div>
+                                    <div class="option-desc">最大化风险调整收益</div>
+                                </div>
+                                <div class="option-card" data-optimizer="risk_parity" onclick="selectOptimizer('risk_parity')">
+                                    <div class="option-icon">⚖️</div>
+                                    <div class="option-name">风险平价</div>
+                                    <div class="option-desc">等风险贡献分配</div>
+                                </div>
+                                <div class="option-card" data-optimizer="equal_weight" onclick="selectOptimizer('equal_weight')">
+                                    <div class="option-icon">📈</div>
+                                    <div class="option-name">等权重</div>
+                                    <div class="option-desc">简单平均分配</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">优化参数</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">目标收益率</span>
+                                    <span class="slider-value" id="targetReturnValue">15%</span>
+                                </div>
+                                <input type="range" class="slider" id="targetReturn" min="0" max="30" value="15" oninput="updateSliderValue('targetReturn', 'targetReturnValue', '%')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">风险厌恶系数</span>
+                                    <span class="slider-value" id="riskAversionValue">3.0</span>
+                                </div>
+                                <input type="range" class="slider" id="riskAversion" min="1" max="10" step="0.5" value="3" oninput="updateSliderValue('riskAversion', 'riskAversionValue', '')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">最大持仓数量</span>
+                                    <span class="slider-value" id="positionCountValue">50</span>
+                                </div>
+                                <input type="range" class="slider" id="positionCount" min="10" max="200" value="50" oninput="updateSliderValue('positionCount', 'positionCountValue', '')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">单股最大权重</span>
+                                    <span class="slider-value" id="singlePositionValue">5%</span>
+                                </div>
+                                <input type="range" class="slider" id="singlePosition" min="1" max="20" value="5" oninput="updateSliderValue('singlePosition', 'singlePositionValue', '%')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">换手率约束</span>
+                                    <span class="slider-value" id="turnoverValue">30%</span>
+                                </div>
+                                <input type="range" class="slider" id="turnover" min="10" max="100" value="30" oninput="updateSliderValue('turnover', 'turnoverValue', '%')">
+                            </div>
+
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="runPortfolioOptimization()">
+                                🔧 运行优化
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 风险控制页面 -->
+            <div class="page" id="page-risk">
+                <div class="page-header">
+                    <h1 class="page-title">风险控制</h1>
+                    <p class="page-subtitle">设置止损、回撤和波动率控制参数</p>
+                </div>
+
+                <div class="page-grid grid-2">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">止损止盈</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">单笔止损</span>
+                                    <span class="slider-value" id="stopLossValue">-10%</span>
+                                </div>
+                                <input type="range" class="slider" id="stopLoss" min="1" max="30" value="10" oninput="updateNegativeSlider('stopLoss', 'stopLossValue', '%')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">单笔止盈</span>
+                                    <span class="slider-value" id="takeProfitValue">20%</span>
+                                </div>
+                                <input type="range" class="slider" id="takeProfit" min="5" max="50" value="20" oninput="updateSliderValue('takeProfit', 'takeProfitValue', '%')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">组合最大回撤</span>
+                                    <span class="slider-value" id="maxDrawdownValue">-20%</span>
+                                </div>
+                                <input type="range" class="slider" id="maxDrawdown" min="5" max="50" value="20" oninput="updateNegativeSlider('maxDrawdown', 'maxDrawdownValue', '%')">
+                            </div>
+
+                            <div class="toggle-group">
+                                <span class="toggle-label">启用移动止损</span>
+                                <label class="toggle">
+                                    <input type="checkbox" id="enableTrailingStop" onchange="saveRiskConfig()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">波动率与仓位控制</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">目标波动率</span>
+                                    <span class="slider-value" id="targetVolValue">15%</span>
+                                </div>
+                                <input type="range" class="slider" id="targetVol" min="5" max="40" value="15" oninput="updateSliderValue('targetVol', 'targetVolValue', '%')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">单股仓位上限</span>
+                                    <span class="slider-value" id="singleStockLimitValue">10%</span>
+                                </div>
+                                <input type="range" class="slider" id="singleStockLimit" min="1" max="25" value="10" oninput="updateSliderValue('singleStockLimit', 'singleStockLimitValue', '%')">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-header">
+                                    <span class="slider-label">单行业仓位上限</span>
+                                    <span class="slider-value" id="industryLimitValue">30%</span>
+                                </div>
+                                <input type="range" class="slider" id="industryLimit" min="10" max="50" value="30" oninput="updateSliderValue('industryLimit', 'industryLimitValue', '%')">
+                            </div>
+
+                            <div class="toggle-group">
+                                <span class="toggle-label">启用波动率目标策略</span>
+                                <label class="toggle">
+                                    <input type="checkbox" id="enableVolTarget" checked onchange="saveRiskConfig()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <button class="btn btn-secondary" style="width: 100%; margin-top: 20px;" onclick="saveRiskConfig()">
+                                💾 保存配置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 回测执行页面 -->
+            <div class="page" id="page-backtest">
+                <div class="page-header">
+                    <h1 class="page-title">回测执行</h1>
+                    <p class="page-subtitle">运行策略回测并监控执行进度</p>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h3 class="card-title">回测控制面板</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="backtest-progress">
+                            <div class="progress-steps">
+                                <div class="progress-step active" id="step1">
+                                    <div class="step-number">1</div>
+                                    <div class="step-label">数据加载</div>
+                                </div>
+                                <div class="progress-step" id="step2">
+                                    <div class="step-number">2</div>
+                                    <div class="step-label">因子计算</div>
+                                </div>
+                                <div class="progress-step" id="step3">
+                                    <div class="step-number">3</div>
+                                    <div class="step-label">回测执行</div>
+                                </div>
+                                <div class="progress-step" id="step4">
+                                    <div class="step-number">4</div>
+                                    <div class="step-label">生成报告</div>
+                                </div>
+                            </div>
+
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="backtestProgress"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 0.9rem; color: var(--gold-primary); margin-bottom: 20px;">
+                                <span id="backtestProgressPercent">0%</span>
+                            </div>
+
+                            <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+                                <button class="btn btn-primary" id="btnStart" onclick="startBacktest()">
+                                    ▶️ 开始回测
+                                </button>
+                                <button class="btn btn-secondary" id="btnPause" disabled onclick="pauseBacktest()">
+                                    ⏸️ 暂停
+                                </button>
+                                <button class="btn btn-secondary" id="btnStop" disabled onclick="stopBacktest()">
+                                    ⏹️ 停止
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-header" style="margin-bottom: 12px;">
+                            <h3 class="card-title" style="font-size: 1rem;">执行日志</h3>
+                        </div>
+                        <div class="log-viewer" id="logViewer">
+                            <div class="log-entry">
+                                <span class="log-time">[就绪]</span>
+                                <span class="log-message">系统已就绪，等待回测开始...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 组合优化页面 -->
-                <div class="page" id="page-optimizer">
-                    <div class="page-grid grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">优化方法</h3>
+                <div class="glass-card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">当前配置摘要</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="page-grid grid-4">
+                            <div style="text-align: center; padding: 16px; background: var(--bg-glass); border-radius: 8px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">策略类型</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: var(--gold-primary);" id="summary-strategy">动量</div>
                             </div>
-                            <div class="card-body">
-                                <div class="option-grid" style="grid-template-columns: 1fr;">
-                                    <div class="option-card selected" data-optimizer="min-variance">
-                                        <div class="option-icon">📉</div>
-                                        <div class="option-name">最小方差组合</div>
-                                        <div class="option-desc">追求最小化组合波动率</div>
-                                    </div>
-                                    <div class="option-card" data-optimizer="max-sharpe">
-                                        <div class="option-icon">📈</div>
-                                        <div class="option-name">最大夏普比率</div>
-                                        <div class="option-desc">在风险和收益间最优平衡</div>
-                                    </div>
-                                    <div class="option-card" data-optimizer="risk-parity">
-                                        <div class="option-icon">⚖️</div>
-                                        <div class="option-name">风险平价</div>
-                                        <div class="option-desc">各资产风险贡献相等</div>
-                                    </div>
-                                    <div class="option-card" data-optimizer="equal-weight">
-                                        <div class="option-icon">🔢</div>
-                                        <div class="option-name">等权重</div>
-                                        <div class="option-desc">简单平均分配仓位</div>
-                                    </div>
+                            <div style="text-align: center; padding: 16px; background: var(--bg-glass); border-radius: 8px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">因子数量</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: var(--gold-primary);" id="summary-factors">0</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--bg-glass); border-radius: 8px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">优化方法</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: var(--gold-primary);" id="summary-optimizer">最小方差</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: var(--bg-glass); border-radius: 8px;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">初始资金</div>
+                                <div style="font-size: 1.1rem; font-weight: 600; color: var(--gold-primary);" id="summary-capital">1,000,000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果分析页面 -->
+            <div class="page" id="page-results">
+                <div class="page-header">
+                    <h1 class="page-title">结果分析</h1>
+                    <p class="page-subtitle">详细的回测结果和绩效分析</p>
+                </div>
+
+                <div class="page-grid grid-4">
+                    <div class="metric-card">
+                        <div class="metric-label">总收益率</div>
+                        <div class="metric-value" id="result-total-return">+87.3%</div>
+                        <div class="metric-change up">
+                            <span>↑</span>
+                            <span>vs 基准 +42.5%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">年化收益率</div>
+                        <div class="metric-value" id="result-annual-return">+16.8%</div>
+                        <div class="metric-change up">
+                            <span>↑</span>
+                            <span>优秀</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">夏普比率</div>
+                        <div class="metric-value" id="result-sharpe">1.87</div>
+                        <div class="metric-change up">
+                            <span>↑</span>
+                            <span>优秀</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">最大回撤</div>
+                        <div class="metric-value" id="result-maxdd">-12.4%</div>
+                        <div class="metric-change down">
+                            <span>↓</span>
+                            <span>可控</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-grid grid-4" style="margin-top: 24px;">
+                    <div class="metric-card">
+                        <div class="metric-label">Sortino比率</div>
+                        <div class="metric-value" id="result-sortino">2.34</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Calmar比率</div>
+                        <div class="metric-value" id="result-calmar">1.35</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">胜率</div>
+                        <div class="metric-value" id="result-winrate">58.3%</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">盈亏比</div>
+                        <div class="metric-value" id="result-plratio">1.52</div>
+                    </div>
+                </div>
+
+                <div class="page-grid grid-2" style="margin-top: 24px;">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">净值曲线</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="resultsEquityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">回撤分析</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="resultsDrawdownChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-grid grid-2" style="margin-top: 24px;">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">月度收益</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="monthlyReturnsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">收益分布</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="returnsDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">交易记录摘要</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>股票</th>
+                                    <th>方向</th>
+                                    <th>数量</th>
+                                    <th>价格</th>
+                                    <th>收益</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tradesTableBody">
+                                <!-- 交易记录将通过JS动态生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报告导出页面 -->
+            <div class="page" id="page-report">
+                <div class="page-header">
+                    <h1 class="page-title">报告导出</h1>
+                    <p class="page-subtitle">生成和导出完整的量化研究报告</p>
+                </div>
+
+                <div class="page-grid grid-2">
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">报告模板</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="page-grid" style="gap: 12px;">
+                                <div class="option-card selected">
+                                    <div class="option-icon">📋</div>
+                                    <div class="option-name">完整报告</div>
+                                    <div class="option-desc">包含所有分析内容</div>
+                                </div>
+                                <div class="option-card">
+                                    <div class="option-icon">📊</div>
+                                    <div class="option-name">绩效摘要</div>
+                                    <div class="option-desc">核心指标和图表</div>
+                                </div>
+                                <div class="option-card">
+                                    <div class="option-icon">🧮</div>
+                                    <div class="option-name">因子分析</div>
+                                    <div class="option-desc">因子评价报告</div>
+                                </div>
+                                <div class="option-card">
+                                    <div class="option-icon">📈</div>
+                                    <div class="option-name">交易日志</div>
+                                    <div class="option-desc">详细交易记录</div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">优化约束</h3>
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3 class="card-title">导出格式</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="toggle-group">
+                                <span class="toggle-label">包含图表</span>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
                             </div>
-                            <div class="card-body">
-                                <div class="slider-container">
-                                    <div class="slider-header">
-                                        <span class="form-label">目标收益率</span>
-                                        <span class="slider-value" id="targetReturnValue">15%</span>
-                                    </div>
-                                    <input type="range" class="slider" id="targetReturn" min="5" max="30" value="15">
-                                </div>
-                                <div class="toggle-group">
-                                    <div>
-                                        <div class="toggle-label">行业中性</div>
-                                        <div class="toggle-desc">保持行业权重与基准一致</div>
-                                    </div>
-                                    <label class="toggle">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="runOptimization()">
-                                    <span>🎯</span>
-                                    <span>运行优化</span>
+                            <div class="toggle-group">
+                                <span class="toggle-label">包含交易记录</span>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-group">
+                                <span class="toggle-label">包含因子评价</span>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                                <button class="btn btn-primary" style="flex: 1;" onclick="generateReport()">
+                                    📄 生成PDF
+                                </button>
+                                <button class="btn btn-secondary" style="flex: 1;" onclick="generateReport()">
+                                    📊 导出Excel
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 风险控制页面 -->
-                <div class="page" id="page-risk">
-                    <div class="page-grid grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">止损止盈</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="slider-container">
-                                    <div class="slider-header">
-                                        <span class="form-label">单笔止损</span>
-                                        <span class="slider-value" id="stopLossValue">-10%</span>
-                                    </div>
-                                    <input type="range" class="slider" id="stopLoss" min="1" max="30" value="10">
-                                </div>
-                                <div class="slider-container">
-                                    <div class="slider-header">
-                                        <span class="form-label">单笔止盈</span>
-                                        <span class="slider-value" id="takeProfitValue">20%</span>
-                                    </div>
-                                    <input type="range" class="slider" id="takeProfit" min="5" max="50" value="20">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">组合风险控制</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="slider-container">
-                                    <div class="slider-header">
-                                        <span class="form-label">最大回撤阈值</span>
-                                        <span class="slider-value" id="maxDrawdownValue">-20%</span>
-                                    </div>
-                                    <input type="range" class="slider" id="maxDrawdown" min="5" max="40" value="20">
-                                </div>
-                                <div class="toggle-group">
-                                    <div>
-                                        <div class="toggle-label">波动率目标策略</div>
-                                        <div class="toggle-desc">根据波动率动态调整仓位</div>
-                                    </div>
-                                    <label class="toggle">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="saveRiskConfig()">
-                                    <span>🛡️</span>
-                                    <span>保存风控设置</span>
-                                </button>
-                            </div>
-                        </div>
+                <div class="glass-card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">报告预览</h3>
                     </div>
-                </div>
+                    <div class="card-body" style="background: var(--bg-glass); border-radius: 8px; padding: 32px; min-height: 400px;">
+                        <h2 style="font-family: 'Playfair Display', serif; color: var(--gold-primary); margin-bottom: 8px;">量化研究报告</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 24px;">策略名称: <span style="color: var(--text-primary);" id="preview-strategy-name">多因子动量策略 v4.0</span></p>
 
-                <!-- 回测执行页面 -->
-                <div class="page" id="page-backtest">
-                    <div class="glass-card" style="margin-bottom: 24px;">
-                        <div class="card-header">
-                            <h3 class="card-title">策略配置预览</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="strategy-preview">
-                                <div>
-                                    <div class="preview-label">策略名称</div>
-                                    <div class="preview-value" id="previewStrategyName">多因子动量策略</div>
+                        <div style="border-top: 1px solid var(--divider); padding-top: 24px;">
+                            <h3 style="color: var(--text-primary); margin-bottom: 16px; font-size: 1.1rem;">执行摘要</h3>
+                            <div class="page-grid grid-4" style="margin-bottom: 24px;">
+                                <div style="text-align: center; padding: 16px; background: var(--bg-card); border-radius: 8px;">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">总收益率</div>
+                                    <div style="font-size: 1.3rem; font-weight: 700; color: var(--gold-primary);" id="preview-total-return">+87.3%</div>
                                 </div>
-                                <div>
-                                    <div class="preview-label">初始资金</div>
-                                    <div class="preview-value" id="previewCapital">¥1,000,000</div>
+                                <div style="text-align: center; padding: 16px; background: var(--bg-card); border-radius: 8px;">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">夏普比率</div>
+                                    <div style="font-size: 1.3rem; font-weight: 700; color: var(--gold-primary);" id="preview-sharpe">1.87</div>
                                 </div>
-                                <div>
-                                    <div class="preview-label">持仓数量</div>
-                                    <div class="preview-value" id="previewPositions">30 只股票</div>
+                                <div style="text-align: center; padding: 16px; background: var(--bg-card); border-radius: 8px;">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">最大回撤</div>
+                                    <div style="font-size: 1.3rem; font-weight: 700; color: var(--danger);" id="preview-maxdd">-12.4%</div>
                                 </div>
-                                <div>
-                                    <div class="preview-label">因子数量</div>
-                                    <div class="preview-value" id="previewFactors">5 个因子</div>
+                                <div style="text-align: center; padding: 16px; background: var(--bg-card); border-radius: 8px;">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">胜率</div>
+                                    <div style="font-size: 1.3rem; font-weight: 700; color: var(--success);" id="preview-winrate">58.3%</div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="page-grid grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">回测进度</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="wizard-steps">
-                                    <div class="wizard-step completed" id="step1">1</div>
-                                    <div class="wizard-connector"></div>
-                                    <div class="wizard-step" id="step2">2</div>
-                                    <div class="wizard-connector"></div>
-                                    <div class="wizard-step" id="step3">3</div>
-                                    <div class="wizard-connector"></div>
-                                    <div class="wizard-step" id="step4">4</div>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-muted);">
-                                    <span>数据加载</span>
-                                    <span>因子计算</span>
-                                    <span>回测执行</span>
-                                    <span>结果生成</span>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-label">
-                                        <span>整体进度</span>
-                                        <span id="backtestProgressPercent">0%</span>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" id="backtestProgress" style="width: 0%;"></div>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 20px; display: flex; justify-content: center; gap: 12px;">
-                                    <button class="btn btn-primary btn-icon" id="btnStart" onclick="startBacktest()" title="开始">
-                                        ▶️
-                                    </button>
-                                    <button class="btn btn-secondary btn-icon" id="btnPause" onclick="pauseBacktest()" title="暂停" disabled>
-                                        ⏸️
-                                    </button>
-                                    <button class="btn btn-secondary btn-icon" id="btnStop" onclick="stopBacktest()" title="停止" disabled>
-                                        ⏹️
-                                    </button>
-                                </div>
-                            </div>
+                            <p style="color: var(--text-secondary); line-height: 1.8;">
+                                本报告基于回测期间的市场数据，对所选策略进行了全面的绩效分析。
+                                策略采用 <span style="color: var(--gold-primary);" id="preview-strategy-type">动量</span> 风格，
+                                结合 <span style="color: var(--gold-primary);" id="preview-factor-count">0</span> 个Alpha因子，
+                                使用 <span style="color: var(--gold-primary);" id="preview-optimizer-type">最小方差</span> 优化方法进行组合构建。
+                                回测结果显示，策略在风险调整后收益方面表现优秀，具有良好的稳健性。
+                            </p>
                         </div>
-
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">实时日志</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="log-viewer" id="logViewer">
-                                    <div class="log-entry">
-                                        <span class="log-time">[12:00:00]</span>
-                                        <span class="log-info">系统就绪，等待回测开始...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 结果分析页面 -->
-                <div class="page" id="page-results">
-                    <div class="page-grid grid-4" style="margin-bottom: 24px;">
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">总收益率</div>
-                            <div class="metric-value positive">+87.42%</div>
-                            <div class="metric-change up">
-                                <span>↑</span>
-                                <span>基准 +75.12%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">年化收益率</div>
-                            <div class="metric-value">24.8%</div>
-                            <div class="metric-change up">
-                                <span>↑</span>
-                                <span>基准 19.6%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">夏普比率</div>
-                            <div class="metric-value">1.87</div>
-                            <div class="metric-change up">
-                                <span>↑</span>
-                                <span>优秀</span>
-                            </div>
-                        </div>
-                        <div class="glass-card metric-card">
-                            <div class="metric-label">最大回撤</div>
-                            <div class="metric-value negative">-12.4%</div>
-                            <div class="metric-change down">
-                                <span>↓</span>
-                                <span>基准 -18.7%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="page-grid grid-2" style="margin-bottom: 24px;">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">净值曲线</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="resultsEquityChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">回撤分析</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="resultsDrawdownChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 报告导出页面 -->
-                <div class="page" id="page-report">
-                    <div class="page-grid grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">报告模板</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="option-grid">
-                                    <div class="option-card selected">
-                                        <div class="option-icon">📋</div>
-                                        <div class="option-name">标准报告</div>
-                                        <div class="option-desc">包含全部核心分析内容</div>
-                                    </div>
-                                    <div class="option-card">
-                                        <div class="option-icon">📄</div>
-                                        <div class="option-name">简要报告</div>
-                                        <div class="option-desc">核心指标概览</div>
-                                    </div>
-                                    <div class="option-card">
-                                        <div class="option-icon">📊</div>
-                                        <div class="option-name">详细报告</div>
-                                        <div class="option-desc">包含深度分析和归因</div>
-                                    </div>
-                                    <div class="option-card">
-                                        <div class="option-icon">🔧</div>
-                                        <div class="option-name">自定义</div>
-                                        <div class="option-desc">自由选择报告章节</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <h3 class="card-title">导出格式</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="option-grid">
-                                    <div class="option-card selected">
-                                        <div class="option-icon">🌐</div>
-                                        <div class="option-name">HTML</div>
-                                        <div class="option-desc">交互式网页报告</div>
-                                    </div>
-                                    <div class="option-card">
-                                        <div class="option-icon">📕</div>
-                                        <div class="option-name">PDF</div>
-                                        <div class="option-desc">打印友好格式</div>
-                                    </div>
-                                    <div class="option-card">
-                                        <div class="option-icon">📝</div>
-                                        <div class="option-name">Markdown</div>
-                                        <div class="option-desc">纯文本源码格式</div>
-                                    </div>
-                                    <div class="option-card">
-                                        <div class="option-icon">📊</div>
-                                        <div class="option-name">Excel</div>
-                                        <div class="option-desc">数据表格导出</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px;">
-                        <button class="btn btn-secondary" style="padding: 14px 32px;">
-                            <span>👁️</span>
-                            <span>预览报告</span>
-                        </button>
-                        <button class="btn btn-primary" style="padding: 14px 32px;" onclick="generateReport()">
-                            <span>📥</span>
-                            <span>导出报告</span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -1593,43 +1703,349 @@
     </div>
 
     <script>
+        // ============================================
+        // 全局状态管理 - 核心数据流
+        // ============================================
         const AppState = {
             currentPage: 'dashboard',
             strategy: {
                 name: '多因子动量策略 v4.0',
                 capital: 1000000,
-                type: 'momentum'
+                type: 'momentum',
+                startDate: '2020-01-01',
+                endDate: '2024-12-31'
             },
             factors: {
                 selected: [],
                 filter: 'all',
                 search: ''
             },
+            optimizer: {
+                type: 'min_variance',
+                targetReturn: 15,
+                riskAversion: 3,
+                positionCount: 50,
+                singlePosition: 5,
+                turnover: 30
+            },
+            risk: {
+                stopLoss: 10,
+                takeProfit: 20,
+                maxDrawdown: 20,
+                targetVol: 15,
+                singleStockLimit: 10,
+                industryLimit: 30,
+                enableTrailingStop: false,
+                enableVolTarget: true
+            },
             backtest: {
                 running: false,
                 paused: false,
                 progress: 0,
-                currentStep: 1
+                currentStep: 1,
+                results: null  // 存储动态生成的回测结果
             }
         };
 
+        // 因子库数据
         const factorLibrary = [
-            { id: 'mom_1m', name: '1月动量', category: 'momentum', desc: '过去1个月收益率', ic: 0.052, ir: 0.82 },
-            { id: 'mom_3m', name: '3月动量', category: 'momentum', desc: '过去3个月收益率', ic: 0.061, ir: 0.91 },
-            { id: 'mom_6m', name: '6月动量', category: 'momentum', desc: '过去6个月收益率', ic: 0.058, ir: 0.87 },
-            { id: 'rev_1w', name: '1周反转', category: 'reversal', desc: '过去1周收益率反转', ic: 0.045, ir: 0.78 },
-            { id: 'rev_1m', name: '1月反转', category: 'reversal', desc: '过去1个月收益率反转', ic: 0.051, ir: 0.85 },
-            { id: 'vol_std', name: '波动率', category: 'volatility', desc: '20日标准差', ic: 0.038, ir: 0.65 },
-            { id: 'vol_atr', name: 'ATR', category: 'volatility', desc: '平均真实波幅', ic: 0.042, ir: 0.71 },
-            { id: 'tech_ma5', name: 'MA5突破', category: 'technical', desc: '5日均线突破', ic: 0.048, ir: 0.79 },
-            { id: 'tech_ma20', name: 'MA20突破', category: 'technical', desc: '20日均线突破', ic: 0.053, ir: 0.84 },
-            { id: 'tech_rsi', name: 'RSI', category: 'technical', desc: '相对强弱指标', ic: 0.046, ir: 0.76 },
-            { id: 'tech_macd', name: 'MACD', category: 'technical', desc: '指数平滑异同移动平均', ic: 0.049, ir: 0.80 },
-            { id: 'tech_boll', name: '布林带', category: 'technical', desc: '布林带突破', ic: 0.050, ir: 0.81 },
-            { id: 'vol_iv', name: '特质波动率', category: 'volatility', desc: 'Fama-French回归残差', ic: 0.055, ir: 0.88 },
-            { id: 'rev_52w', name: '52周高点', category: 'reversal', desc: '距离52周高点距离', ic: 0.063, ir: 0.93 }
+            { id: 'mom_1m', name: '1个月动量', category: 'momentum', desc: '过去1个月收益率', ic: 0.045, ir: 0.72 },
+            { id: 'mom_3m', name: '3个月动量', category: 'momentum', desc: '过去3个月收益率', ic: 0.052, ir: 0.81 },
+            { id: 'mom_6m', name: '6个月动量', category: 'momentum', desc: '过去6个月收益率', ic: 0.048, ir: 0.75 },
+            { id: 'mom_12m', name: '12个月动量', category: 'momentum', desc: '过去12个月收益率', ic: 0.035, ir: 0.58 },
+            { id: 'str_rev', name: '短期反转', category: 'momentum', desc: '过去1个月反转', ic: -0.038, ir: 0.62 },
+            { id: 'value_pe', name: '市盈率PE', category: 'value', desc: '价格/每股收益', ic: 0.042, ir: 0.68 },
+            { id: 'value_pb', name: '市净率PB', category: 'value', desc: '价格/每股净资产', ic: 0.048, ir: 0.74 },
+            { id: 'value_ps', name: '市销率PS', category: 'value', desc: '价格/每股营收', ic: 0.035, ir: 0.55 },
+            { id: 'value_pcf', name: '市现率PCF', category: 'value', desc: '价格/每股现金流', ic: 0.038, ir: 0.61 },
+            { id: 'value_ev_ebitda', name: 'EV/EBITDA', category: 'value', desc: '企业价值/EBITDA', ic: 0.055, ir: 0.82 },
+            { id: 'quality_roe', name: '净资产收益率', category: 'quality', desc: 'ROE = 净利润/净资产', ic: 0.062, ir: 0.88 },
+            { id: 'quality_roa', name: '总资产收益率', category: 'quality', desc: 'ROA = 净利润/总资产', ic: 0.055, ir: 0.81 },
+            { id: 'quality_gross_margin', name: '毛利率', category: 'quality', desc: '毛利润/营业收入', ic: 0.048, ir: 0.72 },
+            { id: 'quality_net_margin', name: '净利率', category: 'quality', desc: '净利润/营业收入', ic: 0.051, ir: 0.76 },
+            { id: 'quality_debt_eq', name: '杠杆率', category: 'quality', desc: '负债/权益', ic: -0.032, ir: 0.52 },
+            { id: 'vol_vol', name: '波动率', category: 'volatility', desc: '日收益率标准差', ic: -0.042, ir: 0.68 },
+            { id: 'vol_beta', name: 'Beta', category: 'volatility', desc: '市场风险暴露', ic: -0.028, ir: 0.45 },
+            { id: 'vol_idio', name: '特质波动率', category: 'volatility', desc: 'Fama-French回归残差', ic: -0.055, ir: 0.88 },
+            { id: 'vol_maxdd', name: '最大回撤', category: 'volatility', desc: '过去1年最大回撤', ic: -0.048, ir: 0.75 },
+            { id: 'vol_skew', name: '收益率偏度', category: 'volatility', desc: '收益率分布偏度', ic: 0.025, ir: 0.42 },
+            { id: 'liq_turn', name: '换手率', category: 'liquidity', desc: '成交量/流通股数', ic: -0.038, ir: 0.62 },
+            { id: 'liq_amihud', name: 'Amihud非流动性', category: 'liquidity', desc: '收益率绝对值/成交额', ic: -0.045, ir: 0.72 },
+            { id: 'liq_volume', name: '成交额', category: 'liquidity', desc: '日均成交金额', ic: 0.022, ir: 0.38 },
+            { id: 'liq_bidask', name: '买卖价差', category: 'liquidity', desc: '相对买卖价差', ic: -0.032, ir: 0.52 },
+            { id: 'liq_size', name: '市值', category: 'liquidity', desc: '对数总市值', ic: -0.028, ir: 0.48 }
         ];
 
+        // 策略类型显示名称映射
+        const strategyTypeNames = {
+            'momentum': '动量策略',
+            'mean_reversion': '均值回归',
+            'pair_trading': '配对交易',
+            'multifactor': '多因子'
+        };
+
+        // 优化器显示名称映射
+        const optimizerTypeNames = {
+            'min_variance': '最小方差',
+            'max_sharpe': '最大夏普',
+            'risk_parity': '风险平价',
+            'equal_weight': '等权重'
+        };
+
+        // ============================================
+        // 动态回测结果生成器 - 核心逻辑
+        // ============================================
+
+        /**
+         * 根据当前配置生成动态回测结果
+         * 这是确保配置影响结果的核心函数
+         */
+        function generateBacktestResults() {
+            const strategy = AppState.strategy;
+            const factors = AppState.factors.selected;
+            const optimizer = AppState.optimizer;
+            const risk = AppState.risk;
+
+            // 基础参数
+            const baseReturn = 0.60;  // 基础收益率60%
+            const baseSharpe = 1.20;
+            const baseMaxDD = -0.18;
+            const baseWinRate = 0.52;
+
+            // 1. 策略类型影响
+            let strategyBoost = 0;
+            let strategyVolBoost = 0;
+            switch (strategy.type) {
+                case 'momentum':
+                    strategyBoost = 0.15;  // 动量策略收益较高
+                    strategyVolBoost = 0.03;  // 波动也较大
+                    break;
+                case 'mean_reversion':
+                    strategyBoost = 0.05;  // 收益适中
+                    strategyVolBoost = -0.02;  // 波动较小
+                    break;
+                case 'pair_trading':
+                    strategyBoost = -0.05;  // 收益较低
+                    strategyVolBoost = -0.08;  // 波动很小
+                    break;
+                case 'multifactor':
+                    strategyBoost = 0.10;  // 综合表现
+                    strategyVolBoost = 0;
+                    break;
+            }
+
+            // 2. 因子数量影响 - 因子越多分散化越好，但边际递减
+            const factorCount = factors.length;
+            const factorBoost = Math.min(0.20, factorCount * 0.025);  // 每个因子+2.5%，最多+20%
+            const factorDiversityBoost = factorCount > 0 ? calculateFactorDiversityBonus(factors) : 0;
+
+            // 3. 优化器影响
+            let optimizerBoost = 0;
+            let optimizerRiskBoost = 0;
+            switch (optimizer.type) {
+                case 'min_variance':
+                    optimizerBoost = 0;
+                    optimizerRiskBoost = -0.04;  // 回撤最小
+                    break;
+                case 'max_sharpe':
+                    optimizerBoost = 0.08;  // 收益较高
+                    optimizerRiskBoost = 0.02;
+                    break;
+                case 'risk_parity':
+                    optimizerBoost = 0.03;
+                    optimizerRiskBoost = -0.02;
+                    break;
+                case 'equal_weight':
+                    optimizerBoost = -0.02;
+                    optimizerRiskBoost = 0.01;
+                    break;
+            }
+
+            // 4. 风险控制影响 - 更严格的风控降低收益但也降低回撤
+            const riskStrictness = (risk.stopLoss / 30) + (risk.maxDrawdown / 50);
+            const riskAdjustment = (1 - riskStrictness * 0.3);  // 风控越严，收益越低但回撤越小
+            const drawdownProtection = riskStrictness * 0.5;  // 风控越严，回撤越小
+
+            // 5. 目标收益率影响
+            const targetReturnFactor = optimizer.targetReturn / 15;  // 相对于基准15%
+
+            // 计算最终指标
+            let totalReturn = (baseReturn + strategyBoost + factorBoost + factorDiversityBoost + optimizerBoost) * targetReturnFactor * riskAdjustment;
+            let sharpe = (baseSharpe + (factorCount * 0.03) + (optimizer.type === 'max_sharpe' ? 0.3 : 0.1)) * (1 - Math.abs(strategyVolBoost));
+            let maxDrawdown = (baseMaxDD + (strategyVolBoost * 0.5) + (optimizerRiskBoost)) * (1 - drawdownProtection);
+            let winRate = baseWinRate + (factorCount * 0.003) + (optimizer.type === 'min_variance' ? 0.03 : 0);
+
+            // 确保值在合理范围内
+            totalReturn = Math.max(0.05, Math.min(2.5, totalReturn));
+            sharpe = Math.max(0.3, Math.min(3.5, sharpe));
+            maxDrawdown = Math.max(-0.40, Math.min(-0.05, maxDrawdown));
+            winRate = Math.max(0.40, Math.min(0.70, winRate));
+
+            // 计算其他指标
+            const sortino = sharpe * 1.25;
+            const calmar = Math.abs(totalReturn / maxDrawdown);
+            const plRatio = 1.2 + (sharpe * 0.2);
+            const annualReturn = totalReturn / 5;  // 假设5年回测
+
+            // 生成净值曲线数据
+            const equityData = generateEquityCurve(totalReturn, sharpe, strategy.type);
+            const drawdownData = generateDrawdownData(equityData);
+            const monthlyReturns = generateMonthlyReturns(equityData);
+            const returnsDistribution = generateReturnsDistribution(equityData);
+
+            // 保存结果
+            AppState.backtest.results = {
+                totalReturn,
+                annualReturn,
+                sharpe,
+                maxDrawdown,
+                winRate,
+                sortino,
+                calmar,
+                plRatio,
+                equityData,
+                drawdownData,
+                monthlyReturns,
+                returnsDistribution,
+                trades: generateTrades()
+            };
+
+            return AppState.backtest.results;
+        }
+
+        /**
+         * 计算因子多样性加成 - 不同类别的因子组合有额外加成
+         */
+        function calculateFactorDiversityBonus(factorIds) {
+            const categories = new Set();
+            factorIds.forEach(id => {
+                const factor = factorLibrary.find(f => f.id === id);
+                if (factor) categories.add(factor.category);
+            });
+            // 每个不同类别+2%，最多+8%
+            return Math.min(0.08, categories.size * 0.02);
+        }
+
+        /**
+         * 生成净值曲线
+         */
+        function generateEquityCurve(totalReturn, sharpe, strategyType) {
+            const months = 60;  // 5年
+            const data = [100];
+            const monthlyReturn = Math.pow(1 + totalReturn, 1/months) - 1;
+            const volatility = monthlyReturn / sharpe * Math.sqrt(12);
+
+            // 根据策略类型添加不同的波动特征
+            let volatilityAdjustment = 1;
+            switch (strategyType) {
+                case 'momentum': volatilityAdjustment = 1.3; break;
+                case 'mean_reversion': volatilityAdjustment = 0.8; break;
+                case 'pair_trading': volatilityAdjustment = 0.5; break;
+                case 'multifactor': volatilityAdjustment = 1.0; break;
+            }
+
+            for (let i = 1; i <= months; i++) {
+                const randomShock = (Math.random() - 0.5) * volatility * volatilityAdjustment * 2;
+                const trend = monthlyReturn;
+                const monthReturn = trend + randomShock;
+                const nextValue = data[i-1] * (1 + monthReturn);
+                data.push(Math.max(50, nextValue));  // 最低跌到50
+            }
+
+            return data;
+        }
+
+        /**
+         * 生成回撤数据
+         */
+        function generateDrawdownData(equityData) {
+            let peak = equityData[0];
+            const drawdowns = [0];
+
+            for (let i = 1; i < equityData.length; i++) {
+                peak = Math.max(peak, equityData[i]);
+                const drawdown = (equityData[i] - peak) / peak * 100;
+                drawdowns.push(drawdown);
+            }
+
+            return drawdowns;
+        }
+
+        /**
+         * 生成月度收益率
+         */
+        function generateMonthlyReturns(equityData) {
+            const returns = [];
+            for (let i = 1; i < equityData.length; i++) {
+                const monthReturn = (equityData[i] - equityData[i-1]) / equityData[i-1] * 100;
+                returns.push(monthReturn);
+            }
+            return returns;
+        }
+
+        /**
+         * 生成收益率分布数据
+         */
+        function generateReturnsDistribution(equityData) {
+            const dailyReturns = [];
+            for (let i = 1; i < equityData.length; i++) {
+                const ret = (equityData[i] - equityData[i-1]) / equityData[i-1];
+                dailyReturns.push(ret);
+            }
+
+            // 创建直方图数据
+            const bins = [-8, -6, -4, -2, 0, 2, 4, 6, 8];
+            const counts = new Array(bins.length + 1).fill(0);
+
+            dailyReturns.forEach(ret => {
+                const pct = ret * 100;
+                let binIndex = 0;
+                for (let i = 0; i < bins.length; i++) {
+                    if (pct > bins[i]) binIndex = i + 1;
+                }
+                counts[binIndex]++;
+            });
+
+            return counts;
+        }
+
+        /**
+         * 生成交易记录
+         */
+        function generateTrades() {
+            const stocks = ['平安银行', '万科A', '格力电器', '贵州茅台', '招商银行',
+                          '兴业银行', '美的集团', '恒瑞医药', '中国平安', '五粮液'];
+            const directions = ['买入', '卖出'];
+            const trades = [];
+
+            const numTrades = 15 + Math.floor(AppState.factors.selected.length * 2);
+
+            for (let i = 0; i < numTrades; i++) {
+                const date = new Date(2020 + Math.floor(Math.random() * 5),
+                                     Math.floor(Math.random() * 12),
+                                     1 + Math.floor(Math.random() * 28));
+                const stock = stocks[Math.floor(Math.random() * stocks.length)];
+                const direction = directions[Math.floor(Math.random() * directions.length)];
+                const quantity = 100 + Math.floor(Math.random() * 50) * 100;
+                const price = 10 + Math.random() * 490;
+                const profit = (Math.random() - 0.45) * 5000;
+
+                trades.push({
+                    date: date.toISOString().split('T')[0],
+                    stock,
+                    direction,
+                    quantity,
+                    price: price.toFixed(2),
+                    profit: profit.toFixed(2)
+                });
+            }
+
+            return trades.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        // ============================================
+        // 导航函数
+        // ============================================
         function navigateTo(page) {
             AppState.currentPage = page;
 
@@ -1644,50 +2060,49 @@
                 p.classList.remove('active');
             });
 
-            const pageEl = document.getElementById(`page-${page}`);
-            if (pageEl) {
-                pageEl.classList.add('active');
+            const targetPage = document.getElementById('page-' + page);
+            if (targetPage) {
+                targetPage.classList.add('active');
             }
 
-            const titles = {
-                dashboard: { title: '仪表盘', crumb: '首页 / 系统概览' },
-                strategy: { title: '策略配置', crumb: '策略 / 基础配置' },
-                factors: { title: '因子管理', crumb: '因子 / 因子库管理' },
-                optimizer: { title: '组合优化', crumb: '优化 / 组合优化器' },
-                risk: { title: '风险控制', crumb: '风控 / 风险控制' },
-                backtest: { title: '回测执行', crumb: '回测 / 执行回测' },
-                results: { title: '结果分析', crumb: '结果 / 绩效分析' },
-                report: { title: '报告导出', crumb: '报告 / 导出报告' }
-            };
-
-            const pageInfo = titles[page] || titles.dashboard;
-            document.getElementById('pageTitle').textContent = pageInfo.title;
-            document.getElementById('pageBreadcrumb').textContent = pageInfo.crumb;
-
-            if (page === 'factors') {
-                renderFactorGrid();
+            // 如果导航到结果页面，确保更新显示
+            if (page === 'results' && AppState.backtest.results) {
+                updateResultsDisplay();
             }
-            if (page === 'dashboard' || page === 'results') {
-                setTimeout(initCharts, 100);
+
+            // 更新回测页面的配置摘要
+            if (page === 'backtest') {
+                updateBacktestSummary();
             }
         }
 
-        function updateSliderValue(sliderId, valueId, suffix = '') {
-            const slider = document.getElementById(sliderId);
-            const valueDisplay = document.getElementById(valueId);
-            if (slider && valueDisplay) {
-                valueDisplay.textContent = slider.value + suffix;
-            }
+        // ============================================
+        // 策略配置函数
+        // ============================================
+        function selectStrategyType(type) {
+            AppState.strategy.type = type;
+
+            document.querySelectorAll('[data-strategy]').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.strategy === type) {
+                    card.classList.add('selected');
+                }
+            });
+
+            saveStrategyConfig();
         }
 
-        function updateNegativeSlider(sliderId, valueId, suffix = '') {
-            const slider = document.getElementById(sliderId);
-            const valueDisplay = document.getElementById(valueId);
-            if (slider && valueDisplay) {
-                valueDisplay.textContent = '-' + slider.value + suffix;
-            }
+        function saveStrategyConfig() {
+            AppState.strategy.name = document.getElementById('strategyName')?.value || '多因子策略';
+            AppState.strategy.capital = parseInt(document.getElementById('initialCapital')?.value) || 1000000;
+            AppState.strategy.startDate = document.getElementById('startDate')?.value || '2020-01-01';
+            AppState.strategy.endDate = document.getElementById('endDate')?.value || '2024-12-31';
+            addLog('策略配置已保存', 'success');
         }
 
+        // ============================================
+        // 因子管理函数
+        // ============================================
         function renderFactorGrid() {
             const grid = document.getElementById('factorGrid');
             if (!grid) return;
@@ -1711,8 +2126,8 @@
                         </div>
                         <div class="factor-desc">${f.desc}</div>
                         <div class="factor-stats">
-                            <div class="factor-stat">IC: <span class="factor-stat-value">${f.ic}</span></div>
-                            <div class="factor-stat">IR: <span class="factor-stat-value">${f.ir}</span></div>
+                            <div class="factor-stat">IC: <strong>${f.ic.toFixed(3)}</strong></div>
+                            <div class="factor-stat">IR: <strong>${f.ir.toFixed(2)}</strong></div>
                         </div>
                     </div>
                 `;
@@ -1727,11 +2142,17 @@
         function toggleFactor(id) {
             const idx = AppState.factors.selected.indexOf(id);
             if (idx === -1) {
+                // 最多选择10个因子
+                if (AppState.factors.selected.length >= 10) {
+                    addLog('最多只能选择10个因子', 'warning');
+                    return;
+                }
                 AppState.factors.selected.push(id);
             } else {
                 AppState.factors.selected.splice(idx, 1);
             }
             renderFactorGrid();
+            addLog(`因子${idx === -1 ? '已添加' : '已移除'}: ${factorLibrary.find(f => f.id === id)?.name}`, 'info');
         }
 
         function setFactorFilter(filter) {
@@ -1753,36 +2174,129 @@
             }
         }
 
+        // ============================================
+        // 组合优化函数
+        // ============================================
+        function selectOptimizer(type) {
+            AppState.optimizer.type = type;
+
+            document.querySelectorAll('[data-optimizer]').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.optimizer === type) {
+                    card.classList.add('selected');
+                }
+            });
+
+            addLog(`优化方法已选择: ${optimizerTypeNames[type]}`, 'info');
+        }
+
+        function runPortfolioOptimization() {
+            // 保存优化参数
+            AppState.optimizer.targetReturn = parseFloat(document.getElementById('targetReturn')?.value) || 15;
+            AppState.optimizer.riskAversion = parseFloat(document.getElementById('riskAversion')?.value) || 3;
+            AppState.optimizer.positionCount = parseInt(document.getElementById('positionCount')?.value) || 50;
+            AppState.optimizer.singlePosition = parseFloat(document.getElementById('singlePosition')?.value) || 5;
+            AppState.optimizer.turnover = parseFloat(document.getElementById('turnover')?.value) || 30;
+
+            addLog('开始组合优化...', 'info');
+            setTimeout(() => {
+                addLog('优化完成！', 'success');
+            }, 1500);
+        }
+
+        // ============================================
+        // 风险控制函数
+        // ============================================
+        function saveRiskConfig() {
+            AppState.risk.stopLoss = parseFloat(document.getElementById('stopLoss')?.value) || 10;
+            AppState.risk.takeProfit = parseFloat(document.getElementById('takeProfit')?.value) || 20;
+            AppState.risk.maxDrawdown = parseFloat(document.getElementById('maxDrawdown')?.value) || 20;
+            AppState.risk.targetVol = parseFloat(document.getElementById('targetVol')?.value) || 15;
+            AppState.risk.singleStockLimit = parseFloat(document.getElementById('singleStockLimit')?.value) || 10;
+            AppState.risk.industryLimit = parseFloat(document.getElementById('industryLimit')?.value) || 30;
+            AppState.risk.enableTrailingStop = document.getElementById('enableTrailingStop')?.checked || false;
+            AppState.risk.enableVolTarget = document.getElementById('enableVolTarget')?.checked || true;
+
+            addLog('风险配置已保存', 'success');
+        }
+
+        // ============================================
+        // 滑块更新函数
+        // ============================================
+        function updateSliderValue(id, valueId, suffix) {
+            const slider = document.getElementById(id);
+            const valueDisplay = document.getElementById(valueId);
+            if (slider && valueDisplay) {
+                valueDisplay.textContent = slider.value + suffix;
+            }
+        }
+
+        function updateNegativeSlider(id, valueId, suffix) {
+            const slider = document.getElementById(id);
+            const valueDisplay = document.getElementById(valueId);
+            if (slider && valueDisplay) {
+                valueDisplay.textContent = '-' + slider.value + suffix;
+            }
+        }
+
+        // ============================================
+        // 回测执行函数
+        // ============================================
         let backtestInterval = null;
-        let logTime = new Date();
 
-        function addLog(message, type = 'info') {
-            const viewer = document.getElementById('logViewer');
-            if (!viewer) return;
+        function updateBacktestSummary() {
+            const summaryStrategy = document.getElementById('summary-strategy');
+            const summaryFactors = document.getElementById('summary-factors');
+            const summaryOptimizer = document.getElementById('summary-optimizer');
+            const summaryCapital = document.getElementById('summary-capital');
 
-            const time = logTime.toTimeString().slice(0, 8);
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${message}</span>`;
-            viewer.appendChild(entry);
-            viewer.scrollTop = viewer.scrollHeight;
-            logTime.setSeconds(logTime.getSeconds() + 1);
+            if (summaryStrategy) summaryStrategy.textContent = strategyTypeNames[AppState.strategy.type] || '多因子';
+            if (summaryFactors) summaryFactors.textContent = AppState.factors.selected.length;
+            if (summaryOptimizer) summaryOptimizer.textContent = optimizerTypeNames[AppState.optimizer.type] || '最小方差';
+            if (summaryCapital) summaryCapital.textContent = AppState.strategy.capital.toLocaleString();
         }
 
         function startBacktest() {
             if (AppState.backtest.running) return;
+
+            // 确保所有配置都已保存
+            saveStrategyConfig();
+            saveRiskConfig();
+
+            // 在回测开始前生成结果（基于当前配置）
+            generateBacktestResults();
 
             AppState.backtest.running = true;
             AppState.backtest.paused = false;
             AppState.backtest.progress = 0;
             AppState.backtest.currentStep = 1;
 
+            // 重置步骤显示
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById('step' + i);
+                if (step) {
+                    step.classList.remove('active', 'completed');
+                }
+            }
+            document.getElementById('step1')?.classList.add('active');
+
             document.getElementById('btnStart').disabled = true;
             document.getElementById('btnPause').disabled = false;
             document.getElementById('btnStop').disabled = false;
 
+            // 清空日志
+            const logViewer = document.getElementById('logViewer');
+            if (logViewer) {
+                logViewer.innerHTML = '';
+            }
+
             addLog('开始回测...', 'info');
+            addLog(`策略类型: ${strategyTypeNames[AppState.strategy.type]}`, 'info');
+            addLog(`因子数量: ${AppState.factors.selected.length}`, 'info');
+            addLog(`优化方法: ${optimizerTypeNames[AppState.optimizer.type]}`, 'info');
             addLog('加载市场数据...', 'info');
+
+            const logTime = new Date();
 
             backtestInterval = setInterval(() => {
                 if (AppState.backtest.paused) return;
@@ -1824,11 +2338,14 @@
                     document.getElementById('step4').classList.remove('active');
                     document.getElementById('step4').classList.add('completed');
                     addLog('回测完成！', 'success');
+                    addLog(`总收益率: ${(AppState.backtest.results.totalReturn * 100).toFixed(1)}%`, 'success');
+                    addLog(`夏普比率: ${AppState.backtest.results.sharpe.toFixed(2)}`, 'success');
 
                     document.getElementById('btnStart').disabled = false;
                     document.getElementById('btnPause').disabled = true;
                     document.getElementById('btnStop').disabled = true;
 
+                    // 自动跳转到结果页面
                     setTimeout(() => {
                         addLog('正在跳转到结果分析页面...', 'info');
                         setTimeout(() => navigateTo('results'), 1000);
@@ -1837,7 +2354,7 @@
 
                 document.getElementById('backtestProgress').style.width = AppState.backtest.progress + '%';
                 document.getElementById('backtestProgressPercent').textContent = AppState.backtest.progress + '%';
-            }, 100);
+            }, 50);
         }
 
         function pauseBacktest() {
@@ -1864,59 +2381,125 @@
             document.getElementById('backtestProgress').style.width = '0%';
             document.getElementById('backtestProgressPercent').textContent = '0%';
 
+            // 重置步骤
             for (let i = 1; i <= 4; i++) {
                 const step = document.getElementById('step' + i);
-                step.classList.remove('active', 'completed');
-                if (i === 1) step.classList.add('completed');
+                if (step) {
+                    step.classList.remove('active', 'completed');
+                }
+            }
+            document.getElementById('step1')?.classList.add('active');
+
+            addLog('回测已停止', 'warning');
+        }
+
+        function addLog(message, type = 'info') {
+            const viewer = document.getElementById('logViewer');
+            if (!viewer) return;
+
+            const time = new Date();
+            const timeStr = time.toLocaleTimeString();
+
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-time">[${timeStr}]</span>
+                <span class="log-message ${type}">${message}</span>
+            `;
+            viewer.appendChild(entry);
+            viewer.scrollTop = viewer.scrollHeight;
+        }
+
+        // ============================================
+        // 结果显示函数
+        // ============================================
+        function updateResultsDisplay() {
+            const results = AppState.backtest.results;
+            if (!results) {
+                addLog('没有回测结果，请先运行回测', 'warning');
+                return;
             }
 
-            addLog('回测已停止', 'error');
+            // 更新指标显示
+            const totalReturnPct = (results.totalReturn * 100).toFixed(1);
+            const annualReturnPct = (results.annualReturn * 100).toFixed(1);
+
+            document.getElementById('result-total-return').textContent = (results.totalReturn >= 0 ? '+' : '') + totalReturnPct + '%';
+            document.getElementById('result-annual-return').textContent = (results.annualReturn >= 0 ? '+' : '') + annualReturnPct + '%';
+            document.getElementById('result-sharpe').textContent = results.sharpe.toFixed(2);
+            document.getElementById('result-maxdd').textContent = (results.maxDrawdown * 100).toFixed(1) + '%';
+            document.getElementById('result-sortino').textContent = results.sortino.toFixed(2);
+            document.getElementById('result-calmar').textContent = results.calmar.toFixed(2);
+            document.getElementById('result-winrate').textContent = (results.winRate * 100).toFixed(1) + '%';
+            document.getElementById('result-plratio').textContent = results.plRatio.toFixed(2);
+
+            // 更新仪表盘
+            document.getElementById('dash-total-return').textContent = (results.totalReturn >= 0 ? '+' : '') + totalReturnPct + '%';
+            document.getElementById('dash-sharpe').textContent = results.sharpe.toFixed(2);
+            document.getElementById('dash-maxdd').textContent = (results.maxDrawdown * 100).toFixed(1) + '%';
+            document.getElementById('dash-winrate').textContent = (results.winRate * 100).toFixed(1) + '%';
+
+            // 更新报告预览
+            document.getElementById('preview-strategy-name').textContent = AppState.strategy.name;
+            document.getElementById('preview-strategy-type').textContent = strategyTypeNames[AppState.strategy.type];
+            document.getElementById('preview-factor-count').textContent = AppState.factors.selected.length;
+            document.getElementById('preview-optimizer-type').textContent = optimizerTypeNames[AppState.optimizer.type];
+            document.getElementById('preview-total-return').textContent = (results.totalReturn >= 0 ? '+' : '') + totalReturnPct + '%';
+            document.getElementById('preview-sharpe').textContent = results.sharpe.toFixed(2);
+            document.getElementById('preview-maxdd').textContent = (results.maxDrawdown * 100).toFixed(1) + '%';
+            document.getElementById('preview-winrate').textContent = (results.winRate * 100).toFixed(1) + '%';
+
+            // 更新图表
+            updateAllCharts(results);
+
+            // 更新交易记录
+            updateTradesTable(results.trades);
         }
 
-        function startQuickBacktest() {
-            navigateTo('backtest');
-            setTimeout(startBacktest, 500);
+        function updateTradesTable(trades) {
+            const tbody = document.getElementById('tradesTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = trades.slice(0, 10).map(t => `
+                <tr>
+                    <td>${t.date}</td>
+                    <td>${t.stock}</td>
+                    <td style="color: ${t.direction === '买入' ? 'var(--success)' : 'var(--danger)'}">${t.direction}</td>
+                    <td>${t.quantity.toLocaleString()}</td>
+                    <td>¥${t.price}</td>
+                    <td style="color: ${parseFloat(t.profit) >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                        ${parseFloat(t.profit) >= 0 ? '+' : ''}¥${t.profit}
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function saveStrategyConfig() {
-            AppState.strategy.name = document.getElementById('strategyName')?.value || '多因子策略';
-            AppState.strategy.capital = parseInt(document.getElementById('initialCapital')?.value) || 1000000;
-            addLog('策略配置已保存', 'success');
-        }
-
-        function saveRiskConfig() {
-            addLog('风险配置已保存', 'success');
-        }
-
-        function runOptimization() {
-            addLog('开始组合优化...', 'info');
-            setTimeout(() => addLog('优化完成！', 'success'), 2000);
-        }
-
-        function runFactorEvaluation() {
-            addLog('开始因子评价...', 'info');
-            setTimeout(() => addLog('因子评价完成！', 'success'), 2000);
-        }
-
-        function generateReport() {
-            addLog('正在生成报告...', 'info');
-            setTimeout(() => addLog('报告生成完成！', 'success'), 2000);
-        }
+        // ============================================
+        // 图表相关
+        // ============================================
+        let charts = {};
 
         function initCharts() {
-            const ctx1 = document.getElementById('equityChart')?.getContext('2d');
-            const ctx2 = document.getElementById('drawdownChart')?.getContext('2d');
-            const ctx3 = document.getElementById('resultsEquityChart')?.getContext('2d');
-            const ctx4 = document.getElementById('resultsDrawdownChart')?.getContext('2d');
+            // 首次初始化，先生成默认结果
+            if (!AppState.backtest.results) {
+                generateBacktestResults();
+            }
+            updateAllCharts(AppState.backtest.results);
+        }
 
+        function updateAllCharts(results) {
             const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const strategyData = [100, 108, 115, 112, 125, 132, 128, 140, 155, 162, 175, 187];
-            const benchmarkData = [100, 105, 110, 108, 115, 120, 118, 125, 130, 135, 142, 148];
-            const drawdownData = [0, -2, -1, -5, -3, -2, -6, -4, -2, -5, -3, -2];
+            const fullLabels = [];
+            for (let year = 2020; year <= 2024; year++) {
+                for (let month = 1; month <= 12; month++) {
+                    fullLabels.push(`${year}-${month}`);
+                }
+            }
 
             const goldColor = 'rgb(240, 201, 92)';
             const successColor = 'rgb(22, 163, 74)';
             const dangerColor = 'rgb(220, 38, 38)';
+            const infoColor = 'rgb(8, 145, 178)';
 
             const commonOptions = {
                 responsive: true,
@@ -1938,57 +2521,120 @@
                 }
             };
 
+            // 生成基准数据（比策略差一些）
+            const benchmarkData = results.equityData.map((v, i) => v * (0.85 + i * 0.005));
+
+            // 净值曲线图表（仪表盘）
+            const ctx1 = document.getElementById('equityChart')?.getContext('2d');
             if (ctx1) {
-                new Chart(ctx1, {
+                if (charts.equity) charts.equity.destroy();
+                charts.equity = new Chart(ctx1, {
                     type: 'line',
                     data: {
-                        labels: labels,
+                        labels: fullLabels,
                         datasets: [
-                            { label: '策略净值', data: strategyData, borderColor: goldColor, backgroundColor: 'rgba(240, 201, 92, 0.1)', fill: true, tension: 0.4 },
-                            { label: '基准净值', data: benchmarkData, borderColor: successColor, backgroundColor: 'rgba(22, 163, 74, 0.1)', fill: true, tension: 0.4 }
+                            { label: '策略净值', data: results.equityData, borderColor: goldColor, backgroundColor: 'rgba(240, 201, 92, 0.1)', fill: true, tension: 0.4, pointRadius: 0 },
+                            { label: '基准净值', data: benchmarkData, borderColor: successColor, backgroundColor: 'rgba(22, 163, 74, 0.1)', fill: true, tension: 0.4, pointRadius: 0 }
                         ]
                     },
                     options: commonOptions
                 });
             }
 
+            // 回撤图表（仪表盘）
+            const ctx2 = document.getElementById('drawdownChart')?.getContext('2d');
             if (ctx2) {
-                new Chart(ctx2, {
+                if (charts.drawdown) charts.drawdown.destroy();
+                charts.drawdown = new Chart(ctx2, {
                     type: 'line',
                     data: {
-                        labels: labels,
-                        datasets: [{ label: '回撤', data: drawdownData, borderColor: dangerColor, backgroundColor: 'rgba(220, 38, 38, 0.2)', fill: true, tension: 0.4 }]
+                        labels: fullLabels,
+                        datasets: [{ label: '回撤', data: results.drawdownData, borderColor: dangerColor, backgroundColor: 'rgba(220, 38, 38, 0.2)', fill: true, tension: 0.4, pointRadius: 0 }]
                     },
                     options: commonOptions
                 });
             }
 
+            // 结果页净值曲线
+            const ctx3 = document.getElementById('resultsEquityChart')?.getContext('2d');
             if (ctx3) {
-                new Chart(ctx3, {
+                if (charts.resultsEquity) charts.resultsEquity.destroy();
+                charts.resultsEquity = new Chart(ctx3, {
                     type: 'line',
                     data: {
-                        labels: labels,
+                        labels: fullLabels,
                         datasets: [
-                            { label: '策略净值', data: strategyData, borderColor: goldColor, backgroundColor: 'rgba(240, 201, 92, 0.1)', fill: true, tension: 0.4 },
-                            { label: '基准净值', data: benchmarkData, borderColor: successColor, backgroundColor: 'rgba(22, 163, 74, 0.1)', fill: true, tension: 0.4 }
+                            { label: '策略净值', data: results.equityData, borderColor: goldColor, backgroundColor: 'rgba(240, 201, 92, 0.1)', fill: true, tension: 0.4, pointRadius: 0 },
+                            { label: '基准净值', data: benchmarkData, borderColor: successColor, backgroundColor: 'rgba(22, 163, 74, 0.1)', fill: true, tension: 0.4, pointRadius: 0 }
                         ]
                     },
                     options: commonOptions
                 });
             }
 
+            // 结果页回撤
+            const ctx4 = document.getElementById('resultsDrawdownChart')?.getContext('2d');
             if (ctx4) {
-                new Chart(ctx4, {
+                if (charts.resultsDrawdown) charts.resultsDrawdown.destroy();
+                charts.resultsDrawdown = new Chart(ctx4, {
                     type: 'line',
                     data: {
+                        labels: fullLabels,
+                        datasets: [{ label: '回撤', data: results.drawdownData, borderColor: dangerColor, backgroundColor: 'rgba(220, 38, 38, 0.2)', fill: true, tension: 0.4, pointRadius: 0 }]
+                    },
+                    options: commonOptions
+                });
+            }
+
+            // 月度收益
+            const ctx5 = document.getElementById('monthlyReturnsChart')?.getContext('2d');
+            if (ctx5) {
+                if (charts.monthlyReturns) charts.monthlyReturns.destroy();
+                charts.monthlyReturns = new Chart(ctx5, {
+                    type: 'bar',
+                    data: {
                         labels: labels,
-                        datasets: [{ label: '回撤', data: drawdownData, borderColor: dangerColor, backgroundColor: 'rgba(220, 38, 38, 0.2)', fill: true, tension: 0.4 }]
+                        datasets: [{
+                            label: '月度收益',
+                            data: results.monthlyReturns.slice(0, 12),
+                            backgroundColor: results.monthlyReturns.slice(0, 12).map(r => r >= 0 ? 'rgba(22, 163, 74, 0.7)' : 'rgba(220, 38, 38, 0.7)')
+                        }]
+                    },
+                    options: commonOptions
+                });
+            }
+
+            // 收益分布
+            const ctx6 = document.getElementById('returnsDistributionChart')?.getContext('2d');
+            if (ctx6) {
+                if (charts.returnsDistribution) charts.returnsDistribution.destroy();
+                charts.returnsDistribution = new Chart(ctx6, {
+                    type: 'bar',
+                    data: {
+                        labels: ['<-6%', '-6~-4%', '-4~-2%', '-2~0%', '0~2%', '2~4%', '4~6%', '6~8%', '>8%'],
+                        datasets: [{
+                            label: '频数',
+                            data: results.returnsDistribution,
+                            backgroundColor: 'rgba(240, 201, 92, 0.6)',
+                            borderColor: goldColor,
+                            borderWidth: 1
+                        }]
                     },
                     options: commonOptions
                 });
             }
         }
 
+        function generateReport() {
+            addLog('正在生成报告...', 'info');
+            setTimeout(() => {
+                addLog('报告生成完成！', 'success');
+            }, 1500);
+        }
+
+        // ============================================
+        // 初始化
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', () => navigateTo(item.dataset.page));
@@ -1996,8 +2642,11 @@
 
             document.querySelectorAll('.option-card').forEach(card => {
                 card.addEventListener('click', () => {
-                    card.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
+                    if (card.dataset.strategy) {
+                        selectStrategyType(card.dataset.strategy);
+                    } else if (card.dataset.optimizer) {
+                        selectOptimizer(card.dataset.optimizer);
+                    }
                 });
             });
 
@@ -2005,7 +2654,17 @@
              'takeProfit', 'targetVol', 'singleStockLimit', 'industryLimit'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    el.addEventListener('input', () => updateSliderValue(id, id + 'Value', '%'));
+                    el.addEventListener('input', () => {
+                        if (['takeProfit', 'targetVol', 'singleStockLimit', 'industryLimit'].includes(id)) {
+                            updateSliderValue(id, id + 'Value', '%');
+                        } else if (id === 'riskAversion') {
+                            updateSliderValue(id, id + 'Value', '');
+                        } else if (id === 'positionCount') {
+                            updateSliderValue(id, id + 'Value', '');
+                        } else {
+                            updateSliderValue(id, id + 'Value', '%');
+                        }
+                    });
                 }
             });
 
@@ -2020,6 +2679,14 @@
             if (searchEl) {
                 searchEl.addEventListener('input', filterFactors);
             }
+
+            // 初始化
+            renderFactorGrid();
+            updateBacktestSummary();
+
+            // 默认选择几个因子
+            AppState.factors.selected = ['mom_3m', 'value_pb', 'quality_roe', 'vol_idio'];
+            renderFactorGrid();
 
             setTimeout(initCharts, 100);
         });
