@@ -1985,17 +1985,7 @@ WIN RATE: 71.4%
             const ctx = document.getElementById('equityChart');
             if (!ctx) return;
 
-            // 先定义 Math.cumsum
-            if (!Math.cumsum) {
-                Math.cumsum = function(arr) {
-                    let sum = 0;
-                    return arr.map(x => sum += x);
-                };
-            }
-
             const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
-            const cumsumData = Math.cumsum([...Array(50)].map(() => (Math.random() - 0.4) * 4));
-            const data = Array.from({length: 50}, (_, i) => 100 + cumsumData[i]);
 
             new Chart(ctx, {
                 type: 'line',
