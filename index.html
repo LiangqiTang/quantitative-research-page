@@ -1702,12 +1702,12 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 先保存原始文本
-            saveOriginalTexts();
-            // 初始化页面内容
+            // 先初始化页面内容
             initNavigation();
             initFactors();
             initCharts();
+            // 再保存原始文本（包括动态生成的内容）
+            saveOriginalTexts();
             // 应用中文翻译
             applyLanguage();
         });
@@ -1985,15 +1985,17 @@ WIN RATE: 71.4%
             const ctx = document.getElementById('equityChart');
             if (!ctx) return;
 
-            const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
-            const data = Array.from({length: 50}, (_, i) => 100 + Math.cumsum([...Array(50)].map(() => (Math.random() - 0.4) * 4))[i]);
-
+            // 先定义 Math.cumsum
             if (!Math.cumsum) {
                 Math.cumsum = function(arr) {
                     let sum = 0;
                     return arr.map(x => sum += x);
                 };
             }
+
+            const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
+            const cumsumData = Math.cumsum([...Array(50)].map(() => (Math.random() - 0.4) * 4));
+            const data = Array.from({length: 50}, (_, i) => 100 + cumsumData[i]);
 
             new Chart(ctx, {
                 type: 'line',
