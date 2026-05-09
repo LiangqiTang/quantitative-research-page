@@ -1306,6 +1306,99 @@
     </div>
 
     <script>
+        // 语言切换功能
+        let currentLang = 'en';
+        let originalTexts = new Map();
+
+        const i18n = {
+            zh: {
+                'QUANT CONSOLE': '量化控制台',
+                'v5.0 CYBERPUNK EDITION': 'v5.0 赛博朋克版',
+                'SYSTEM STATUS:': '系统状态:',
+                'ONLINE': '在线',
+                'ACCOUNT HP:': '账户生命值:',
+                'MISSION COUNT:': '任务计数:',
+                'MAIN CONTROLS': '主控制',
+                'Dashboard': '仪表盘',
+                'Strategy Forge': '策略工坊',
+                'Factor Arsenal': '因子库',
+                'Tactical Ops': '战术优化',
+                'MISSION CONTROL': '任务控制',
+                'Shield Settings': '护盾设置',
+                'Battle Mode': '战斗模式',
+                'Victory Screen': '胜利画面',
+                'Mission Logs': '任务日志'
+            }
+        };
+
+        function saveOriginalTexts() {
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                const text = node.textContent.trim();
+                if (text) {
+                    originalTexts.set(node, node.textContent);
+                }
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            applyLanguage();
+            updateLanguageButtons();
+        }
+
+        function updateLanguageButtons() {
+            const buttons = document.querySelectorAll('.nav-section:last-child button');
+            buttons.forEach((btn, i) => {
+                btn.classList.remove('primary');
+                if ((currentLang === 'zh' && i === 0) || (currentLang === 'en' && i === 1)) {
+                    btn.classList.add('primary');
+                }
+            });
+        }
+
+        function applyLanguage() {
+            if (currentLang === 'en') {
+                originalTexts.forEach((originalText, node) => {
+                    if (node.parentNode) {
+                        node.textContent = originalText;
+                    }
+                });
+                return;
+            }
+
+            const translations = i18n[currentLang];
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+            const textNodes = [];
+            while (walker.nextNode()) {
+                textNodes.push(walker.currentNode);
+            }
+            textNodes.forEach(node => {
+                if (!originalTexts.has(node)) {
+                    originalTexts.set(node, node.textContent);
+                }
+                const originalText = originalTexts.get(node);
+                const trimmedText = originalText.trim();
+                if (trimmedText && translations[trimmedText]) {
+                    node.textContent = translations[trimmedText];
+                }
+            });
+        }
+
+        // 在DOMContentLoaded时保存原始文本
+        document.addEventListener('DOMContentLoaded', saveOriginalTexts);
+
         const AppState = {
             currentPage: 'dashboard',
             selectedStrategy: 'momentum',
