@@ -1515,6 +1515,7 @@
 
         function applyLanguage() {
             if (currentLang === 'en') {
+                // 恢复英文
                 originalTexts.forEach((originalText, node) => {
                     if (node.parentNode) {
                         node.textContent = originalText;
@@ -1534,14 +1535,25 @@
             while (walker.nextNode()) {
                 textNodes.push(walker.currentNode);
             }
+
+            // 先建立所有翻译键的映射，按长度降序排列（优先匹配长文本）
+            const sortedKeys = Object.keys(translations).sort((a, b) => b.length - a.length);
+
             textNodes.forEach(node => {
                 if (!originalTexts.has(node)) {
                     originalTexts.set(node, node.textContent);
                 }
                 const originalText = originalTexts.get(node);
-                const trimmedText = originalText.trim();
-                if (trimmedText && translations[trimmedText]) {
-                    node.textContent = translations[trimmedText];
+
+                // 尝试匹配
+                let matched = false;
+                for (const key of sortedKeys) {
+                    if (originalText.includes(key)) {
+                        // 找到匹配，替换所有出现的地方
+                        node.textContent = originalText.split(key).join(translations[key]);
+                        matched = true;
+                        break;
+                    }
                 }
             });
         }
