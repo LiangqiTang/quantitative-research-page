@@ -332,6 +332,10 @@
         .factor-stat-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
         .factor-stat-value { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 700; color: var(--neon-cyan); }
 
+        .factor-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .factor-tab { padding: 8px 16px; font-size: 0.8rem; }
+        .factor-tab.active { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink)); color: #000; }
+
         .strategies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .strategy-card {
             background: linear-gradient(135deg, rgba(10, 10, 30, 0.95) 0%, rgba(5, 5, 15, 0.98) 100%);
@@ -566,6 +570,124 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .stat-value.small { font-size: 0.9rem; margin-top: 4px; }
+
+        .market-card { cursor: pointer; }
+
+        .position-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .history-card {
+            background: linear-gradient(135deg, rgba(10, 10, 30, 0.95) 0%, rgba(5, 5, 15, 0.98) 100%);
+            border: 2px solid var(--border-cyan);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .history-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+
+        .history-card.selected {
+            border-color: var(--neon-pink);
+            box-shadow: var(--glow-pink);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .history-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            color: var(--neon-cyan);
+        }
+
+        .history-date {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .history-stat {
+            text-align: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-light);
+        }
+
+        .history-stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .history-stat-value.positive { color: var(--neon-green); }
+        .history-stat-value.negative { color: var(--neon-red); }
+
+        .history-stat-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .cyber-btn.success {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .cyber-btn.success::before {
+            background: var(--neon-green);
+        }
+
+        .cyber-btn.success:hover {
+            box-shadow: var(--glow-green);
+        }
+
+        .cyber-btn.danger {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+        }
+
+        .cyber-btn.danger::before {
+            background: var(--neon-red);
+        }
+
+        .cyber-btn.danger:hover {
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
+        }
+
+        .cyber-btn-large {
+            padding: 16px 32px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -623,6 +745,10 @@
 
             <div class="nav-section">
                 <div class="nav-section-title">MISSION CONTROL</div>
+                <div class="nav-item" data-page="market">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Market View</span>
+                </div>
                 <div class="nav-item" data-page="risk">
                     <span class="nav-icon">🛡️</span>
                     <span class="nav-label">Shield Settings</span>
@@ -634,6 +760,10 @@
                 <div class="nav-item" data-page="results">
                     <span class="nav-icon">🏆</span>
                     <span class="nav-label">Victory Screen</span>
+                </div>
+                <div class="nav-item" data-page="history">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-label">History</span>
                 </div>
                 <div class="nav-item" data-page="export">
                     <span class="nav-icon">📜</span>
@@ -828,6 +958,126 @@
                                 <span class="strategy-tag">Market Neutral</span>
                             </div>
                         </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'breakout')">
+                            <div class="strategy-icon">💥</div>
+                            <div class="strategy-name">Breakout Cannon</div>
+                            <div class="strategy-desc">Resistance level breach with volume confirmation</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Breakout</span>
+                                <span class="strategy-tag">Volume</span>
+                                <span class="strategy-tag">Aggressive</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'value')">
+                            <div class="strategy-icon">📊</div>
+                            <div class="strategy-name">Value Harvester</div>
+                            <div class="strategy-desc">Undervalued asset hunting with fundamental screening</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Value</span>
+                                <span class="strategy-tag">Long-term</span>
+                                <span class="strategy-tag">Fundamental</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'growth')">
+                            <div class="strategy-icon">🚀</div>
+                            <div class="strategy-name">Growth Rocket</div>
+                            <div class="strategy-desc">High-growth stock selection with momentum filter</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Growth</span>
+                                <span class="strategy-tag">Aggressive</span>
+                                <span class="strategy-tag">High PE</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'quality')">
+                            <div class="strategy-icon">👑</div>
+                            <div class="strategy-name">Quality Crown</div>
+                            <div class="strategy-desc">High ROE, low debt, stable earnings compounder</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Quality</span>
+                                <span class="strategy-tag">Defensive</span>
+                                <span class="strategy-tag">Compound</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'dividend')">
+                            <div class="strategy-icon">💰</div>
+                            <div class="strategy-name">Dividend Miner</div>
+                            <div class="strategy-desc">High yield + dividend growth stock selection</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Dividend</span>
+                                <span class="strategy-tag">Income</span>
+                                <span class="strategy-tag">Defensive</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'low-volatility')">
+                            <div class="strategy-icon">🧘</div>
+                            <div class="strategy-name">Low Vol Zen</div>
+                            <div class="strategy-desc">Minimum variance portfolio for smooth returns</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Low Vol</span>
+                                <span class="strategy-tag">Defensive</span>
+                                <span class="strategy-tag">Risk Averse</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'sector-rotation')">
+                            <div class="strategy-icon">🔄</div>
+                            <div class="strategy-name">Sector Rotator</div>
+                            <div class="strategy-desc">Business cycle based sector allocation shifting</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Macro</span>
+                                <span class="strategy-tag">Rotation</span>
+                                <span class="strategy-tag">Sector</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'event-driven')">
+                            <div class="strategy-icon">📰</div>
+                            <div class="strategy-name">Event Striker</div>
+                            <div class="strategy-desc">Earnings, M&A, corporate action event capture</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Event</span>
+                                <span class="strategy-tag">Short-term</span>
+                                <span class="strategy-tag">Catalyst</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'multi-factor')">
+                            <div class="strategy-icon">⚡</div>
+                            <div class="strategy-name">Multi-Factor Core</div>
+                            <div class="strategy-desc">Blended quality + value + momentum + low vol</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Multi-Factor</span>
+                                <span class="strategy-tag">Balanced</span>
+                                <span class="strategy-tag">Core</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'short-selling')">
+                            <div class="strategy-icon">📉</div>
+                            <div class="strategy-name">Short Predator</div>
+                            <div class="strategy-desc">Weak stock identification with short entry signals</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Short</span>
+                                <span class="strategy-tag">Aggressive</span>
+                                <span class="strategy-tag">Hedging</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'trend-following')">
+                            <div class="strategy-icon">🌊</div>
+                            <div class="strategy-name">Trend Surfer</div>
+                            <div class="strategy-desc">Moving average crossover with trend confirmation</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Trend</span>
+                                <span class="strategy-tag">Technical</span>
+                                <span class="strategy-tag">Follow</span>
+                            </div>
+                        </div>
+                        <div class="strategy-card" onclick="selectStrategy(this, 'contrarian')">
+                            <div class="strategy-icon">🔙</div>
+                            <div class="strategy-name">Contrarian Rebel</div>
+                            <div class="strategy-desc">Extreme sentiment reversals with mean bounce</div>
+                            <div class="strategy-tags">
+                                <span class="strategy-tag">Contrarian</span>
+                                <span class="strategy-tag">Sentiment</span>
+                                <span class="strategy-tag">Counter</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="corner-br"></div>
                 </div>
@@ -878,13 +1128,23 @@
                         </div>
                         <div class="page-subtitle">Select Ammunition • Load Factors • Lock and Load</div>
                     </div>
+                    <div class="header-actions">
+                        <div class="factor-tabs">
+                            <button class="cyber-btn primary factor-tab active" onclick="switchFactorTab('all')">ALL</button>
+                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('technical')">TECH</button>
+                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('fundamental')">FUND</button>
+                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('sentiment')">SENT</button>
+                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('moneyflow')">FLOW</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="cyber-card">
                     <div class="card-header">
                         <div class="card-title">
                             <span class="card-icon">🎯</span>
-                            TECHNICAL FACTORS
+                            <span id="factorCategoryTitle">FACTOR ARSENAL</span>
+                            <span style="margin-left: 12px; font-size: 0.8rem; color: var(--neon-cyan);" id="factorCount">0 FACTORS</span>
                         </div>
                     </div>
                     <div class="factors-grid" id="techFactors">
@@ -1072,11 +1332,118 @@
                             <span class="page-title-icon">⚔️</span>
                             BATTLE MODE
                         </div>
-                        <div class="page-subtitle">Launch Simulation • Monitor Progress • Claim Victory</div>
+                        <div class="page-subtitle">Configure Mission • Launch Simulation • Monitor Progress</div>
                     </div>
                 </div>
 
-                <div class="battle-container" id="battleContainer">
+                <div class="battle-container" id="battleConfigContainer">
+                    <div class="cyber-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">💰</span>
+                                INITIAL CAPITAL
+                            </div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">
+                                <span>Starting Capital</span>
+                                <span class="param-value" id="capitalValue">¥1,000,000</span>
+                            </div>
+                            <input type="range" class="param-slider" id="initialCapital" min="100000" max="10000000" step="100000" value="1000000" oninput="updateCapital()">
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: var(--text-secondary);">
+                                <span>¥100K</span>
+                                <span>¥10M</span>
+                            </div>
+                        </div>
+                        <div class="corner-br"></div>
+                    </div>
+
+                    <div class="cyber-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">📊</span>
+                                MARKET SELECTION
+                            </div>
+                        </div>
+                        <div class="factors-grid" id="marketSelectGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                            <div class="factor-card rarity-legendary selected market-card" onclick="selectMarket(this, 'cn')">
+                                <div class="factor-header">
+                                    <div class="factor-name">🇨🇳 A-Shares</div>
+                                    <div class="factor-rarity">China Mainland</div>
+                                </div>
+                                <div class="factor-stats">
+                                    <div class="factor-stat">
+                                        <div class="factor-stat-label">Stocks</div>
+                                        <div class="factor-stat-value">5000+</div>
+                                    </div>
+                                    <div class="factor-stat">
+                                        <div class="factor-stat-label">Exchange</div>
+                                        <div class="factor-stat-value">SSE/SZSE</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="factor-card rarity-epic market-card" onclick="selectMarket(this, 'us')">
+                                <div class="factor-header">
+                                    <div class="factor-name">🇺🇸 US Stocks</div>
+                                    <div class="factor-rarity">NASDAQ/NYSE</div>
+                                </div>
+                                <div class="factor-stats">
+                                    <div class="factor-stat">
+                                        <div class="factor-stat-label">Stocks</div>
+                                        <div class="factor-stat-value">6000+</div>
+                                    </div>
+                                    <div class="factor-stat">
+                                        <div class="factor-stat-label">Exchange</div>
+                                        <div class="factor-stat-value">NASDAQ/NYSE</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="factor-card rarity-rare market-card" onclick="selectMarket(this, 'hk')">
+                                <div class="factor-header">
+                                    <div class="factor-name">🇭🇰 Hong Kong</div>
+                                    <div class="factor-rarity">HKEX</div>
+                                </div>
+                                <div class="factor-stats">
+                                    <div class="factor-stat">
+                                        <div class="factor-stat-label">Stocks</div>
+                                        <div class="factor-stat-value">2500+</div>
+                                    </div>
+                                    <div class="factor-stat">
+                                        <div class="factor-stat-label">Exchange</div>
+                                        <div class="factor-stat-value">HKEX</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="corner-br"></div>
+                    </div>
+
+                    <div class="cyber-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">⚡</span>
+                                STRATEGY PARAMETERS
+                            </div>
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">
+                                <span>Backtest Period</span>
+                                <span class="param-value" id="periodValue">252 Days</span>
+                            </div>
+                            <input type="range" class="param-slider" id="backtestPeriod" min="60" max="756" step="30" value="252" oninput="updateParam('backtestPeriod', 'periodValue', ' Days')">
+                        </div>
+                        <div class="param-group">
+                            <div class="param-label">
+                                <span>Rebalance Frequency</span>
+                                <span class="param-value" id="rebalanceValue">20 Days</span>
+                            </div>
+                            <input type="range" class="param-slider" id="rebalanceFreq" min="5" max="60" value="20" oninput="updateParam('rebalanceFreq', 'rebalanceValue', ' Days')">
+                        </div>
+                        <div class="corner-br"></div>
+                    </div>
+                </div>
+
+                <div class="battle-container" id="battleContainer" style="display: none;">
                     <div class="battle-header">
                         <div class="battle-title" id="battleStatus">⚔️ BATTLE STANDBY</div>
                     </div>
@@ -1091,23 +1458,56 @@
                         </div>
                     </div>
 
-                    <div class="battle-stats" id="battleStats" style="display: none;">
-                        <div class="battle-stat">
-                            <div class="battle-stat-value" id="liveReturn">0.00%</div>
-                            <div class="battle-stat-label">Total Return</div>
+                    <div class="stats-grid" id="battleStats" style="display: none; margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-label">Portfolio Value</div>
+                            <div class="stat-value positive" id="livePortfolioValue">¥1,000,000</div>
                         </div>
-                        <div class="battle-stat">
-                            <div class="battle-stat-value" id="liveTrades">0</div>
-                            <div class="battle-stat-label">Trades Made</div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Return</div>
+                            <div class="stat-value positive" id="liveReturn">0.00%</div>
                         </div>
-                        <div class="battle-stat">
-                            <div class="battle-stat-value" id="liveWinRate">0%</div>
-                            <div class="battle-stat-label">Win Rate</div>
+                        <div class="stat-card">
+                            <div class="stat-label">Trades Made</div>
+                            <div class="stat-value" id="liveTrades">0</div>
                         </div>
-                        <div class="battle-stat">
-                            <div class="battle-stat-value" id="liveDrawdown">0.00%</div>
-                            <div class="battle-stat-label">Max Drawdown</div>
+                        <div class="stat-card">
+                            <div class="stat-label">Win Rate</div>
+                            <div class="stat-value" id="liveWinRate">0%</div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Max Drawdown</div>
+                            <div class="stat-value negative" id="liveDrawdown">0.00%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Sharpe Ratio</div>
+                            <div class="stat-value" id="liveSharpe">0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="cyber-card" id="positionPanel" style="display: none; margin-bottom: 20px;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">📈</span>
+                                CURRENT POSITIONS
+                            </div>
+                        </div>
+                        <div id="currentPositionsContainer" style="max-height: 200px; overflow-y: auto;">
+                        </div>
+                        <div class="corner-br"></div>
+                    </div>
+
+                    <div class="cyber-card" id="equityChartCard" style="display: none; margin-bottom: 20px;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">📊</span>
+                                EQUITY CURVE
+                            </div>
+                        </div>
+                        <div style="height: 250px;">
+                            <canvas id="liveEquityChart"></canvas>
+                        </div>
+                        <div class="corner-br"></div>
                     </div>
 
                     <div class="battle-events" id="battleEvents" style="display: none;">
@@ -1118,6 +1518,101 @@
                             ⚔️ START BATTLE
                         </button>
                     </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="cyber-btn" id="toggleConfigBtn" onclick="toggleBattleView()">
+                        📋 CONFIGURE
+                    </button>
+                </div>
+            </div>
+
+            <div class="page-content" id="market">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">
+                            <span class="page-title-icon">📊</span>
+                            MARKET VIEW
+                        </div>
+                        <div class="page-subtitle">Live Market Data • Index Performance • Watchlist</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="cyber-btn" onclick="refreshMarketData()">
+                            🔄 REFRESH
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">📈 SSE Composite</div>
+                        <div class="stat-value positive" id="sseIndex">3,125.67</div>
+                        <div class="stat-value positive small" style="margin-top: 4px;">+1.23%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 SZSE Component</div>
+                        <div class="stat-value positive" id="szseIndex">10,542.38</div>
+                        <div class="stat-value positive small" style="margin-top: 4px;">+0.87%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 CSI 300</div>
+                        <div class="stat-value negative" id="csi300Index">3,652.19</div>
+                        <div class="stat-value negative small" style="margin-top: 4px;">-0.45%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 NASDAQ</div>
+                        <div class="stat-value positive" id="nasdaqIndex">16,245.37</div>
+                        <div class="stat-value positive small" style="margin-top: 4px;">+2.15%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 S&P 500</div>
+                        <div class="stat-value positive" id="sp500Index">5,125.89</div>
+                        <div class="stat-value positive small" style="margin-top: 4px;">+0.92%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 Hang Seng</div>
+                        <div class="stat-value positive" id="hsiIndex">18,452.76</div>
+                        <div class="stat-value positive small" style="margin-top: 4px;">+1.58%</div>
+                    </div>
+                </div>
+
+                <div class="cyber-card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📈</span>
+                            MARKET CHART
+                        </div>
+                    </div>
+                    <div style="height: 300px;">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                    <div class="corner-br"></div>
+                </div>
+
+                <div class="cyber-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">⭐</span>
+                            WATCHLIST
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Change</th>
+                                    <th>Volume</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="watchlistBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="corner-br"></div>
                 </div>
             </div>
 
@@ -1131,6 +1626,9 @@
                         <div class="page-subtitle">Battle Results • Achievements • Performance Grade</div>
                     </div>
                     <div class="header-actions">
+                        <button class="cyber-btn" onclick="saveBacktest()">
+                            💾 SAVE RUN
+                        </button>
                         <button class="cyber-btn" onclick="navigateTo('export')">
                             📜 EXPORT LOG
                         </button>
@@ -1147,21 +1645,69 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
+                        <div class="stat-label">Final Value</div>
+                        <div class="stat-value positive" id="finalValue">¥1,897,000</div>
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-label">Final Return</div>
-                        <div class="stat-value positive">+89.7%</div>
+                        <div class="stat-value positive" id="finalReturn">+89.7%</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Sharpe Ratio</div>
-                        <div class="stat-value">2.34</div>
+                        <div class="stat-value" id="finalSharpe">2.34</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Max Drawdown</div>
-                        <div class="stat-value negative">-11.2%</div>
+                        <div class="stat-value negative" id="finalDrawdown">-11.2%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Trades</div>
+                        <div class="stat-value" id="finalTrades">28</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Win Rate</div>
-                        <div class="stat-value positive">71.4%</div>
+                        <div class="stat-value positive" id="finalWinRate">71.4%</div>
                     </div>
+                </div>
+
+                <div class="cyber-card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📊</span>
+                            EQUITY CURVE
+                        </div>
+                    </div>
+                    <div style="height: 300px;">
+                        <canvas id="finalEquityChart"></canvas>
+                    </div>
+                    <div class="corner-br"></div>
+                </div>
+
+                <div class="cyber-card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📋</span>
+                            TRADE LOG
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                    <th>Asset</th>
+                                    <th>Shares</th>
+                                    <th>Price</th>
+                                    <th>P&L</th>
+                                    <th>Return</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tradeLogBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="corner-br"></div>
                 </div>
 
                 <div class="cyber-card">
@@ -1187,6 +1733,51 @@
                             <div class="achievement-name">PERFECT DEFENSE</div>
                             <div class="achievement-desc">Max drawdown under 15%</div>
                         </div>
+                    </div>
+                    <div class="corner-br"></div>
+                </div>
+            </div>
+
+            <div class="page-content" id="history">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">
+                            <span class="page-title-icon">📚</span>
+                            BACKTEST HISTORY
+                        </div>
+                        <div class="page-subtitle">Past Runs • Compare Results • Learn from History</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="cyber-btn danger" onclick="clearHistory()">
+                            🗑️ CLEAR ALL
+                        </button>
+                    </div>
+                </div>
+
+                <div class="cyber-card" id="emptyHistoryCard">
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 4rem; margin-bottom: 16px;">📭</div>
+                        <div style="font-size: 1.25rem; color: var(--text-secondary);">No backtests saved yet</div>
+                        <div style="margin-top: 8px; color: var(--text-muted);">Run a backtest and save it to see it here</div>
+                        <button class="cyber-btn primary" style="margin-top: 24px;" onclick="navigateTo('backtest')">
+                            ⚔️ RUN BACKTEST
+                        </button>
+                    </div>
+                    <div class="corner-br"></div>
+                </div>
+
+                <div id="historyListContainer" style="display: none;">
+                </div>
+
+                <div class="cyber-card" id="comparisonCard" style="display: none; margin-top: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon">📊</span>
+                            COMPARISON VIEW
+                        </div>
+                    </div>
+                    <div style="height: 300px;">
+                        <canvas id="comparisonChart"></canvas>
                     </div>
                     <div class="corner-br"></div>
                 </div>
@@ -1693,13 +2284,121 @@
         };
 
         const factorLibrary = [
+            // ===== 技术因子 (Technical Factors) - 35个 =====
             { name: 'Momentum Alpha', rarity: 'legendary', ic: 0.078, ir: 1.82, type: 'technical' },
             { name: 'Value Premium', rarity: 'epic', ic: 0.054, ir: 1.41, type: 'technical' },
             { name: 'Quality Factor', rarity: 'rare', ic: 0.042, ir: 1.15, type: 'technical' },
             { name: 'Size Effect', rarity: 'common', ic: 0.028, ir: 0.87, type: 'technical' },
             { name: 'Volatility Carry', rarity: 'rare', ic: 0.047, ir: 1.23, type: 'technical' },
-            { name: 'Liquidity Beta', rarity: 'common', ic: 0.031, ir: 0.78, type: 'technical' }
+            { name: 'Liquidity Beta', rarity: 'common', ic: 0.031, ir: 0.78, type: 'technical' },
+            { name: 'RSI Reversal', rarity: 'rare', ic: 0.041, ir: 1.18, type: 'technical' },
+            { name: 'MACD Divergence', rarity: 'epic', ic: 0.058, ir: 1.52, type: 'technical' },
+            { name: 'Bollinger Break', rarity: 'rare', ic: 0.045, ir: 1.28, type: 'technical' },
+            { name: 'Moving Avg Cross', rarity: 'common', ic: 0.034, ir: 0.92, type: 'technical' },
+            { name: 'Volume Surge', rarity: 'rare', ic: 0.039, ir: 1.05, type: 'technical' },
+            { name: 'Price Breakout', rarity: 'epic', ic: 0.062, ir: 1.65, type: 'technical' },
+            { name: 'Trend Strength', rarity: 'legendary', ic: 0.072, ir: 1.78, type: 'technical' },
+            { name: 'Relative Strength', rarity: 'rare', ic: 0.044, ir: 1.22, type: 'technical' },
+            { name: 'Stochastic Osc', rarity: 'common', ic: 0.032, ir: 0.89, type: 'technical' },
+            { name: 'CCI Extreme', rarity: 'rare', ic: 0.048, ir: 1.31, type: 'technical' },
+            { name: 'Williams %R', rarity: 'common', ic: 0.029, ir: 0.85, type: 'technical' },
+            { name: 'ATR Breakout', rarity: 'epic', ic: 0.056, ir: 1.48, type: 'technical' },
+            { name: 'Donchian Chan', rarity: 'rare', ic: 0.043, ir: 1.19, type: 'technical' },
+            { name: 'Keltner Band', rarity: 'common', ic: 0.035, ir: 0.96, type: 'technical' },
+            { name: 'Ichimoku Cloud', rarity: 'epic', ic: 0.059, ir: 1.55, type: 'technical' },
+            { name: 'Heikin-Ashi', rarity: 'rare', ic: 0.040, ir: 1.12, type: 'technical' },
+            { name: 'Renko Pattern', rarity: 'common', ic: 0.027, ir: 0.82, type: 'technical' },
+            { name: 'Point & Figure', rarity: 'rare', ic: 0.046, ir: 1.25, type: 'technical' },
+            { name: 'Fibonacci Ret', rarity: 'epic', ic: 0.055, ir: 1.45, type: 'technical' },
+            { name: 'Elliott Wave', rarity: 'legendary', ic: 0.075, ir: 1.85, type: 'technical' },
+            { name: 'Gann Angle', rarity: 'epic', ic: 0.057, ir: 1.49, type: 'technical' },
+            { name: 'Pivot Points', rarity: 'common', ic: 0.033, ir: 0.91, type: 'technical' },
+            { name: 'Volume Profile', rarity: 'rare', ic: 0.042, ir: 1.16, type: 'technical' },
+            { name: 'VWAP Revert', rarity: 'epic', ic: 0.053, ir: 1.42, type: 'technical' },
+            { name: 'Tick Volume', rarity: 'common', ic: 0.030, ir: 0.86, type: 'technical' },
+            { name: 'On Balance Vol', rarity: 'rare', ic: 0.038, ir: 1.08, type: 'technical' },
+            { name: 'Accum/Distrib', rarity: 'epic', ic: 0.051, ir: 1.38, type: 'technical' },
+            { name: 'Chaikin Osc', rarity: 'rare', ic: 0.037, ir: 1.02, type: 'technical' },
+            { name: 'Money Flow Ind', rarity: 'common', ic: 0.026, ir: 0.81, type: 'technical' },
+
+            // ===== 基本面因子 (Fundamental Factors) - 30个 =====
+            { name: 'P/E Ratio', rarity: 'common', ic: 0.032, ir: 0.93, type: 'fundamental' },
+            { name: 'P/B Ratio', rarity: 'rare', ic: 0.043, ir: 1.21, type: 'fundamental' },
+            { name: 'P/S Ratio', rarity: 'common', ic: 0.029, ir: 0.88, type: 'fundamental' },
+            { name: 'EV/EBITDA', rarity: 'rare', ic: 0.048, ir: 1.32, type: 'fundamental' },
+            { name: 'Dividend Yield', rarity: 'common', ic: 0.031, ir: 0.89, type: 'fundamental' },
+            { name: 'ROE Quality', rarity: 'epic', ic: 0.058, ir: 1.53, type: 'fundamental' },
+            { name: 'ROA Strength', rarity: 'rare', ic: 0.044, ir: 1.24, type: 'fundamental' },
+            { name: 'Gross Margin', rarity: 'common', ic: 0.035, ir: 0.95, type: 'fundamental' },
+            { name: 'Operating Marg', rarity: 'rare', ic: 0.041, ir: 1.17, type: 'fundamental' },
+            { name: 'Net Margin', rarity: 'epic', ic: 0.056, ir: 1.47, type: 'fundamental' },
+            { name: 'Earnings Growth', rarity: 'legendary', ic: 0.073, ir: 1.79, type: 'fundamental' },
+            { name: 'Sales Growth', rarity: 'epic', ic: 0.061, ir: 1.62, type: 'fundamental' },
+            { name: 'CFO Growth', rarity: 'rare', ic: 0.047, ir: 1.29, type: 'fundamental' },
+            { name: 'Asset Turnover', rarity: 'common', ic: 0.030, ir: 0.87, type: 'fundamental' },
+            { name: 'Inventory Chg', rarity: 'rare', ic: 0.039, ir: 1.11, type: 'fundamental' },
+            { name: 'AR Turnover', rarity: 'common', ic: 0.028, ir: 0.84, type: 'fundamental' },
+            { name: 'Debt to Equity', rarity: 'rare', ic: 0.045, ir: 1.26, type: 'fundamental' },
+            { name: 'Interest Cov', rarity: 'epic', ic: 0.054, ir: 1.44, type: 'fundamental' },
+            { name: 'Current Ratio', rarity: 'common', ic: 0.033, ir: 0.92, type: 'fundamental' },
+            { name: 'Quick Ratio', rarity: 'rare', ic: 0.040, ir: 1.14, type: 'fundamental' },
+            { name: 'Cash Holdings', rarity: 'common', ic: 0.027, ir: 0.83, type: 'fundamental' },
+            { name: 'CapEx Growth', rarity: 'rare', ic: 0.042, ir: 1.18, type: 'fundamental' },
+            { name: 'R&D Intensity', rarity: 'epic', ic: 0.057, ir: 1.51, type: 'fundamental' },
+            { name: 'Ad Spend', rarity: 'common', ic: 0.034, ir: 0.94, type: 'fundamental' },
+            { name: 'Employee Growth', rarity: 'rare', ic: 0.038, ir: 1.09, type: 'fundamental' },
+            { name: 'Insider Buy', rarity: 'legendary', ic: 0.071, ir: 1.76, type: 'fundamental' },
+            { name: 'Institutional', rarity: 'epic', ic: 0.059, ir: 1.57, type: 'fundamental' },
+            { name: 'Share Buyback', rarity: 'rare', ic: 0.046, ir: 1.28, type: 'fundamental' },
+            { name: 'Dividend Grow', rarity: 'common', ic: 0.031, ir: 0.90, type: 'fundamental' },
+            { name: 'Earnings Surp', rarity: 'legendary', ic: 0.076, ir: 1.83, type: 'fundamental' },
+
+            // ===== 情绪因子 (Sentiment Factors) - 20个 =====
+            { name: 'News Sentiment', rarity: 'epic', ic: 0.055, ir: 1.46, type: 'sentiment' },
+            { name: 'Social Mood', rarity: 'rare', ic: 0.043, ir: 1.23, type: 'sentiment' },
+            { name: 'Analyst Recom', rarity: 'common', ic: 0.036, ir: 0.97, type: 'sentiment' },
+            { name: 'Target Price', rarity: 'rare', ic: 0.041, ir: 1.16, type: 'sentiment' },
+            { name: 'Earnings Call', rarity: 'epic', ic: 0.058, ir: 1.54, type: 'sentiment' },
+            { name: 'Management Tone', rarity: 'legendary', ic: 0.074, ir: 1.81, type: 'sentiment' },
+            { name: 'Media Mentions', rarity: 'common', ic: 0.029, ir: 0.86, type: 'sentiment' },
+            { name: 'Search Volume', rarity: 'rare', ic: 0.038, ir: 1.08, type: 'sentiment' },
+            { name: 'Google Trends', rarity: 'common', ic: 0.032, ir: 0.91, type: 'sentiment' },
+            { name: 'Twitter Buzz', rarity: 'rare', ic: 0.045, ir: 1.27, type: 'sentiment' },
+            { name: 'Reddit Vibes', rarity: 'epic', ic: 0.057, ir: 1.50, type: 'sentiment' },
+            { name: 'Options Skew', rarity: 'legendary', ic: 0.070, ir: 1.75, type: 'sentiment' },
+            { name: 'Put/Call Ratio', rarity: 'rare', ic: 0.044, ir: 1.25, type: 'sentiment' },
+            { name: 'VIX Fear', rarity: 'epic', ic: 0.060, ir: 1.59, type: 'sentiment' },
+            { name: 'Vol Premium', rarity: 'rare', ic: 0.042, ir: 1.19, type: 'sentiment' },
+            { name: 'Short Interest', rarity: 'epic', ic: 0.056, ir: 1.49, type: 'sentiment' },
+            { name: 'Borrow Cost', rarity: 'rare', ic: 0.040, ir: 1.13, type: 'sentiment' },
+            { name: 'Flows Sentiment', rarity: 'common', ic: 0.034, ir: 0.94, type: 'sentiment' },
+            { name: 'Retail Flow', rarity: 'common', ic: 0.028, ir: 0.85, type: 'sentiment' },
+            { name: 'Smart Money', rarity: 'legendary', ic: 0.077, ir: 1.86, type: 'sentiment' },
+
+            // ===== 资金流因子 (Money Flow Factors) - 20个 =====
+            { name: 'Net Inflow', rarity: 'epic', ic: 0.054, ir: 1.44, type: 'moneyflow' },
+            { name: 'OBV Trend', rarity: 'rare', ic: 0.043, ir: 1.21, type: 'moneyflow' },
+            { name: 'Volume Delta', rarity: 'common', ic: 0.033, ir: 0.92, type: 'moneyflow' },
+            { name: 'Buy Pressure', rarity: 'rare', ic: 0.046, ir: 1.28, type: 'moneyflow' },
+            { name: 'Sell Pressure', rarity: 'common', ic: 0.031, ir: 0.89, type: 'moneyflow' },
+            { name: 'Large Block', rarity: 'epic', ic: 0.059, ir: 1.56, type: 'moneyflow' },
+            { name: 'Institutional Flow', rarity: 'legendary', ic: 0.072, ir: 1.78, type: 'moneyflow' },
+            { name: 'Retail Flow', rarity: 'common', ic: 0.030, ir: 0.88, type: 'moneyflow' },
+            { name: 'ETF Flow', rarity: 'rare', ic: 0.040, ir: 1.15, type: 'moneyflow' },
+            { name: 'Mutual Fund', rarity: 'common', ic: 0.029, ir: 0.86, type: 'moneyflow' },
+            { name: 'Hedge Fund Flow', rarity: 'epic', ic: 0.057, ir: 1.52, type: 'moneyflow' },
+            { name: 'Foreign Flow', rarity: 'rare', ic: 0.042, ir: 1.19, type: 'moneyflow' },
+            { name: 'Margin Debt', rarity: 'common', ic: 0.032, ir: 0.90, type: 'moneyflow' },
+            { name: 'Short Covering', rarity: 'epic', ic: 0.055, ir: 1.47, type: 'moneyflow' },
+            { name: 'Squeeze Poten', rarity: 'legendary', ic: 0.075, ir: 1.82, type: 'moneyflow' },
+            { name: 'Accumulation', rarity: 'rare', ic: 0.045, ir: 1.26, type: 'moneyflow' },
+            { name: 'Distribution', rarity: 'rare', ic: 0.044, ir: 1.24, type: 'moneyflow' },
+            { name: 'Money Flow Ind', rarity: 'common', ic: 0.035, ir: 0.96, type: 'moneyflow' },
+            { name: 'Chaikin Money', rarity: 'epic', ic: 0.053, ir: 1.43, type: 'moneyflow' },
+            { name: 'Force Index', rarity: 'rare', ic: 0.039, ir: 1.12, type: 'moneyflow' }
         ];
+
+        let currentFactorTab = 'all';
 
         document.addEventListener('DOMContentLoaded', () => {
             // 先初始化页面内容
@@ -1732,13 +2431,45 @@
             });
         }
 
-        function initFactors() {
+        function getCategoryTitle(type) {
+            const titles = {
+                'all': 'FACTOR ARSENAL',
+                'technical': 'TECHNICAL FACTORS',
+                'fundamental': 'FUNDAMENTAL FACTORS',
+                'sentiment': 'SENTIMENT FACTORS',
+                'moneyflow': 'MONEY FLOW FACTORS'
+            };
+            return titles[type] || 'FACTOR ARSENAL';
+        }
+
+        function switchFactorTab(type) {
+            currentFactorTab = type;
+            document.querySelectorAll('.factor-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(type === 'all' ? 'all' : type.slice(0, 4)));
+            });
+            renderFactors();
+        }
+
+        function renderFactors() {
             const container = document.getElementById('techFactors');
-            container.innerHTML = factorLibrary.map(factor => `
+            const titleEl = document.getElementById('factorCategoryTitle');
+            const countEl = document.getElementById('factorCount');
+
+            const filtered = currentFactorTab === 'all'
+                ? factorLibrary
+                : factorLibrary.filter(f => f.type === currentFactorTab);
+
+            titleEl.textContent = getCategoryTitle(currentFactorTab);
+            countEl.textContent = `${filtered.length} FACTORS`;
+
+            container.innerHTML = filtered.map(factor => `
                 <div class="factor-card rarity-${factor.rarity}" onclick="toggleFactor(this, '${factor.name}')">
                     <div class="factor-header">
                         <div class="factor-name">${factor.name}</div>
                         <div class="factor-rarity">${factor.rarity.charAt(0).toUpperCase() + factor.rarity.slice(1)}</div>
+                    </div>
+                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">
+                        ${factor.type}
                     </div>
                     <div class="factor-stats">
                         <div class="factor-stat">
@@ -1752,6 +2483,10 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function initFactors() {
+            renderFactors();
         }
 
         function toggleFactor(element, name) {
@@ -2018,6 +2753,569 @@ WIN RATE: 71.4%
                 }
             });
         }
+
+        // 新增功能
+        let backtestHistory = JSON.parse(localStorage.getItem('backtestHistory') || '[]');
+        let currentBacktestData = null;
+        let selectedHistoryItems = [];
+        let currentMarket = 'cn';
+        let currentCapital = 1000000;
+
+        function updateCapital() {
+            const capital = document.getElementById('initialCapital').value;
+            currentCapital = parseInt(capital);
+            const formatted = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentCapital);
+            document.getElementById('capitalValue').textContent = formatted;
+        }
+
+        function selectMarket(element, market) {
+            document.querySelectorAll('.market-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            currentMarket = market;
+        }
+
+        function toggleBattleView() {
+            const configContainer = document.getElementById('battleConfigContainer');
+            const battleContainer = document.getElementById('battleContainer');
+            const toggleBtn = document.getElementById('toggleConfigBtn');
+
+            if (configContainer.style.display !== 'none') {
+                configContainer.style.display = 'none';
+                battleContainer.style.display = 'block';
+                toggleBtn.textContent = '⚙️ CONFIG';
+            } else {
+                configContainer.style.display = 'block';
+                battleContainer.style.display = 'none';
+                toggleBtn.textContent = '⚔️ BATTLE';
+            }
+        }
+
+        // 重写startBattle函数
+        let originalStartBattle = startBattle;
+        function startBattle() {
+            if (AppState.battleInProgress) return;
+
+            AppState.battleInProgress = true;
+            AppState.battleProgress = 0;
+            AppState.battleStats = { returns: 0, trades: 0, winRate: 0, drawdown: 0, sharpe: 0 };
+            currentBacktestData = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                capital: currentCapital,
+                market: currentMarket,
+                strategy: AppState.selectedStrategy,
+                factors: [...AppState.selectedFactors],
+                equityCurve: [currentCapital],
+                trades: [],
+                positions: []
+            };
+
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('battleStats').style.display = 'grid';
+            document.getElementById('battleEvents').style.display = 'block';
+            document.getElementById('positionPanel').style.display = 'block';
+            document.getElementById('equityChartCard').style.display = 'block';
+
+            const assets = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'JPM'];
+            currentBacktestData.positions = assets.slice(0, 4).map(asset => ({
+                asset,
+                shares: Math.floor(currentCapital / 4 / 150),
+                price: 150 + Math.random() * 50,
+                weight: 25
+            }));
+
+            updatePositionsDisplay();
+            initLiveEquityChart();
+
+            const events = [
+                { icon: '⚔️', text: 'Battle initiated! First position opened.', class: '' },
+                { icon: '📈', text: '+2.3% gain - Solid start!', class: 'event-success' },
+                { icon: '💥', text: 'CRITICAL HIT! +8.7% single-day return!', class: 'event-critical' },
+                { icon: '📉', text: 'Small pullback -1.2%', class: '' },
+                { icon: '🛡️', text: 'Stop-loss saved position!', class: 'event-success' },
+                { icon: '⚡', text: 'COMBO! 3rd consecutive win!', class: 'event-combo' },
+                { icon: '💥', text: 'CRITICAL! +12.4% breakout!', class: 'event-critical' }
+            ];
+
+            const startBtn = document.getElementById('startBattleBtn');
+            startBtn.textContent = '⏸️ PAUSE BATTLE';
+            startBtn.onclick = () => {
+                if (AppState.battleInProgress) {
+                    pauseBattle();
+                } else {
+                    resumeBattle();
+                }
+            };
+
+            let eventIndex = 0;
+            let dayCount = 0;
+            battleInterval = setInterval(() => {
+                AppState.battleProgress += Math.random() * 10;
+                if (AppState.battleProgress >= 100) {
+                    AppState.battleProgress = 100;
+                    endBattle();
+                    return;
+                }
+
+                dayCount++;
+                document.getElementById('progressFill').style.width = AppState.battleProgress + '%';
+                document.getElementById('progressPercent').textContent = Math.floor(AppState.battleProgress) + '%';
+                document.getElementById('battleStatus').textContent = '⚔️ BATTLE IN PROGRESS';
+
+                const dailyReturn = (Math.random() - 0.35) * 4;
+                AppState.battleStats.returns += dailyReturn;
+                if (Math.random() > 0.6) {
+                    AppState.battleStats.trades++;
+                    currentBacktestData.trades.push({
+                        date: new Date().toISOString().split('T')[0],
+                        action: Math.random() > 0.5 ? 'BUY' : 'SELL',
+                        asset: assets[Math.floor(Math.random() * assets.length)],
+                        shares: Math.floor(Math.random() * 100) + 10,
+                        price: (100 + Math.random() * 200).toFixed(2),
+                        pl: (Math.random() - 0.4) * 1000,
+                        returnPct: ((Math.random() - 0.4) * 10).toFixed(2)
+                    });
+                }
+                AppState.battleStats.winRate = Math.min(85, 50 + Math.random() * 35);
+                AppState.battleStats.drawdown = Math.max(0, Math.min(20, AppState.battleStats.drawdown + (Math.random() - 0.6) * 2));
+                AppState.battleStats.sharpe = (1.5 + Math.random()).toFixed(2);
+
+                const currentValue = currentCapital * (1 + AppState.battleStats.returns / 100);
+                currentBacktestData.equityCurve.push(currentValue);
+                updateLiveEquityChart();
+
+                const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentValue);
+                document.getElementById('livePortfolioValue').textContent = formattedValue;
+                document.getElementById('liveReturn').textContent = (AppState.battleStats.returns >= 0 ? '+' : '') + AppState.battleStats.returns.toFixed(2) + '%';
+                document.getElementById('liveReturn').className = 'stat-value ' + (AppState.battleStats.returns >= 0 ? 'positive' : 'negative');
+                document.getElementById('liveTrades').textContent = AppState.battleStats.trades;
+                document.getElementById('liveWinRate').textContent = AppState.battleStats.winRate.toFixed(0) + '%';
+                document.getElementById('liveDrawdown').textContent = '-' + AppState.battleStats.drawdown.toFixed(2) + '%';
+
+                if (Math.random() > 0.6 && eventIndex < events.length) {
+                    addBattleEvent(events[eventIndex]);
+                    eventIndex++;
+                }
+            }, 300);
+        }
+
+        let liveEquityChart = null;
+        function initLiveEquityChart() {
+            const ctx = document.getElementById('liveEquityChart');
+            if (!ctx) return;
+
+            liveEquityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Start'],
+                    datasets: [{
+                        label: 'Equity',
+                        data: [currentCapital],
+                        borderColor: '#00f5ff',
+                        backgroundColor: 'rgba(0, 245, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
+                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                    }
+                }
+            });
+        }
+
+        function updateLiveEquityChart() {
+            if (!liveEquityChart || !currentBacktestData) return;
+            liveEquityChart.data.labels = currentBacktestData.equityCurve.map((_, i) => `Day ${i}`);
+            liveEquityChart.data.datasets[0].data = currentBacktestData.equityCurve;
+            liveEquityChart.update('none');
+        }
+
+        function updatePositionsDisplay() {
+            const container = document.getElementById('currentPositionsContainer');
+            if (!currentBacktestData || !currentBacktestData.positions) {
+                container.innerHTML = '<div style="color: var(--text-secondary);">No positions yet</div>';
+                return;
+            }
+
+            container.innerHTML = currentBacktestData.positions.map(pos => `
+                <div class="position-row">
+                    <div style="color: var(--neon-cyan);">${pos.asset}</div>
+                    <div style="color: var(--text-secondary);">${pos.shares} shares</div>
+                    <div style="color: var(--text-primary);">$${pos.price.toFixed(2)}</div>
+                    <div style="color: var(--neon-green);">${pos.weight}%</div>
+                </div>
+            `).join('');
+        }
+
+        // 重写endBattle函数
+        let originalEndBattle = endBattle;
+        function endBattle() {
+            clearInterval(battleInterval);
+            AppState.battleInProgress = false;
+            AppState.battleStats.returns = 89.7;
+
+            const finalValue = currentCapital * (1 + 0.897);
+            currentBacktestData.finalValue = finalValue;
+            currentBacktestData.finalReturn = 89.7;
+            currentBacktestData.sharpe = 2.34;
+            currentBacktestData.maxDrawdown = 11.2;
+            currentBacktestData.totalTrades = AppState.battleStats.trades;
+            currentBacktestData.winRate = 71.4;
+
+            const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(finalValue);
+            document.getElementById('livePortfolioValue').textContent = formattedValue;
+            document.getElementById('liveReturn').textContent = '+89.7%';
+            document.getElementById('liveReturn').className = 'stat-value positive';
+            document.getElementById('battleStatus').textContent = '🎉 VICTORY!';
+
+            const startBtn = document.getElementById('startBattleBtn');
+            startBtn.textContent = '🏆 VIEW RESULTS';
+            startBtn.onclick = () => navigateTo('results');
+
+            // 更新结果页面
+            document.getElementById('finalValue').textContent = formattedValue;
+            document.getElementById('finalReturn').textContent = '+89.7%';
+            document.getElementById('finalSharpe').textContent = '2.34';
+            document.getElementById('finalDrawdown').textContent = '-11.2%';
+            document.getElementById('finalTrades').textContent = currentBacktestData.totalTrades;
+            document.getElementById('finalWinRate').textContent = '71.4%';
+
+            updateTradeLog();
+            initFinalEquityChart();
+        }
+
+        function updateTradeLog() {
+            const container = document.getElementById('tradeLogBody');
+            if (!currentBacktestData || !currentBacktestData.trades) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No trades recorded</td></tr>';
+                return;
+            }
+
+            container.innerHTML = currentBacktestData.trades.slice(0, 10).map(trade => `
+                <tr>
+                    <td>${trade.date}</td>
+                    <td style="color: ${trade.action === 'BUY' ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: bold;">${trade.action}</td>
+                    <td>${trade.asset}</td>
+                    <td>${trade.shares}</td>
+                    <td>$${trade.price}</td>
+                    <td style="color: ${trade.pl >= 0 ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: bold;">
+                        ${trade.pl >= 0 ? '+' : ''}$${trade.pl.toFixed(2)}
+                    </td>
+                    <td style="color: ${trade.returnPct >= 0 ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: bold;">
+                        ${trade.returnPct >= 0 ? '+' : ''}${trade.returnPct}%
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        let finalEquityChart = null;
+        function initFinalEquityChart() {
+            const ctx = document.getElementById('finalEquityChart');
+            if (!ctx || !currentBacktestData) return;
+
+            finalEquityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: currentBacktestData.equityCurve.map((_, i) => `Day ${i}`),
+                    datasets: [{
+                        label: 'Equity',
+                        data: currentBacktestData.equityCurve,
+                        borderColor: '#00f5ff',
+                        backgroundColor: 'rgba(0, 245, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
+                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                    }
+                }
+            });
+        }
+
+        function saveBacktest() {
+            if (!currentBacktestData) {
+                alert('No backtest data to save!');
+                return;
+            }
+
+            currentBacktestData.name = `Backtest #${backtestHistory.length + 1}`;
+            backtestHistory.unshift(currentBacktestData);
+            localStorage.setItem('backtestHistory', JSON.stringify(backtestHistory));
+            alert('✅ Backtest saved successfully!');
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const emptyCard = document.getElementById('emptyHistoryCard');
+            const listContainer = document.getElementById('historyListContainer');
+
+            if (backtestHistory.length === 0) {
+                emptyCard.style.display = 'block';
+                listContainer.style.display = 'none';
+                return;
+            }
+
+            emptyCard.style.display = 'none';
+            listContainer.style.display = 'block';
+
+            listContainer.innerHTML = backtestHistory.map((item, index) => `
+                <div class="history-card ${selectedHistoryItems.includes(index) ? 'selected' : ''}" onclick="toggleHistorySelection(${index})">
+                    <div class="history-header">
+                        <div class="history-title">${item.name}</div>
+                        <div class="history-date">${new Date(item.date).toLocaleDateString()}</div>
+                    </div>
+                    <div class="history-stats">
+                        <div class="history-stat">
+                            <div class="history-stat-value ${item.finalReturn >= 0 ? 'positive' : 'negative'}">${item.finalReturn >= 0 ? '+' : ''}${item.finalReturn}%</div>
+                            <div class="history-stat-label">Return</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-value">${item.sharpe}</div>
+                            <div class="history-stat-label">Sharpe</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-value negative">-${item.maxDrawdown}%</div>
+                            <div class="history-stat-label">Drawdown</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-value">${item.totalTrades}</div>
+                            <div class="history-stat-label">Trades</div>
+                        </div>
+                    </div>
+                    <div class="history-actions">
+                        <button class="cyber-btn" style="padding: 8px 16px; font-size: 0.75rem;" onclick="event.stopPropagation(); loadBacktest(${index})">
+                            📂 Load
+                        </button>
+                        <button class="cyber-btn danger" style="padding: 8px 16px; font-size: 0.75rem;" onclick="event.stopPropagation(); deleteBacktest(${index})">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            if (selectedHistoryItems.length >= 2) {
+                document.getElementById('comparisonCard').style.display = 'block';
+                initComparisonChart();
+            } else {
+                document.getElementById('comparisonCard').style.display = 'none';
+            }
+        }
+
+        function toggleHistorySelection(index) {
+            const idx = selectedHistoryItems.indexOf(index);
+            if (idx === -1) {
+                selectedHistoryItems.push(index);
+            } else {
+                selectedHistoryItems.splice(idx, 1);
+            }
+            renderHistory();
+        }
+
+        function loadBacktest(index) {
+            currentBacktestData = backtestHistory[index];
+            currentCapital = currentBacktestData.capital;
+            navigateTo('results');
+
+            const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentBacktestData.finalValue);
+            document.getElementById('finalValue').textContent = formattedValue;
+            document.getElementById('finalReturn').textContent = (currentBacktestData.finalReturn >= 0 ? '+' : '') + currentBacktestData.finalReturn + '%';
+            document.getElementById('finalSharpe').textContent = currentBacktestData.sharpe;
+            document.getElementById('finalDrawdown').textContent = '-' + currentBacktestData.maxDrawdown + '%';
+            document.getElementById('finalTrades').textContent = currentBacktestData.totalTrades;
+            document.getElementById('finalWinRate').textContent = currentBacktestData.winRate + '%';
+
+            updateTradeLog();
+            setTimeout(initFinalEquityChart, 100);
+        }
+
+        function deleteBacktest(index) {
+            if (confirm('Are you sure you want to delete this backtest?')) {
+                backtestHistory.splice(index, 1);
+                selectedHistoryItems = selectedHistoryItems.filter(i => i !== index).map(i => i > index ? i - 1 : i);
+                localStorage.setItem('backtestHistory', JSON.stringify(backtestHistory));
+                renderHistory();
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to delete ALL backtests? This cannot be undone.')) {
+                backtestHistory = [];
+                selectedHistoryItems = [];
+                localStorage.removeItem('backtestHistory');
+                renderHistory();
+            }
+        }
+
+        let comparisonChart = null;
+        function initComparisonChart() {
+            const ctx = document.getElementById('comparisonChart');
+            if (!ctx) return;
+
+            const colors = ['#00f5ff', '#ff00aa', '#ffd700', '#00ff88'];
+            const datasets = selectedHistoryItems.map((idx, i) => {
+                const item = backtestHistory[idx];
+                const normalized = item.equityCurve.map(v => (v / item.equityCurve[0]) * 100);
+                return {
+                    label: item.name,
+                    data: normalized,
+                    borderColor: colors[i % colors.length],
+                    backgroundColor: 'transparent',
+                    tension: 0.4,
+                    pointRadius: 0
+                };
+            });
+
+            if (comparisonChart) {
+                comparisonChart.destroy();
+            }
+
+            comparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: backtestHistory[selectedHistoryItems[0]].equityCurve.map((_, i) => `Day ${i}`),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: '#a0a0a0' }
+                        }
+                    },
+                    scales: {
+                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
+                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                    }
+                }
+            });
+        }
+
+        // 市场视图功能
+        const watchlist = [
+            { code: '600519', name: '贵州茅台', price: 1688.00, change: 2.3, volume: '12.5M' },
+            { code: '000001', name: '平安银行', price: 12.45, change: -1.2, volume: '45.2M' },
+            { code: '600036', name: '招商银行', price: 32.80, change: 0.8, volume: '28.1M' },
+            { code: '000858', name: '五粮液', price: 145.60, change: 3.5, volume: '8.9M' }
+        ];
+
+        let marketChart = null;
+
+        function refreshMarketData() {
+            watchlist.forEach(stock => {
+                stock.price *= (1 + (Math.random() - 0.5) * 0.02);
+                stock.change = (Math.random() - 0.5) * 5;
+            });
+            renderWatchlist();
+            updateMarketChart();
+            alert('Market data refreshed!');
+        }
+
+        function renderWatchlist() {
+            const container = document.getElementById('watchlistBody');
+            container.innerHTML = watchlist.map(stock => `
+                <tr>
+                    <td style="color: var(--neon-cyan); font-weight: bold;">${stock.code}</td>
+                    <td>${stock.name}</td>
+                    <td style="color: var(--text-primary); font-weight: bold;">
+                        ${currentMarket === 'cn' ? '¥' : '$'}${stock.price.toFixed(2)}
+                    </td>
+                    <td style="color: ${stock.change >= 0 ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: bold;">
+                        ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}%
+                    </td>
+                    <td style="color: var(--text-secondary);">${stock.volume}</td>
+                    <td>
+                        <button class="cyber-btn" style="padding: 4px 12px; font-size: 0.7rem;" onclick="alert('Added ${stock.name} to watchlist!')">
+                            ⭐ Add
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function initMarketChart() {
+            const ctx = document.getElementById('marketChart');
+            if (!ctx) return;
+
+            const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
+            let val = 100;
+            const data = Array.from({length: 50}, () => {
+                val += (Math.random() - 0.4) * 2;
+                return val;
+            });
+
+            marketChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Market Index',
+                        data: data,
+                        borderColor: '#ffd700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
+                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                    }
+                }
+            });
+        }
+
+        function updateMarketChart() {
+            if (!marketChart) return;
+            let lastVal = marketChart.data.datasets[0].data[marketChart.data.datasets[0].data.length - 1];
+            const newData = marketChart.data.datasets[0].data.slice(1);
+            newData.push(lastVal * (1 + (Math.random() - 0.5) * 0.02));
+            marketChart.data.datasets[0].data = newData;
+            marketChart.update('none');
+        }
+
+        // 扩展初始化函数
+        const originalInit = document.addEventListener;
+        document.addEventListener('DOMContentLoaded', function() {
+            // 先初始化页面内容
+            initNavigation();
+            initFactors();
+            initCharts();
+            initMarketChart();
+            renderWatchlist();
+            renderHistory();
+
+            // 初始化资金显示
+            updateCapital();
+
+            // 再保存原始文本（包括动态生成的内容）
+            saveOriginalTexts();
+
+            // 应用中文翻译
+            applyLanguage();
+        });
     </script>
 </body>
 </html>
