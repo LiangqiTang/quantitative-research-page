@@ -802,6 +802,12 @@
             </div>
 
             <div class="nav-section" style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(0, 245, 255, 0.3);">
+                <div class="nav-section-title">MARKET / 市场</div>
+                <div style="display: flex; gap: 8px; padding: 0 16px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <button class="cyber-btn primary" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('cn')">🇨🇳 A股</button>
+                    <button class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('us')">🇺🇸美股</button>
+                    <button class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('hk')">🇭🇰港股</button>
+                </div>
                 <div class="nav-section-title">LANGUAGE / 语言</div>
                 <div style="display: flex; gap: 8px; padding: 0 16px;">
                     <button class="cyber-btn primary" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('zh')">中文</button>
@@ -1019,11 +1025,11 @@
                     </div>
                     <div class="header-actions">
                         <div class="factor-tabs">
-                            <button class="cyber-btn primary factor-tab active" onclick="switchFactorTab('all')">ALL</button>
-                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('technical')">TECH</button>
-                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('fundamental')">FUND</button>
-                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('sentiment')">SENT</button>
-                            <button class="cyber-btn factor-tab" onclick="switchFactorTab('moneyflow')">FLOW</button>
+                            <button class="cyber-btn primary factor-tab active" data-type="all" onclick="switchFactorTab('all')">ALL</button>
+                            <button class="cyber-btn factor-tab" data-type="technical" onclick="switchFactorTab('technical')">TECH</button>
+                            <button class="cyber-btn factor-tab" data-type="fundamental" onclick="switchFactorTab('fundamental')">FUND</button>
+                            <button class="cyber-btn factor-tab" data-type="sentiment" onclick="switchFactorTab('sentiment')">SENT</button>
+                            <button class="cyber-btn factor-tab" data-type="moneyflow" onclick="switchFactorTab('moneyflow')">FLOW</button>
                         </div>
                     </div>
                 </div>
@@ -1080,25 +1086,17 @@
                     <div class="card-header">
                         <div class="card-title">
                             <span class="card-icon">🎯</span>
-                            OPTIMIZATION MODE
+                            <span id="optimizationCategoryTitle">OPTIMIZATION MODE</span>
                         </div>
                     </div>
-                    <div class="strategies-grid">
-                        <div class="strategy-card selected" onclick="selectOptimization(this, 'sharpe')">
-                            <div class="strategy-icon">⚡</div>
-                            <div class="strategy-name">Max Sharpe</div>
-                            <div class="strategy-desc">Risk-adjusted return maximization</div>
-                        </div>
-                        <div class="strategy-card" onclick="selectOptimization(this, 'min-variance')">
-                            <div class="strategy-icon">🛡️</div>
-                            <div class="strategy-name">Min Variance</div>
-                            <div class="strategy-desc">Volatility minimization</div>
-                        </div>
-                        <div class="strategy-card" onclick="selectOptimization(this, 'risk-parity')">
-                            <div class="strategy-icon">⚖️</div>
-                            <div class="strategy-name">Risk Parity</div>
-                            <div class="strategy-desc">Equal risk contribution</div>
-                        </div>
+                    <div class="category-tabs">
+                        <div class="category-tab optimization-tab active" data-type="all" onclick="switchOptimizationCategory('all')">ALL / 全部</div>
+                        <div class="category-tab optimization-tab" data-type="return" onclick="switchOptimizationCategory('return')">RETURN / 收益</div>
+                        <div class="category-tab optimization-tab" data-type="risk" onclick="switchOptimizationCategory('risk')">RISK / 风险</div>
+                        <div class="category-tab optimization-tab" data-type="simple" onclick="switchOptimizationCategory('simple')">SIMPLE / 简单</div>
+                        <div class="category-tab optimization-tab" data-type="advanced" onclick="switchOptimizationCategory('advanced')">ADVANCED / 高级</div>
+                    </div>
+                    <div class="strategies-grid" id="optimizationModes">
                     </div>
                     <div class="corner-br"></div>
                 </div>
@@ -1822,6 +1820,7 @@
                 'Legendary': '传说',
                 'Epic': '史诗',
                 'Rare': '稀有',
+                'Common': '普通',
                 'IC Score': 'IC分数',
                 'IR Ratio': 'IR比率',
                 'Value Premium': '价值溢价',
@@ -1859,10 +1858,30 @@
                 'OPTIMIZATION MODE': '优化模式',
                 'Max Sharpe': '最大夏普比率',
                 'Risk-adjusted return maximization': '风险调整收益最大化',
+                'Max Return': '最大收益',
+                'Maximum expected return': '最大预期收益',
                 'Min Variance': '最小方差',
                 'Volatility minimization': '波动率最小化',
                 'Risk Parity': '风险平价',
                 'Equal risk contribution': '等风险贡献',
+                'Most Diversified': '最大分散化',
+                'Maximum decorrelation': '最大去相关性',
+                'Equal Weight': '等权重',
+                'Simple equal weighting': '简单等权配置',
+                'Cap Weighted': '市值加权',
+                'Market capitalization weighted': '市值加权配置',
+                'Factor Tilt': '因子倾斜',
+                'Multi-factor weighted allocation': '多因子加权配置',
+                'Black-Litterman': 'Black-Litterman',
+                'Bayesian portfolio optimization': '贝叶斯组合优化',
+                'RETURN OPTIMIZATION': '收益优化',
+                'RISK OPTIMIZATION': '风险优化',
+                'SIMPLE ALLOCATION': '简单配置',
+                'ADVANCED OPTIMIZATION': '高级优化',
+                'RETURN / 收益': 'RETURN / 收益',
+                'RISK / 风险': 'RISK / 风险',
+                'SIMPLE / 简单': 'SIMPLE / 简单',
+                'ADVANCED / 高级': 'ADVANCED / 高级',
                 'OPTIMAL FORMATION': '最优编队',
                 'Risk': '风险',
                 'Return': '收益',
@@ -2083,10 +2102,21 @@
                 '📊 VALUE STRATEGIES': '📊 价值策略',
                 '⚖️ ARBITRAGE STRATEGIES': '⚖️ 套利策略',
                 '⚡ SPECIAL STRATEGIES': '⚡ 特殊策略',
+                'MARKET / 市场': 'MARKET / 市场',
+                'ALL': '全部',
+                'TECH': '技术',
+                'FUND': '基本面',
+                'SENT': '情绪',
+                'FLOW': '资金流',
+                'FACTORS': '个因子',
                 'TECHNICAL FACTORS': '技术因子',
                 'FUNDAMENTAL FACTORS': '基本面因子',
                 'SENTIMENT FACTORS': '情绪因子',
                 'MONEY FLOW FACTORS': '资金流因子',
+                'technical': '技术',
+                'fundamental': '基本面',
+                'sentiment': '情绪',
+                'moneyflow': '资金流',
                 'Breakout Cannon': '突破加农炮',
                 'Resistance level breach with volume confirmation': '带量确认的阻力位突破',
                 'Breakout': '突破',
@@ -2183,13 +2213,94 @@
         }
 
         function updateLanguageButtons() {
-            const buttons = document.querySelectorAll('.nav-section:last-child button');
-            buttons.forEach((btn, i) => {
-                btn.classList.remove('primary');
-                if ((AppState.currentLang === 'zh' && i === 0) || (AppState.currentLang === 'en' && i === 1)) {
-                    btn.classList.add('primary');
+            // 找到语言按钮所在的nav-section
+            const navSections = document.querySelectorAll('.nav-section');
+            let langSection = null;
+            for (let i = navSections.length - 1; i >= 0; i--) {
+                if (navSections[i].textContent.includes('LANGUAGE')) {
+                    langSection = navSections[i];
+                    break;
                 }
-            });
+            }
+            if (langSection) {
+                const buttons = langSection.querySelectorAll('button');
+                // 语言按钮应该是市场按钮之后的两个
+                let langButtons = Array.from(buttons).filter(btn =>
+                    btn.textContent.includes('中文') || btn.textContent.includes('EN')
+                );
+                langButtons.forEach((btn, i) => {
+                    btn.classList.remove('primary');
+                    if ((AppState.currentLang === 'zh' && i === 0) || (AppState.currentLang === 'en' && i === 1)) {
+                        btn.classList.add('primary');
+                    }
+                });
+            }
+        }
+
+        function setMarket(market) {
+            AppState.currentMarket = market;
+            updateMarketButtons();
+            // 更新市场视图内容
+            updateMarketView();
+            // 显示提示
+            const marketNames = {
+                'cn': { zh: 'A股', en: 'A-Share Market' },
+                'us': { zh: '美股', en: 'US Stock Market' },
+                'hk': { zh: '港股', en: 'HK Stock Market' }
+            };
+            const name = marketNames[market][AppState.currentLang] || market;
+            alert(AppState.currentLang === 'zh' ? `✅ 已切换到${name}` : `✅ Switched to ${name}`);
+        }
+
+        function updateMarketButtons() {
+            // 找到市场按钮所在的nav-section
+            const navSections = document.querySelectorAll('.nav-section');
+            let marketSection = null;
+            for (let i = navSections.length - 1; i >= 0; i--) {
+                if (navSections[i].textContent.includes('MARKET')) {
+                    marketSection = navSections[i];
+                    break;
+                }
+            }
+            if (marketSection) {
+                const buttons = marketSection.querySelectorAll('button');
+                buttons.forEach((btn, i) => {
+                    btn.classList.remove('primary');
+                    if ((AppState.currentMarket === 'cn' && i === 0) ||
+                        (AppState.currentMarket === 'us' && i === 1) ||
+                        (AppState.currentMarket === 'hk' && i === 2)) {
+                        btn.classList.add('primary');
+                    }
+                });
+            }
+        }
+
+        function updateMarketView() {
+            // 根据选中的市场更新市场视图的内容
+            // 更新watchlist和market data
+            const marketConfigs = {
+                'cn': {
+                    index: 'SSE', value: 3247.52, change: 1.24,
+                    watchlist: ['贵州茅台', '宁德时代', '比亚迪', '工商银行', '中国平安']
+                },
+                'us': {
+                    index: 'S&P 500', value: 5123.41, change: 0.56,
+                    watchlist: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+                },
+                'hk': {
+                    index: 'HSI', value: 18452.36, change: 1.02,
+                    watchlist: ['腾讯控股', '阿里巴巴', '美团', '京东', '百度']
+                }
+            };
+            const config = marketConfigs[AppState.currentMarket];
+            if (config) {
+                AppState.marketData[config.index] = {
+                    value: config.value,
+                    change: config.change
+                };
+                // 更新市场视图显示
+                renderWatchlist();
+            }
         }
 
         function applyLanguage() {
@@ -2200,49 +2311,85 @@
                         node.textContent = originalText;
                     }
                 });
-                return;
-            }
-
-            const translations = i18n[AppState.currentLang];
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_TEXT,
-                null,
-                false
-            );
-            const textNodes = [];
-            while (walker.nextNode()) {
-                textNodes.push(walker.currentNode);
-            }
-
-            // 先建立所有翻译键的映射，按长度降序排列（优先匹配长文本）
-            const sortedKeys = Object.keys(translations).sort((a, b) => b.length - a.length);
-
-            textNodes.forEach(node => {
-                if (!originalTexts.has(node)) {
-                    originalTexts.set(node, node.textContent);
+            } else {
+                const translations = i18n[AppState.currentLang];
+                const walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+                const textNodes = [];
+                while (walker.nextNode()) {
+                    textNodes.push(walker.currentNode);
                 }
-                let text = originalTexts.get(node);
 
-                // 尝试所有可能的匹配，多次替换直到没有变化
-                let changed = true;
-                let iterations = 0;
-                while (changed && iterations < 10) {
-                    changed = false;
-                    for (const key of sortedKeys) {
-                        if (text.includes(key)) {
-                            const newText = text.split(key).join(translations[key]);
-                            if (newText !== text) {
-                                text = newText;
-                                changed = true;
+                // 先建立所有翻译键的映射，按长度降序排列（优先匹配长文本）
+                const sortedKeys = Object.keys(translations).sort((a, b) => b.length - a.length);
+
+                textNodes.forEach(node => {
+                    if (!originalTexts.has(node)) {
+                        originalTexts.set(node, node.textContent);
+                    }
+                    let text = originalTexts.get(node);
+
+                    // 尝试所有可能的匹配，多次替换直到没有变化
+                    let changed = true;
+                    let iterations = 0;
+                    while (changed && iterations < 10) {
+                        changed = false;
+                        for (const key of sortedKeys) {
+                            if (text.includes(key)) {
+                                const newText = text.split(key).join(translations[key]);
+                                if (newText !== text) {
+                                    text = newText;
+                                    changed = true;
+                                }
                             }
                         }
+                        iterations++;
                     }
-                    iterations++;
-                }
 
-                node.textContent = text;
+                    node.textContent = text;
+                });
+            }
+
+            // 更新因子标签按钮文本
+            const factorTabLabels = {
+                'all': { en: 'ALL', zh: '全部' },
+                'technical': { en: 'TECH', zh: '技术' },
+                'fundamental': { en: 'FUND', zh: '基本面' },
+                'sentiment': { en: 'SENT', zh: '情绪' },
+                'moneyflow': { en: 'FLOW', zh: '资金流' }
+            };
+            document.querySelectorAll('.factor-tab').forEach(btn => {
+                const type = btn.dataset.type;
+                if (type && factorTabLabels[type]) {
+                    btn.textContent = factorTabLabels[type][AppState.currentLang];
+                }
             });
+
+            // 更新战术优化标签按钮文本
+            const optimizationTabLabels = {
+                'all': { en: 'ALL / 全部', zh: 'ALL / 全部' },
+                'return': { en: 'RETURN / 收益', zh: 'RETURN / 收益' },
+                'risk': { en: 'RISK / 风险', zh: 'RISK / 风险' },
+                'simple': { en: 'SIMPLE / 简单', zh: 'SIMPLE / 简单' },
+                'advanced': { en: 'ADVANCED / 高级', zh: 'ADVANCED / 高级' }
+            };
+            document.querySelectorAll('.optimization-tab').forEach(btn => {
+                const type = btn.dataset.type;
+                if (type && optimizationTabLabels[type]) {
+                    btn.textContent = optimizationTabLabels[type][AppState.currentLang];
+                }
+            });
+
+            // 重新渲染因子库以更新因子卡片
+            renderFactors();
+            // 重新渲染策略库
+            renderStrategies();
+            // 重新渲染战术优化
+            renderOptimizations();
         }
 
         const AppState = {
@@ -2257,6 +2404,7 @@
 
             // ===== 动态状态值 =====
             currentLang: 'zh', // 默认中文
+            currentMarket: 'cn', // 默认A股市场
             accountHP: 92, // 账户生命值
             missionCount: 17, // 任务计数
             initialCapital: 1000000, // 初始资金 ¥1M
@@ -2410,6 +2558,68 @@
         ];
 
         let currentFactorTab = 'all';
+
+        // ===== 战术优化模式库 - 带分类 =====
+        const optimizationLibrary = [
+            { id: 'sharpe', name: 'Max Sharpe', desc: 'Risk-adjusted return maximization', icon: '⚡', category: 'return' },
+            { id: 'return', name: 'Max Return', desc: 'Maximum expected return', icon: '📈', category: 'return' },
+            { id: 'min-variance', name: 'Min Variance', desc: 'Volatility minimization', icon: '🛡️', category: 'risk' },
+            { id: 'risk-parity', name: 'Risk Parity', desc: 'Equal risk contribution', icon: '⚖️', category: 'risk' },
+            { id: 'max-diversification', name: 'Most Diversified', desc: 'Maximum decorrelation', icon: '🎯', category: 'risk' },
+            { id: 'equal-weight', name: 'Equal Weight', desc: 'Simple equal weighting', icon: '📊', category: 'simple' },
+            { id: 'cap-weighted', name: 'Cap Weighted', desc: 'Market capitalization weighted', icon: '🏛️', category: 'simple' },
+            { id: 'factor-tilt', name: 'Factor Tilt', desc: 'Multi-factor weighted allocation', icon: '💎', category: 'advanced' },
+            { id: 'black-litterman', name: 'Black-Litterman', desc: 'Bayesian portfolio optimization', icon: '🧠', category: 'advanced' }
+        ];
+
+        let currentOptimizationCategory = 'all';
+
+        function getOptimizationCategoryTitle(type) {
+            const titles = {
+                'all': { en: 'OPTIMIZATION MODE', zh: '优化模式' },
+                'return': { en: 'RETURN OPTIMIZATION', zh: '收益优化' },
+                'risk': { en: 'RISK OPTIMIZATION', zh: '风险优化' },
+                'simple': { en: 'SIMPLE ALLOCATION', zh: '简单配置' },
+                'advanced': { en: 'ADVANCED OPTIMIZATION', zh: '高级优化' }
+            };
+            const title = titles[type] || titles['all'];
+            return title[AppState.currentLang] || title['en'];
+        }
+
+        function switchOptimizationCategory(type) {
+            currentOptimizationCategory = type;
+            document.querySelectorAll('.optimization-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+            renderOptimizations();
+            saveOriginalTexts();
+            applyLanguage();
+        }
+
+        function renderOptimizations() {
+            const container = document.getElementById('optimizationModes');
+            const titleEl = document.getElementById('optimizationCategoryTitle');
+
+            const filtered = currentOptimizationCategory === 'all'
+                ? optimizationLibrary
+                : optimizationLibrary.filter(opt => opt.category === currentOptimizationCategory);
+
+            if (titleEl) {
+                titleEl.textContent = getOptimizationCategoryTitle(currentOptimizationCategory);
+            }
+
+            container.innerHTML = filtered.map(opt => `
+                <div class="strategy-card ${AppState.optimizationMode === opt.id ? 'selected' : ''}" onclick="selectOptimization(this, '${opt.id}')">
+                    <div class="strategy-icon">${opt.icon}</div>
+                    <div class="strategy-name">${opt.name}</div>
+                    <div class="strategy-desc">${i18n[AppState.currentLang][opt.desc] || opt.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        function initOptimizations() {
+            renderOptimizations();
+        }
 
         // 更新所有动态UI显示
         function updateDynamicUIDisplays() {
@@ -2576,19 +2786,42 @@
 
         function getCategoryTitle(type) {
             const titles = {
-                'all': 'FACTOR ARSENAL',
-                'technical': 'TECHNICAL FACTORS',
-                'fundamental': 'FUNDAMENTAL FACTORS',
-                'sentiment': 'SENTIMENT FACTORS',
-                'moneyflow': 'MONEY FLOW FACTORS'
+                'all': { en: 'FACTOR ARSENAL', zh: '因子库' },
+                'technical': { en: 'TECHNICAL FACTORS', zh: '技术因子' },
+                'fundamental': { en: 'FUNDAMENTAL FACTORS', zh: '基本面因子' },
+                'sentiment': { en: 'SENTIMENT FACTORS', zh: '情绪因子' },
+                'moneyflow': { en: 'MONEY FLOW FACTORS', zh: '资金流因子' }
             };
-            return titles[type] || 'FACTOR ARSENAL';
+            const title = titles[type] || titles['all'];
+            return title[AppState.currentLang] || title['en'];
+        }
+
+        function getTypeLabel(type) {
+            const labels = {
+                'technical': { en: 'technical', zh: '技术' },
+                'fundamental': { en: 'fundamental', zh: '基本面' },
+                'sentiment': { en: 'sentiment', zh: '情绪' },
+                'moneyflow': { en: 'moneyflow', zh: '资金流' }
+            };
+            const label = labels[type] || { en: type, zh: type };
+            return label[AppState.currentLang] || label['en'];
+        }
+
+        function getRarityLabel(rarity) {
+            const labels = {
+                'common': { en: 'Common', zh: '普通' },
+                'rare': { en: 'Rare', zh: '稀有' },
+                'epic': { en: 'Epic', zh: '史诗' },
+                'legendary': { en: 'Legendary', zh: '传说' }
+            };
+            const label = labels[rarity] || { en: rarity, zh: rarity };
+            return label[AppState.currentLang] || label['en'];
         }
 
         function switchFactorTab(type) {
             currentFactorTab = type;
             document.querySelectorAll('.factor-tab').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(type === 'all' ? 'all' : type.slice(0, 4)));
+                btn.classList.toggle('active', btn.dataset.type === type);
             });
             renderFactors();
             // 保存新内容的原始文本并应用语言
@@ -2606,24 +2839,25 @@
                 : factorLibrary.filter(f => f.type === currentFactorTab);
 
             titleEl.textContent = getCategoryTitle(currentFactorTab);
-            countEl.textContent = `${filtered.length} FACTORS`;
+            const factorsLabel = AppState.currentLang === 'zh' ? '个因子' : ' FACTORS';
+            countEl.textContent = `${filtered.length}${factorsLabel}`;
 
             container.innerHTML = filtered.map(factor => `
                 <div class="factor-card rarity-${factor.rarity}" onclick="toggleFactor(this, '${factor.name}')">
                     <div class="factor-header">
                         <div class="factor-name">${factor.name}</div>
-                        <div class="factor-rarity">${factor.rarity.charAt(0).toUpperCase() + factor.rarity.slice(1)}</div>
+                        <div class="factor-rarity">${getRarityLabel(factor.rarity)}</div>
                     </div>
                     <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">
-                        ${factor.type}
+                        ${getTypeLabel(factor.type)}
                     </div>
                     <div class="factor-stats">
                         <div class="factor-stat">
-                            <div class="factor-stat-label">IC Score</div>
+                            <div class="factor-stat-label">${i18n[AppState.currentLang]['IC Score'] || 'IC Score'}</div>
                             <div class="factor-stat-value">${factor.ic}</div>
                         </div>
                         <div class="factor-stat">
-                            <div class="factor-stat-label">IR Ratio</div>
+                            <div class="factor-stat-label">${i18n[AppState.currentLang]['IR Ratio'] || 'IR Ratio'}</div>
                             <div class="factor-stat-value">${factor.ir}</div>
                         </div>
                     </div>
@@ -2962,13 +3196,11 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
         // 新增功能
         let currentBacktestData = null;
         let selectedHistoryItems = [];
-        let currentMarket = 'cn';
-        let currentCapital = 1000000;
 
         function updateCapital() {
             const capital = document.getElementById('initialCapital').value;
-            currentCapital = parseInt(capital);
-            const formatted = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentCapital);
+            AppState.currentCapital = parseInt(capital);
+            const formatted = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(AppState.currentCapital);
             document.getElementById('capitalValue').textContent = formatted;
         }
 
@@ -2977,7 +3209,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                 card.classList.remove('selected');
             });
             element.classList.add('selected');
-            currentMarket = market;
+            AppState.currentMarket = market;
         }
 
         function toggleBattleView() {
@@ -3007,11 +3239,11 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             currentBacktestData = {
                 id: Date.now(),
                 date: new Date().toISOString(),
-                capital: currentCapital,
-                market: currentMarket,
+                capital: AppState.currentCapital,
+                market: AppState.currentMarket,
                 strategy: AppState.selectedStrategy,
                 factors: [...AppState.selectedFactors],
-                equityCurve: [currentCapital],
+                equityCurve: [AppState.currentCapital],
                 trades: [],
                 positions: []
             };
@@ -3025,7 +3257,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             const assets = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'JPM'];
             currentBacktestData.positions = assets.slice(0, 4).map(asset => ({
                 asset,
-                shares: Math.floor(currentCapital / 4 / 150),
+                shares: Math.floor(AppState.currentCapital / 4 / 150),
                 price: 150 + Math.random() * 50,
                 weight: 25
             }));
@@ -3086,7 +3318,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                 AppState.battleStats.drawdown = Math.max(0, Math.min(20, AppState.battleStats.drawdown + (Math.random() - 0.6) * 2));
                 AppState.battleStats.sharpe = (1.5 + Math.random()).toFixed(2);
 
-                const currentValue = currentCapital * (1 + AppState.battleStats.returns / 100);
+                const currentValue = AppState.currentCapital * (1 + AppState.battleStats.returns / 100);
                 currentBacktestData.equityCurve.push(currentValue);
                 updateLiveEquityChart();
 
@@ -3116,7 +3348,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                     labels: ['Start'],
                     datasets: [{
                         label: 'Equity',
-                        data: [currentCapital],
+                        data: [AppState.currentCapital],
                         borderColor: '#00f5ff',
                         backgroundColor: 'rgba(0, 245, 255, 0.1)',
                         fill: true,
@@ -3160,14 +3392,23 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             `).join('');
         }
 
-        // 重写endBattle函数
+        // 重写endBattle函数 - 保持动态值更新
         let originalEndBattle = endBattle;
         function endBattle() {
             clearInterval(battleInterval);
             AppState.battleInProgress = false;
             AppState.battleStats.returns = 89.7;
 
-            const finalValue = currentCapital * (1 + 0.897);
+            // 更新AppState的动态值
+            const finalReturn = 89.7;
+            AppState.currentCapital = Math.round(AppState.initialCapital * (1 + finalReturn / 100));
+            AppState.missionCount++;
+
+            // 更新账户生命值 - 根据收益和回撤计算
+            const hpChange = Math.min(8, Math.floor(finalReturn / 10)) - Math.floor((AppState.battleStats.drawdown || 11.2) / 5);
+            AppState.accountHP = Math.max(10, Math.min(100, AppState.accountHP + hpChange));
+
+            const finalValue = AppState.currentCapital * (1 + 0.897);
             currentBacktestData.finalValue = finalValue;
             currentBacktestData.finalReturn = 89.7;
             currentBacktestData.sharpe = 2.34;
@@ -3192,6 +3433,9 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             document.getElementById('finalDrawdown').textContent = '-11.2%';
             document.getElementById('finalTrades').textContent = currentBacktestData.totalTrades;
             document.getElementById('finalWinRate').textContent = '71.4%';
+
+            // 更新所有动态UI显示
+            updateDynamicUIDisplays();
 
             updateTradeLog();
             initFinalEquityChart();
@@ -3333,8 +3577,8 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
         }
 
         function loadBacktest(index) {
-            currentBacktestData = backtestHistory[index];
-            currentCapital = currentBacktestData.capital;
+            currentBacktestData = AppState.backtestHistory[index];
+            AppState.currentCapital = currentBacktestData.capital || AppState.initialCapital;
             navigateTo('results');
 
             const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentBacktestData.finalValue);
@@ -3350,17 +3594,19 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
         }
 
         function deleteBacktest(index) {
-            if (confirm('Are you sure you want to delete this backtest?')) {
-                backtestHistory.splice(index, 1);
+            const confirmMsg = AppState.currentLang === 'zh' ? '确定要删除这条回测记录吗？' : 'Are you sure you want to delete this backtest?';
+            if (confirm(confirmMsg)) {
+                AppState.backtestHistory.splice(index, 1);
                 selectedHistoryItems = selectedHistoryItems.filter(i => i !== index).map(i => i > index ? i - 1 : i);
-                localStorage.setItem('backtestHistory', JSON.stringify(backtestHistory));
+                localStorage.setItem('backtestHistory', JSON.stringify(AppState.backtestHistory));
                 renderHistory();
             }
         }
 
         function clearHistory() {
-            if (confirm('Are you sure you want to delete ALL backtests? This cannot be undone.')) {
-                backtestHistory = [];
+            const confirmMsg = AppState.currentLang === 'zh' ? '确定要删除所有回测记录吗？此操作不可撤销。' : 'Are you sure you want to delete ALL backtests? This cannot be undone.';
+            if (confirm(confirmMsg)) {
+                AppState.backtestHistory = [];
                 selectedHistoryItems = [];
                 localStorage.removeItem('backtestHistory');
                 renderHistory();
@@ -3451,12 +3697,13 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
 
         function renderWatchlist() {
             const container = document.getElementById('watchlistBody');
+            const currencySymbol = AppState.currentMarket === 'cn' ? '¥' : (AppState.currentMarket === 'hk' ? 'HK$' : '$');
             container.innerHTML = watchlist.map(stock => `
                 <tr>
                     <td style="color: var(--neon-cyan); font-weight: bold;">${stock.code}</td>
                     <td>${stock.name}</td>
                     <td style="color: var(--text-primary); font-weight: bold;">
-                        ${currentMarket === 'cn' ? '¥' : '$'}${stock.price.toFixed(2)}
+                        ${currencySymbol}${stock.price.toFixed(2)}
                     </td>
                     <td style="color: ${stock.change >= 0 ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: bold;">
                         ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}%
@@ -3523,6 +3770,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             // 先初始化页面内容
             initNavigation();
             initFactors();
+            initOptimizations();
             initCharts();
             initMarketChart();
             renderWatchlist();
@@ -3536,6 +3784,10 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
 
             // 应用中文翻译
             applyLanguage();
+
+            // 更新市场按钮状态
+            updateMarketButtons();
+            updateLanguageButtons();
         });
     </script>
 </body>
