@@ -117,6 +117,7 @@
             padding: 24px 16px;
             display: flex; flex-direction: column;
             position: fixed; height: 100vh; left: 0; top: 0; z-index: 100;
+            overflow-y: auto;
         }
 
         .logo-container { text-align: center; margin-bottom: 32px; position: relative; }
@@ -800,11 +801,11 @@
                 </div>
             </div>
 
-            <div class="nav-section">
+            <div class="nav-section" style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(0, 245, 255, 0.3);">
                 <div class="nav-section-title">LANGUAGE / 语言</div>
                 <div style="display: flex; gap: 8px; padding: 0 16px;">
-                    <button class="cyber-btn primary" style="flex: 1; padding: 10px 8px; font-size: 0.8rem;" onclick="setLanguage('zh')">中文</button>
-                    <button class="cyber-btn" style="flex: 1; padding: 10px 8px; font-size: 0.8rem;" onclick="setLanguage('en')">EN</button>
+                    <button class="cyber-btn primary" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('zh')">中文</button>
+                    <button class="cyber-btn" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('en')">EN</button>
                 </div>
             </div>
         </div>
