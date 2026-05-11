@@ -2203,7 +2203,7 @@
                 return;
             }
 
-            const translations = i18n[currentLang];
+            const translations = i18n[AppState.currentLang];
             const walker = document.createTreeWalker(
                 document.body,
                 NodeFilter.SHOW_TEXT,
