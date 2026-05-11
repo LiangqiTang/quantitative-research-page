@@ -198,6 +198,35 @@
             font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
             color: var(--neon-pink); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 4px;
         }
+
+        /* 分类标签样式 */
+        .category-tabs {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+        }
+        .category-tab {
+            padding: 8px 16px; background: rgba(0, 245, 255, 0.05);
+            border: 1px solid var(--border-cyan); border-radius: 4px;
+            cursor: pointer; font-family: 'Orbitron', monospace; font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+        .category-tab:hover { background: rgba(0, 245, 255, 0.1); border-color: var(--neon-cyan); }
+        .category-tab.active {
+            background: rgba(0, 245, 255, 0.15); border-color: var(--neon-cyan); color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+        }
+
+        .strategy-category {
+            margin-bottom: 32px;
+        }
+        .category-title {
+            font-family: 'Orbitron', monospace; font-size: 0.9rem; color: var(--neon-cyan);
+            margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-cyan);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .category-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;
+        }
         .header-actions { display: flex; gap: 12px; }
 
         .cyber-btn {
@@ -929,156 +958,15 @@
                             SELECT WEAPON TYPE
                         </div>
                     </div>
-                    <div class="strategies-grid">
-                        <div class="strategy-card selected" onclick="selectStrategy(this, 'momentum')">
-                            <div class="strategy-icon">🔫</div>
-                            <div class="strategy-name">Momentum Blaster</div>
-                            <div class="strategy-desc">High-speed trend chasing with stop-loss safeguards</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Trend</span>
-                                <span class="strategy-tag">Aggressive</span>
-                                <span class="strategy-tag">High Beta</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'mean-reversion')">
-                            <div class="strategy-icon">🛡️</div>
-                            <div class="strategy-name">Mean Reversion Shield</div>
-                            <div class="strategy-desc">Range-bound trading with mean convergence</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Contrarian</span>
-                                <span class="strategy-tag">Defensive</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'pair-trading')">
-                            <div class="strategy-icon">⚔️</div>
-                            <div class="strategy-name">Pair Trading Blade</div>
-                            <div class="strategy-desc">Dual-strike arbitrage on cointegrated pairs</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Arbitrage</span>
-                                <span class="strategy-tag">Market Neutral</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'breakout')">
-                            <div class="strategy-icon">💥</div>
-                            <div class="strategy-name">Breakout Cannon</div>
-                            <div class="strategy-desc">Resistance level breach with volume confirmation</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Breakout</span>
-                                <span class="strategy-tag">Volume</span>
-                                <span class="strategy-tag">Aggressive</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'value')">
-                            <div class="strategy-icon">📊</div>
-                            <div class="strategy-name">Value Harvester</div>
-                            <div class="strategy-desc">Undervalued asset hunting with fundamental screening</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Value</span>
-                                <span class="strategy-tag">Long-term</span>
-                                <span class="strategy-tag">Fundamental</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'growth')">
-                            <div class="strategy-icon">🚀</div>
-                            <div class="strategy-name">Growth Rocket</div>
-                            <div class="strategy-desc">High-growth stock selection with momentum filter</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Growth</span>
-                                <span class="strategy-tag">Aggressive</span>
-                                <span class="strategy-tag">High PE</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'quality')">
-                            <div class="strategy-icon">👑</div>
-                            <div class="strategy-name">Quality Crown</div>
-                            <div class="strategy-desc">High ROE, low debt, stable earnings compounder</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Quality</span>
-                                <span class="strategy-tag">Defensive</span>
-                                <span class="strategy-tag">Compound</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'dividend')">
-                            <div class="strategy-icon">💰</div>
-                            <div class="strategy-name">Dividend Miner</div>
-                            <div class="strategy-desc">High yield + dividend growth stock selection</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Dividend</span>
-                                <span class="strategy-tag">Income</span>
-                                <span class="strategy-tag">Defensive</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'low-volatility')">
-                            <div class="strategy-icon">🧘</div>
-                            <div class="strategy-name">Low Vol Zen</div>
-                            <div class="strategy-desc">Minimum variance portfolio for smooth returns</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Low Vol</span>
-                                <span class="strategy-tag">Defensive</span>
-                                <span class="strategy-tag">Risk Averse</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'sector-rotation')">
-                            <div class="strategy-icon">🔄</div>
-                            <div class="strategy-name">Sector Rotator</div>
-                            <div class="strategy-desc">Business cycle based sector allocation shifting</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Macro</span>
-                                <span class="strategy-tag">Rotation</span>
-                                <span class="strategy-tag">Sector</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'event-driven')">
-                            <div class="strategy-icon">📰</div>
-                            <div class="strategy-name">Event Striker</div>
-                            <div class="strategy-desc">Earnings, M&A, corporate action event capture</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Event</span>
-                                <span class="strategy-tag">Short-term</span>
-                                <span class="strategy-tag">Catalyst</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'multi-factor')">
-                            <div class="strategy-icon">⚡</div>
-                            <div class="strategy-name">Multi-Factor Core</div>
-                            <div class="strategy-desc">Blended quality + value + momentum + low vol</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Multi-Factor</span>
-                                <span class="strategy-tag">Balanced</span>
-                                <span class="strategy-tag">Core</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'short-selling')">
-                            <div class="strategy-icon">📉</div>
-                            <div class="strategy-name">Short Predator</div>
-                            <div class="strategy-desc">Weak stock identification with short entry signals</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Short</span>
-                                <span class="strategy-tag">Aggressive</span>
-                                <span class="strategy-tag">Hedging</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'trend-following')">
-                            <div class="strategy-icon">🌊</div>
-                            <div class="strategy-name">Trend Surfer</div>
-                            <div class="strategy-desc">Moving average crossover with trend confirmation</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Trend</span>
-                                <span class="strategy-tag">Technical</span>
-                                <span class="strategy-tag">Follow</span>
-                            </div>
-                        </div>
-                        <div class="strategy-card" onclick="selectStrategy(this, 'contrarian')">
-                            <div class="strategy-icon">🔙</div>
-                            <div class="strategy-name">Contrarian Rebel</div>
-                            <div class="strategy-desc">Extreme sentiment reversals with mean bounce</div>
-                            <div class="strategy-tags">
-                                <span class="strategy-tag">Contrarian</span>
-                                <span class="strategy-tag">Sentiment</span>
-                                <span class="strategy-tag">Counter</span>
-                            </div>
-                        </div>
+                    <div class="category-tabs">
+                        <div class="category-tab active" data-category="all" onclick="switchStrategyCategory('all')">ALL / 全部</div>
+                        <div class="category-tab" data-category="trend" onclick="switchStrategyCategory('trend')">TREND / 趋势</div>
+                        <div class="category-tab" data-category="mean-reversion" onclick="switchStrategyCategory('mean-reversion')">REVERSION / 均值回归</div>
+                        <div class="category-tab" data-category="value" onclick="switchStrategyCategory('value')">VALUE / 价值</div>
+                        <div class="category-tab" data-category="arbitrage" onclick="switchStrategyCategory('arbitrage')">ARBITRAGE / 套利</div>
+                        <div class="category-tab" data-category="special" onclick="switchStrategyCategory('special')">SPECIAL / 特殊</div>
                     </div>
+                    <div id="strategyCategoriesContainer"></div>
                     <div class="corner-br"></div>
                 </div>
 
@@ -2182,9 +2070,93 @@
                 '🔒 FACTORS LOCKED • READY FOR BATTLE': '🔒 因子已锁定 • 准备战斗',
                 '🔨 STRATEGY FORGED • READY FOR DEPLOYMENT': '🔨 策略已锻造 • 准备部署',
                 '🛡️ SHIELD ACTIVATED • RISK CONTROLS ONLINE': '🛡️ 护盾已激活 • 风险控制在线',
-                'LANGUAGE / 语言': '语言 / LANGUAGE'
+                'LANGUAGE / 语言': '语言 / LANGUAGE',
+                'ALL / 全部': 'ALL / 全部',
+                'TREND / 趋势': 'TREND / 趋势',
+                'REVERSION / 均值回归': 'REVERSION / 均值回归',
+                'VALUE / 价值': 'VALUE / 价值',
+                'ARBITRAGE / 套利': 'ARBITRAGE / 套利',
+                'SPECIAL / 特殊': 'SPECIAL / 特殊',
+                '📈 TREND STRATEGIES': '📈 趋势策略',
+                '🔄 MEAN REVERSION': '🔄 均值回归',
+                '📊 VALUE STRATEGIES': '📊 价值策略',
+                '⚖️ ARBITRAGE STRATEGIES': '⚖️ 套利策略',
+                '⚡ SPECIAL STRATEGIES': '⚡ 特殊策略',
+                'TECHNICAL FACTORS': '技术因子',
+                'FUNDAMENTAL FACTORS': '基本面因子',
+                'SENTIMENT FACTORS': '情绪因子',
+                'MONEY FLOW FACTORS': '资金流因子',
+                'Breakout Cannon': '突破加农炮',
+                'Resistance level breach with volume confirmation': '带量确认的阻力位突破',
+                'Breakout': '突破',
+                'Volume': '成交量',
+                'Value Harvester': '价值收割机',
+                'Undervalued asset hunting with fundamental screening': '基本面筛选的低估资产挖掘',
+                'Value': '价值',
+                'Long-term': '长期',
+                'Fundamental': '基本面',
+                'Growth Rocket': '成长火箭',
+                'High-growth stock selection with momentum filter': '带动量筛选的高成长股票选择',
+                'Growth': '成长',
+                'High PE': '高市盈率',
+                'Quality Crown': '质量皇冠',
+                'High ROE, low debt, stable earnings compounder': '高ROE、低负债、稳定盈利的复利增长',
+                'Compound': '复利',
+                'Dividend Miner': '股息矿工',
+                'High yield + dividend growth stock selection': '高收益+股息增长的股票选择',
+                'Income': '收益',
+                'Low Vol Zen': '低波动率禅修',
+                'Minimum variance portfolio for smooth returns': '最小方差组合，追求平滑收益',
+                'Low Vol': '低波',
+                'Risk Averse': '风险厌恶',
+                'Sector Rotator': '行业轮动器',
+                'Business cycle based sector allocation shifting': '基于商业周期的行业配置轮动',
+                'Macro': '宏观',
+                'Rotation': '轮动',
+                'Sector': '行业',
+                'Event Striker': '事件打击者',
+                'Earnings, M&A, corporate action event capture': '盈利、并购、公司事件捕捉',
+                'Event': '事件',
+                'Short-term': '短期',
+                'Catalyst': '催化剂',
+                'Multi-Factor Core': '多因子核心',
+                'Blended quality + value + momentum + low vol': '质量+价值+动量+低波混合',
+                'Balanced': '平衡',
+                'Core': '核心',
+                'Short Predator': '做空猎手',
+                'Weak stock identification with short entry signals': '弱势股票识别，带做空入场信号',
+                'Short': '做空',
+                'Hedging': '对冲',
+                'Trend Surfer': '趋势冲浪者',
+                'Moving average crossover with trend confirmation': '带趋势确认的均线交叉',
+                'Technical': '技术面',
+                'Follow': '追踪',
+                'Contrarian Rebel': '逆向反叛者',
+                'Extreme sentiment reversals with mean bounce': '极端情绪反转，均值回归',
+                'Sentiment': '情绪',
+                'Counter': '反向'
             }
         };
+
+        // 策略库 - 带分类
+        const strategyLibrary = [
+            { id: 'momentum', name: 'Momentum Blaster', desc: 'High-speed trend chasing with stop-loss safeguards', icon: '🔫', category: 'trend', tags: ['Trend', 'Aggressive', 'High Beta'] },
+            { id: 'trend-following', name: 'Trend Surfer', desc: 'Moving average crossover with trend confirmation', icon: '🌊', category: 'trend', tags: ['Trend', 'Technical', 'Follow'] },
+            { id: 'breakout', name: 'Breakout Cannon', desc: 'Resistance level breach with volume confirmation', icon: '💥', category: 'trend', tags: ['Breakout', 'Volume', 'Aggressive'] },
+            { id: 'mean-reversion', name: 'Mean Reversion Shield', desc: 'Range-bound trading with mean convergence', icon: '🛡️', category: 'mean-reversion', tags: ['Contrarian', 'Defensive'] },
+            { id: 'contrarian', name: 'Contrarian Rebel', desc: 'Extreme sentiment reversals with mean bounce', icon: '🔙', category: 'mean-reversion', tags: ['Contrarian', 'Sentiment', 'Counter'] },
+            { id: 'value', name: 'Value Harvester', desc: 'Undervalued asset hunting with fundamental screening', icon: '📊', category: 'value', tags: ['Value', 'Long-term', 'Fundamental'] },
+            { id: 'quality', name: 'Quality Crown', desc: 'High ROE, low debt, stable earnings compounder', icon: '👑', category: 'value', tags: ['Quality', 'Defensive', 'Compound'] },
+            { id: 'dividend', name: 'Dividend Miner', desc: 'High yield + dividend growth stock selection', icon: '💰', category: 'value', tags: ['Dividend', 'Income', 'Defensive'] },
+            { id: 'pair-trading', name: 'Pair Trading Blade', desc: 'Dual-strike arbitrage on cointegrated pairs', icon: '⚔️', category: 'arbitrage', tags: ['Arbitrage', 'Market Neutral'] },
+            { id: 'low-volatility', name: 'Low Vol Zen', desc: 'Minimum variance portfolio for smooth returns', icon: '🧘', category: 'arbitrage', tags: ['Low Vol', 'Defensive', 'Risk Averse'] },
+            { id: 'sector-rotation', name: 'Sector Rotator', desc: 'Business cycle based sector allocation shifting', icon: '🔄', category: 'special', tags: ['Macro', 'Rotation', 'Sector'] },
+            { id: 'event-driven', name: 'Event Striker', desc: 'Earnings, M&A, corporate action event capture', icon: '📰', category: 'special', tags: ['Event', 'Short-term', 'Catalyst'] },
+            { id: 'multi-factor', name: 'Multi-Factor Core', desc: 'Blended quality + value + momentum + low vol', icon: '⚡', category: 'special', tags: ['Multi-Factor', 'Balanced', 'Core'] },
+            { id: 'short-selling', name: 'Short Predator', desc: 'Weak stock identification with short entry signals', icon: '📉', category: 'special', tags: ['Short', 'Aggressive', 'Hedging'] }
+        ];
+
+        let currentStrategyCategory = 'all';
 
         function saveOriginalTexts() {
             const walker = document.createTreeWalker(
@@ -2477,6 +2449,7 @@
             initNavigation();
             initFactors();
             initCharts();
+            renderStrategies();
             // 再保存原始文本（包括动态生成的内容）
             saveOriginalTexts();
             // 应用中文翻译（默认）
@@ -2484,6 +2457,101 @@
             // 更新动态UI显示
             updateDynamicUIDisplays();
         });
+
+        // 策略分类相关函数
+        function switchStrategyCategory(category) {
+            currentStrategyCategory = category;
+            document.querySelectorAll('.category-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === category);
+            });
+            renderStrategies();
+            // 保存新内容的原始文本并应用语言
+            saveOriginalTexts();
+            applyLanguage();
+        }
+
+        function renderStrategies() {
+            const container = document.getElementById('strategyCategoriesContainer');
+            if (!container) return;
+
+            const filtered = currentStrategyCategory === 'all'
+                ? strategyLibrary
+                : strategyLibrary.filter(s => s.category === currentStrategyCategory);
+
+            // 按分类分组
+            const grouped = {};
+            filtered.forEach(s => {
+                if (!grouped[s.category]) grouped[s.category] = [];
+                grouped[s.category].push(s);
+            });
+
+            // 获取分类标题
+            const getCatTitle = (cat) => {
+                const titles = {
+                    'trend': '📈 TREND STRATEGIES',
+                    'mean-reversion': '🔄 MEAN REVERSION',
+                    'value': '📊 VALUE STRATEGIES',
+                    'arbitrage': '⚖️ ARBITRAGE STRATEGIES',
+                    'special': '⚡ SPECIAL STRATEGIES'
+                };
+                return titles[cat] || 'STRATEGIES';
+            };
+
+            // 清空容器
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            // 逐个构建元素并添加
+            Object.keys(grouped).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'strategy-category';
+
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'category-title';
+                titleDiv.textContent = getCatTitle(category);
+                categoryDiv.appendChild(titleDiv);
+
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'category-grid';
+
+                grouped[category].forEach(strategy => {
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'strategy-card' + (AppState.selectedStrategy === strategy.id ? ' selected' : '');
+                    cardDiv.onclick = () => selectStrategy(cardDiv, strategy.id);
+
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = 'strategy-icon';
+                    iconDiv.textContent = strategy.icon;
+                    cardDiv.appendChild(iconDiv);
+
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'strategy-name';
+                    nameDiv.textContent = strategy.name;
+                    cardDiv.appendChild(nameDiv);
+
+                    const descDiv = document.createElement('div');
+                    descDiv.className = 'strategy-desc';
+                    descDiv.textContent = strategy.desc;
+                    cardDiv.appendChild(descDiv);
+
+                    const tagsDiv = document.createElement('div');
+                    tagsDiv.className = 'strategy-tags';
+                    strategy.tags.forEach(tag => {
+                        const tagSpan = document.createElement('span');
+                        tagSpan.className = 'strategy-tag';
+                        tagSpan.textContent = tag;
+                        tagsDiv.appendChild(tagSpan);
+                    });
+                    cardDiv.appendChild(tagsDiv);
+
+                    gridDiv.appendChild(cardDiv);
+                });
+
+                categoryDiv.appendChild(gridDiv);
+                container.appendChild(categoryDiv);
+            });
+        }
 
         function initNavigation() {
             const navItems = document.querySelectorAll('.nav-item');
@@ -2522,6 +2590,9 @@
                 btn.classList.toggle('active', btn.textContent.toLowerCase().includes(type === 'all' ? 'all' : type.slice(0, 4)));
             });
             renderFactors();
+            // 保存新内容的原始文本并应用语言
+            saveOriginalTexts();
+            applyLanguage();
         }
 
         function renderFactors() {
@@ -2737,6 +2808,11 @@
             // Update current capital based on results
             AppState.currentCapital = Math.round(AppState.initialCapital * (1 + finalReturn / 100));
             AppState.missionCount++;
+
+            // Update account HP based on results
+            // Good returns increase HP, drawdown decreases HP
+            const hpChange = Math.min(8, Math.floor(finalReturn / 10)) - Math.floor((AppState.battleStats.drawdown || 0) / 5);
+            AppState.accountHP = Math.max(10, Math.min(100, AppState.accountHP + hpChange));
 
             // Update UI
             document.getElementById('liveReturn').textContent = '+' + finalReturn.toFixed(1) + '%';
