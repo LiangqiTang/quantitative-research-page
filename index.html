@@ -715,11 +715,11 @@
                 </div>
                 <div class="status-row">
                     <span class="status-label">ACCOUNT HP:</span>
-                    <span class="status-value">87%</span>
+                    <span class="status-value" id="accountHPValue">92%</span>
                 </div>
                 <div class="status-row">
                     <span class="status-label">MISSION COUNT:</span>
-                    <span class="status-value">42</span>
+                    <span class="status-value" id="missionCountValue">17</span>
                 </div>
             </div>
 
@@ -801,19 +801,19 @@
                     <div class="hp-shield-item">
                         <div class="hp-shield-label">
                             <span class="hp-label">❤️ ACCOUNT HP</span>
-                            <span>87%</span>
+                            <span id="dashboardHPValue">92%</span>
                         </div>
                         <div class="energy-bar-container">
-                            <div class="energy-bar green" style="width: 87%"></div>
+                            <div class="energy-bar green" id="hpEnergyBar" style="width: 92%"></div>
                         </div>
                     </div>
                     <div class="hp-shield-item">
                         <div class="hp-shield-label">
                             <span class="shield-label">🛡️ SHIELD POWER</span>
-                            <span>65%</span>
+                            <span id="shieldValue">78%</span>
                         </div>
                         <div class="energy-bar-container">
-                            <div class="energy-bar cyan" style="width: 65%"></div>
+                            <div class="energy-bar cyan" id="shieldEnergyBar" style="width: 78%"></div>
                         </div>
                     </div>
                 </div>
@@ -821,19 +821,19 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-label">Total Return</div>
-                        <div class="stat-value positive">+127.3%</div>
+                        <div class="stat-value positive" id="totalReturnValue">+24.7%</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Sharpe Ratio</div>
-                        <div class="stat-value">2.47</div>
+                        <div class="stat-value" id="sharpeRatioValue">1.89</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Max Drawdown</div>
-                        <div class="stat-value negative">-12.4%</div>
+                        <div class="stat-value negative" id="maxDrawdownValue">-8.4%</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Win Rate</div>
-                        <div class="stat-value positive">68.7%</div>
+                        <div class="stat-value positive" id="winRateValue">61.5%</div>
                     </div>
                 </div>
 
@@ -1897,8 +1897,7 @@
     </div>
 
     <script>
-        // 语言切换功能
-        let currentLang = 'zh';
+        // 语言切换功能 - 使用AppState管理
         let originalTexts = new Map();
 
         const i18n = {
@@ -2204,23 +2203,24 @@
         }
 
         function setLanguage(lang) {
-            currentLang = lang;
+            AppState.currentLang = lang;
             applyLanguage();
             updateLanguageButtons();
+            updateDynamicUIDisplays();
         }
 
         function updateLanguageButtons() {
             const buttons = document.querySelectorAll('.nav-section:last-child button');
             buttons.forEach((btn, i) => {
                 btn.classList.remove('primary');
-                if ((currentLang === 'zh' && i === 0) || (currentLang === 'en' && i === 1)) {
+                if ((AppState.currentLang === 'zh' && i === 0) || (AppState.currentLang === 'en' && i === 1)) {
                     btn.classList.add('primary');
                 }
             });
         }
 
         function applyLanguage() {
-            if (currentLang === 'en') {
+            if (AppState.currentLang === 'en') {
                 // 恢复英文
                 originalTexts.forEach((originalText, node) => {
                     if (node.parentNode) {
@@ -2280,7 +2280,45 @@
             optimizationMode: 'sharpe',
             battleInProgress: false,
             battleProgress: 0,
-            battleStats: { returns: 0, trades: 0, winRate: 0, drawdown: 0 }
+            battleStats: { returns: 0, trades: 0, winRate: 0, drawdown: 0 },
+
+            // ===== 动态状态值 =====
+            currentLang: 'zh', // 默认中文
+            accountHP: 92, // 账户生命值
+            missionCount: 17, // 任务计数
+            initialCapital: 1000000, // 初始资金 ¥1M
+            currentCapital: 1247382, // 当前资金
+            portfolioValue: 0, // 实时组合价值
+
+            // 策略参数
+            strategyParams: {
+                momentum: { lookback: 20, holding: 10, positionSize: 5 },
+                meanReversion: { lookback: 15, bands: 2, positionSize: 4 },
+                pairTrading: { lookback: 60, entryZ: 2, exitZ: 0.5, positionSize: 3 }
+            },
+
+            // 风险参数
+            riskParams: {
+                stopLoss: -10,
+                takeProfit: 25,
+                maxDrawdown: 20,
+                maxSinglePos: 10,
+                maxSectorExposure: 30,
+                shieldActive: true
+            },
+
+            // 回测历史
+            backtestHistory: JSON.parse(localStorage.getItem('backtestHistory') || '[]'),
+
+            // 市场状态
+            marketData: {
+                SSE: { value: 3247.52, change: 1.24 },
+                SZSE: { value: 10873.65, change: 0.87 },
+                GEM: { value: 2156.78, change: -0.42 },
+                DJIA: { value: 38425.67, change: 0.34 },
+                SPX: { value: 5123.41, change: 0.56 },
+                HSCEI: { value: 11876.34, change: 1.02 }
+            }
         };
 
         const factorLibrary = [
@@ -2400,6 +2438,40 @@
 
         let currentFactorTab = 'all';
 
+        // 更新所有动态UI显示
+        function updateDynamicUIDisplays() {
+            // 更新状态栏
+            const hpValueEl = document.getElementById('accountHPValue');
+            const missionCountEl = document.getElementById('missionCountValue');
+            if (hpValueEl) hpValueEl.textContent = AppState.accountHP + '%';
+            if (missionCountEl) missionCountEl.textContent = AppState.missionCount;
+
+            // 更新仪表盘HP和护盾
+            const dashboardHPValue = document.getElementById('dashboardHPValue');
+            const hpBar = document.getElementById('hpEnergyBar');
+            const shieldValue = document.getElementById('shieldValue');
+            const shieldBar = document.getElementById('shieldEnergyBar');
+            if (dashboardHPValue) dashboardHPValue.textContent = AppState.accountHP + '%';
+            if (hpBar) hpBar.style.width = AppState.accountHP + '%';
+
+            // 计算护盾值基于风险参数
+            const shieldPercent = AppState.riskParams.shieldActive ?
+                Math.round(100 - (AppState.riskParams.maxDrawdown / 2)) : 50;
+            if (shieldValue) shieldValue.textContent = shieldPercent + '%';
+            if (shieldBar) shieldBar.style.width = shieldPercent + '%';
+
+            // 更新统计卡片
+            const totalReturnEl = document.getElementById('totalReturnValue');
+            const sharpeEl = document.getElementById('sharpeRatioValue');
+            const drawdownEl = document.getElementById('maxDrawdownValue');
+            const winRateEl = document.getElementById('winRateValue');
+
+            if (totalReturnEl) totalReturnEl.textContent = '+' + ((AppState.currentCapital - AppState.initialCapital) / AppState.initialCapital * 100).toFixed(1) + '%';
+            if (sharpeEl) sharpeEl.textContent = '1.89';
+            if (drawdownEl) drawdownEl.textContent = '-' + AppState.riskParams.maxDrawdown + '%';
+            if (winRateEl) winRateEl.textContent = '61.5%';
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // 先初始化页面内容
             initNavigation();
@@ -2407,8 +2479,10 @@
             initCharts();
             // 再保存原始文本（包括动态生成的内容）
             saveOriginalTexts();
-            // 应用中文翻译
+            // 应用中文翻译（默认）
             applyLanguage();
+            // 更新动态UI显示
+            updateDynamicUIDisplays();
         });
 
         function initNavigation() {
@@ -2655,14 +2729,46 @@
         function endBattle() {
             clearInterval(battleInterval);
             AppState.battleInProgress = false;
-            AppState.battleStats.returns = 89.7;
-            document.getElementById('liveReturn').textContent = '+89.7%';
+
+            // Generate realistic final results
+            const finalReturn = 24.7 + (Math.random() * 50); // 24.7% to 74.7%
+            AppState.battleStats.returns = finalReturn;
+
+            // Update current capital based on results
+            AppState.currentCapital = Math.round(AppState.initialCapital * (1 + finalReturn / 100));
+            AppState.missionCount++;
+
+            // Update UI
+            document.getElementById('liveReturn').textContent = '+' + finalReturn.toFixed(1) + '%';
             document.getElementById('liveReturn').className = 'battle-stat-value positive';
             document.getElementById('battleStatus').textContent = '🎉 VICTORY!';
+
+            // Update results page
+            const finalValueEl = document.getElementById('finalValue');
+            const finalReturnEl = document.getElementById('finalReturn');
+            if (finalValueEl) finalValueEl.textContent = '¥' + AppState.currentCapital.toLocaleString();
+            if (finalReturnEl) finalReturnEl.textContent = '+' + finalReturn.toFixed(1) + '%';
+
+            // Save backtest data
+            currentBacktestData = {
+                name: `Backtest #${AppState.missionCount}`,
+                date: new Date().toISOString(),
+                initialCapital: AppState.initialCapital,
+                finalCapital: AppState.currentCapital,
+                finalReturn: finalReturn.toFixed(1),
+                maxDrawdown: (AppState.battleStats.drawdown || 8.4).toFixed(1),
+                sharpeRatio: '1.89',
+                winRate: '61.5',
+                strategy: AppState.selectedStrategy,
+                factors: [...AppState.selectedFactors]
+            };
 
             const startBtn = document.getElementById('startBattleBtn');
             startBtn.textContent = '🏆 VIEW RESULTS';
             startBtn.onclick = () => navigateTo('results');
+
+            // Update mission count in UI
+            updateDynamicUIDisplays();
         }
 
         function addBattleEvent(event) {
@@ -2685,25 +2791,43 @@
         }
 
         function exportReport(format) {
+            const finalReturn = ((AppState.currentCapital - AppState.initialCapital) / AppState.initialCapital * 100).toFixed(1);
             const reportContent = `QUANT MISSION LOG v5.0
 =============================
-MISSION: Battle Simulation #42
-DATE: 2026-05-08
+MISSION: Battle Simulation #${AppState.missionCount}
+DATE: ${new Date().toISOString().split('T')[0]}
 STATUS: SUCCESS [GRADE: S]
 =============================
-RETURN: +89.7%
-SHARPE: 2.34
-DRAWDOWN: -11.2%
-WIN RATE: 71.4%
+INITIAL CAPITAL: ¥${AppState.initialCapital.toLocaleString()}
+CURRENT CAPITAL: ¥${AppState.currentCapital.toLocaleString()}
+RETURN: +${finalReturn}%
+SHARPE: 1.89
+DRAWDOWN: -${AppState.riskParams.maxDrawdown}%
+WIN RATE: 61.5%
+=============================
+SELECTED STRATEGY: ${AppState.selectedStrategy}
+SELECTED FACTORS: ${AppState.selectedFactors.length || 'None'}
+RISK CONTROLS: ${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}
 =============================`;
 
             if (format === 'csv') {
-                const csvContent = 'Metric,Value\nReturn,+89.7%\nSharpe,2.34\nDrawdown,-11.2%\nWinRate,71.4%';
+                const csvContent = `Metric,Value
+Initial Capital,¥${AppState.initialCapital.toLocaleString()}
+Current Capital,¥${AppState.currentCapital.toLocaleString()}
+Return,+${finalReturn}%
+Sharpe,1.89
+Max Drawdown,-${AppState.riskParams.maxDrawdown}%
+Win Rate,61.5%
+Strategy,${AppState.selectedStrategy}
+Selected Factors,${AppState.selectedFactors.length || 'None'}
+Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                 downloadFile(csvContent, 'quant-report.csv', 'text/csv');
             } else {
                 downloadFile(reportContent, 'quant-report.txt', 'text/plain');
             }
-            alert(`✅ REPORT EXPORTED AS ${format.toUpperCase()}`);
+            alert(AppState.currentLang === 'zh' ?
+                `✅ 报告已导出为 ${format.toUpperCase()} 格式` :
+                `✅ REPORT EXPORTED AS ${format.toUpperCase()}`);
         }
 
         function downloadFile(content, filename, type) {
@@ -2718,44 +2842,47 @@ WIN RATE: 71.4%
 
         function initCharts() {
             const ctx = document.getElementById('equityChart');
-            if (!ctx) return;
+            if (ctx) {
+                const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
 
-            const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Equity',
-                        data: Array.from({length: 50}, (_, i) => {
-                            let val = 100;
-                            for (let j = 0; j <= i; j++) {
-                                val += (Math.random() - 0.4) * 3;
-                            }
-                            return val;
-                        }),
-                        borderColor: '#00f5ff',
-                        backgroundColor: 'rgba(0, 245, 255, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
-                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Equity',
+                            data: Array.from({length: 50}, (_, i) => {
+                                let val = 100;
+                                for (let j = 0; j <= i; j++) {
+                                    val += (Math.random() - 0.4) * 3;
+                                }
+                                return val;
+                            }),
+                            borderColor: '#00f5ff',
+                            backgroundColor: 'rgba(0, 245, 255, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
+                            y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                        }
                     }
-                }
-            });
+                });
+            }
+
+            // Initialize market chart and watchlist
+            initMarketChart();
+            renderWatchlist();
         }
 
         // 新增功能
-        let backtestHistory = JSON.parse(localStorage.getItem('backtestHistory') || '[]');
         let currentBacktestData = null;
         let selectedHistoryItems = [];
         let currentMarket = 'cn';
@@ -3050,14 +3177,15 @@ WIN RATE: 71.4%
 
         function saveBacktest() {
             if (!currentBacktestData) {
-                alert('No backtest data to save!');
+                alert(AppState.currentLang === 'zh' ? '没有回测数据可保存！' : 'No backtest data to save!');
                 return;
             }
 
-            currentBacktestData.name = `Backtest #${backtestHistory.length + 1}`;
-            backtestHistory.unshift(currentBacktestData);
-            localStorage.setItem('backtestHistory', JSON.stringify(backtestHistory));
-            alert('✅ Backtest saved successfully!');
+            currentBacktestData.name = `Backtest #${AppState.backtestHistory.length + 1}`;
+            currentBacktestData.date = new Date().toISOString();
+            AppState.backtestHistory.unshift(currentBacktestData);
+            localStorage.setItem('backtestHistory', JSON.stringify(AppState.backtestHistory));
+            alert(AppState.currentLang === 'zh' ? '✅ 回测保存成功！' : '✅ Backtest saved successfully!');
             renderHistory();
         }
 
@@ -3065,7 +3193,7 @@ WIN RATE: 71.4%
             const emptyCard = document.getElementById('emptyHistoryCard');
             const listContainer = document.getElementById('historyListContainer');
 
-            if (backtestHistory.length === 0) {
+            if (AppState.backtestHistory.length === 0) {
                 emptyCard.style.display = 'block';
                 listContainer.style.display = 'none';
                 return;
@@ -3074,7 +3202,7 @@ WIN RATE: 71.4%
             emptyCard.style.display = 'none';
             listContainer.style.display = 'block';
 
-            listContainer.innerHTML = backtestHistory.map((item, index) => `
+            listContainer.innerHTML = AppState.backtestHistory.map((item, index) => `
                 <div class="history-card ${selectedHistoryItems.includes(index) ? 'selected' : ''}" onclick="toggleHistorySelection(${index})">
                     <div class="history-header">
                         <div class="history-title">${item.name}</div>
@@ -3219,13 +3347,29 @@ WIN RATE: 71.4%
         let marketChart = null;
 
         function refreshMarketData() {
+            // Update index data in AppState
+            Object.keys(AppState.marketData).forEach(key => {
+                const change = (Math.random() - 0.5) * 2;
+                AppState.marketData[key].change = parseFloat((AppState.marketData[key].change + change * 0.1).toFixed(2));
+                AppState.marketData[key].value = parseFloat((AppState.marketData[key].value * (1 + change / 100)).toFixed(2));
+            });
+
+            // Update UI with new index values
+            document.getElementById('sseIndex').textContent = AppState.marketData.SSE.value.toLocaleString();
+            const sseEl = document.querySelector('#sseIndex').parentElement.querySelector('.small');
+            if (sseEl) {
+                sseEl.textContent = (AppState.marketData.SSE.change >= 0 ? '+' : '') + AppState.marketData.SSE.change + '%';
+                sseEl.className = 'stat-value small ' + (AppState.marketData.SSE.change >= 0 ? 'positive' : 'negative');
+            }
+
+            // Update watchlist
             watchlist.forEach(stock => {
                 stock.price *= (1 + (Math.random() - 0.5) * 0.02);
                 stock.change = (Math.random() - 0.5) * 5;
             });
             renderWatchlist();
             updateMarketChart();
-            alert('Market data refreshed!');
+            alert(AppState.currentLang === 'zh' ? '市场数据已刷新！' : 'Market data refreshed!');
         }
 
         function renderWatchlist() {
