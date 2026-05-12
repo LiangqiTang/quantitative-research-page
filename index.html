@@ -1090,11 +1090,11 @@
                         </div>
                     </div>
                     <div class="category-tabs">
-                        <div class="category-tab optimization-tab active" data-type="all" onclick="switchOptimizationCategory('all')">ALL / 全部</div>
-                        <div class="category-tab optimization-tab" data-type="return" onclick="switchOptimizationCategory('return')">RETURN / 收益</div>
-                        <div class="category-tab optimization-tab" data-type="risk" onclick="switchOptimizationCategory('risk')">RISK / 风险</div>
-                        <div class="category-tab optimization-tab" data-type="simple" onclick="switchOptimizationCategory('simple')">SIMPLE / 简单</div>
-                        <div class="category-tab optimization-tab" data-type="advanced" onclick="switchOptimizationCategory('advanced')">ADVANCED / 高级</div>
+                        <div class="category-tab optimization-tab active" data-type="all" onclick="switchOptimizationCategory('all')">ALL</div>
+                        <div class="category-tab optimization-tab" data-type="return" onclick="switchOptimizationCategory('return')">RETURN</div>
+                        <div class="category-tab optimization-tab" data-type="risk" onclick="switchOptimizationCategory('risk')">RISK</div>
+                        <div class="category-tab optimization-tab" data-type="simple" onclick="switchOptimizationCategory('simple')">SIMPLE</div>
+                        <div class="category-tab optimization-tab" data-type="advanced" onclick="switchOptimizationCategory('advanced')">ADVANCED</div>
                     </div>
                     <div class="strategies-grid" id="optimizationModes">
                     </div>
@@ -1788,6 +1788,335 @@
         let originalTexts = new Map();
 
         const i18n = {
+            en: {
+                'QUANT CONSOLE': 'QUANT CONSOLE',
+                'v5.0 CYBERPUNK EDITION': 'v5.0 CYBERPUNK EDITION',
+                'SYSTEM STATUS:': 'SYSTEM STATUS:',
+                'ONLINE': 'ONLINE',
+                'ACCOUNT HP:': 'ACCOUNT HP:',
+                'MISSION COUNT:': 'MISSION COUNT:',
+                'MAIN CONTROLS': 'MAIN CONTROLS',
+                'Dashboard': 'Dashboard',
+                'Strategy Forge': 'Strategy Forge',
+                'Factor Arsenal': 'Factor Arsenal',
+                'Tactical Ops': 'Tactical Ops',
+                'MISSION CONTROL': 'MISSION CONTROL',
+                'Shield Settings': 'Shield Settings',
+                'Battle Mode': 'Battle Mode',
+                'Victory Screen': 'Victory Screen',
+                'Mission Logs': 'Mission Logs',
+                'MAIN CONTROL DECK': 'MAIN CONTROL DECK',
+                'System Status: Online • Mission: Active': 'System Status: Online • Mission: Active',
+                '⚔️ LAUNCH BATTLE': '⚔️ LAUNCH BATTLE',
+                '❤️ ACCOUNT HP': '❤️ ACCOUNT HP',
+                '🛡️ SHIELD POWER': '🛡️ SHIELD POWER',
+                'Total Return': 'Total Return',
+                'Sharpe Ratio': 'Sharpe Ratio',
+                'Max Drawdown': 'Max Drawdown',
+                'Win Rate': 'Win Rate',
+                'EQUITY CURVE RADAR': 'EQUITY CURVE RADAR',
+                'EQUIPPED FACTORS': 'EQUIPPED FACTORS',
+                'Momentum Alpha': 'Momentum Alpha',
+                'Legendary': 'Legendary',
+                'Epic': 'Epic',
+                'Rare': 'Rare',
+                'Common': 'Common',
+                'IC Score': 'IC Score',
+                'IR Ratio': 'IR Ratio',
+                'Value Premium': 'Value Premium',
+                'Quality Factor': 'Quality Factor',
+                'STRATEGY FORGE': 'STRATEGY FORGE',
+                'Select Weapon • Configure Parameters • Forge Strategy': 'Select Weapon • Configure Parameters • Forge Strategy',
+                'SELECT WEAPON TYPE': 'SELECT WEAPON TYPE',
+                'Momentum Blaster': 'Momentum Blaster',
+                'High-speed trend chasing with stop-loss safeguards': 'High-speed trend chasing with stop-loss safeguards',
+                'Trend': 'Trend',
+                'Aggressive': 'Aggressive',
+                'High Beta': 'High Beta',
+                'Mean Reversion Shield': 'Mean Reversion Shield',
+                'Range-bound trading with mean convergence': 'Range-bound trading with mean convergence',
+                'Contrarian': 'Contrarian',
+                'Defensive': 'Defensive',
+                'Pair Trading Blade': 'Pair Trading Blade',
+                'Dual-strike arbitrage on cointegrated pairs': 'Dual-strike arbitrage on cointegrated pairs',
+                'Arbitrage': 'Arbitrage',
+                'Market Neutral': 'Market Neutral',
+                'WEAPON CONFIGURATION': 'WEAPON CONFIGURATION',
+                'Lookback Period': 'Lookback Period',
+                '20 days': '20 days',
+                'Holding Period': 'Holding Period',
+                '10 days': '10 days',
+                'Position Size': 'Position Size',
+                '5%': '5%',
+                'FACTOR ARSENAL': 'FACTOR ARSENAL',
+                'Select Ammunition • Load Factors • Lock and Load': 'Select Ammunition • Load Factors • Lock and Load',
+                'TECHNICAL FACTORS': 'TECHNICAL FACTORS',
+                'SELECTED LOADOUT': 'SELECTED LOADOUT',
+                'TACTICAL OPTIMIZATION': 'TACTICAL OPTIMIZATION',
+                'Battle Formation • Weight Allocation • Deployment': 'Battle Formation • Weight Allocation • Deployment',
+                '⚡ RUN OPTIMIZATION': '⚡ RUN OPTIMIZATION',
+                'OPTIMIZATION MODE': 'OPTIMIZATION MODE',
+                'Max Sharpe': 'Max Sharpe',
+                'Risk-adjusted return maximization': 'Risk-adjusted return maximization',
+                'Max Return': 'Max Return',
+                'Maximum expected return': 'Maximum expected return',
+                'Min Variance': 'Min Variance',
+                'Volatility minimization': 'Volatility minimization',
+                'Risk Parity': 'Risk Parity',
+                'Equal risk contribution': 'Equal risk contribution',
+                'Most Diversified': 'Most Diversified',
+                'Maximum decorrelation': 'Maximum decorrelation',
+                'Equal Weight': 'Equal Weight',
+                'Simple equal weighting': 'Simple equal weighting',
+                'Cap Weighted': 'Cap Weighted',
+                'Market capitalization weighted': 'Market capitalization weighted',
+                'Factor Tilt': 'Factor Tilt',
+                'Multi-factor weighted allocation': 'Multi-factor weighted allocation',
+                'Black-Litterman': 'Black-Litterman',
+                'Bayesian portfolio optimization': 'Bayesian portfolio optimization',
+                'RETURN OPTIMIZATION': 'RETURN OPTIMIZATION',
+                'RISK OPTIMIZATION': 'RISK OPTIMIZATION',
+                'SIMPLE ALLOCATION': 'SIMPLE ALLOCATION',
+                'ADVANCED OPTIMIZATION': 'ADVANCED OPTIMIZATION',
+                'RETURN / 收益': 'RETURN / Return',
+                'RISK / 风险': 'RISK / Risk',
+                'SIMPLE / 简单': 'SIMPLE / Simple',
+                'ADVANCED / 高级': 'ADVANCED / Advanced',
+                'OPTIMAL FORMATION': 'OPTIMAL FORMATION',
+                'Risk': 'Risk',
+                'Return': 'Return',
+                'SHIELD CONFIGURATION': 'SHIELD CONFIGURATION',
+                'Defense Systems • Risk Control • Safety Protocols': 'Defense Systems • Risk Control • Safety Protocols',
+                'SHIELD POWER LEVELS': 'SHIELD POWER LEVELS',
+                'Stop-Loss Shield': 'Stop-Loss Shield',
+                'Stop-Loss Level': 'Stop-Loss Level',
+                '-10%': '-10%',
+                'Take-Profit Lock': 'Take-Profit Lock',
+                'Take-Profit Level': 'Take-Profit Level',
+                '25%': '25%',
+                'Max Drawdown Shield': 'Max Drawdown Shield',
+                '⚠️ MAX DRAWDOWN LIMIT': '⚠️ MAX DRAWDOWN LIMIT',
+                '20%': '20%',
+                'POSITION CONTROLS': 'POSITION CONTROLS',
+                'Max Single Position': 'Max Single Position',
+                '10%': '10%',
+                'Max Sector Exposure': 'Max Sector Exposure',
+                '30%': '30%',
+                '🛡️ ACTIVATE SHIELD': '🛡️ ACTIVATE SHIELD',
+                'BATTLE MODE': 'BATTLE MODE',
+                'Launch Simulation • Monitor Progress • Claim Victory': 'Launch Simulation • Monitor Progress • Claim Victory',
+                '⚔️ BATTLE STANDBY': '⚔️ BATTLE STANDBY',
+                'MISSION PROGRESS': 'MISSION PROGRESS',
+                'Trades Made': 'Trades Made',
+                '⚔️ START BATTLE': '⚔️ START BATTLE',
+                'VICTORY SCREEN': 'VICTORY SCREEN',
+                'Battle Results • Achievements • Performance Grade': 'Battle Results • Achievements • Performance Grade',
+                '📜 EXPORT LOG': '📜 EXPORT LOG',
+                'S': 'S',
+                '🎉 MISSION SUCCESS': '🎉 MISSION SUCCESS',
+                'Final Return': 'Final Return',
+                '+89.7%': '+89.7%',
+                '2.34': '2.34',
+                '-11.2%': '-11.2%',
+                '71.4%': '71.4%',
+                'ACHIEVEMENTS UNLOCKED': 'ACHIEVEMENTS UNLOCKED',
+                '🏆': '🏆',
+                'FIRST CENTURY': 'FIRST CENTURY',
+                'Achieved +100% return': 'Achieved +100% return',
+                '⚡': '⚡',
+                'STREAK MASTER': 'STREAK MASTER',
+                '7 consecutive winning trades': '7 consecutive winning trades',
+                '🛡️': '🛡️',
+                'PERFECT DEFENSE': 'PERFECT DEFENSE',
+                'Max drawdown under 15%': 'Max drawdown under 15%',
+                'MISSION LOG EXPORT': 'MISSION LOG EXPORT',
+                'Select Template • Configure Logs • Archive Mission': 'Select Template • Configure Logs • Archive Mission',
+                'LOG TEMPLATE SELECT': 'LOG TEMPLATE SELECT',
+                '📜 Full Mission Log': '📜 Full Mission Log',
+                'Complete report with all data': 'Complete report with all data',
+                '📊 Battle Summary': '📊 Battle Summary',
+                'Key metrics only': 'Key metrics only',
+                '📝 Kill Log': '📝 Kill Log',
+                'Trade-by-trade record': 'Trade-by-trade record',
+                '🔬 Factor Analysis': '🔬 Factor Analysis',
+                'Factor performance deep dive': 'Factor performance deep dive',
+                'LOG CONTENTS': 'LOG CONTENTS',
+                'Performance Metrics': 'Performance Metrics',
+                'Trade History': 'Trade History',
+                'Drawdown Analysis': 'Drawdown Analysis',
+                'Factor Attribution': 'Factor Attribution',
+                'Risk Statistics': 'Risk Statistics',
+                'LOG PREVIEW': 'LOG PREVIEW',
+                'QUANT MISSION LOG v5.0': 'QUANT MISSION LOG v5.0',
+                'MISSION: Battle Simulation #42': 'MISSION: Battle Simulation #42',
+                'DATE: 2026-05-08': 'DATE: 2026-05-08',
+                'STATUS: SUCCESS [GRADE: S]': 'STATUS: SUCCESS [GRADE: S]',
+                'RETURN: +89.7%': 'RETURN: +89.7%',
+                'SHARPE: 2.34': 'SHARPE: 2.34',
+                'DRAWDOWN: -11.2%': 'DRAWDOWN: -11.2%',
+                'WIN RATE: 71.4%': 'WIN RATE: 71.4%',
+                '🔄 REFRESH PREVIEW': '🔄 REFRESH PREVIEW',
+                '📄 EXPORT PDF': '📄 EXPORT PDF',
+                '📊 EXPORT CSV': '📊 EXPORT CSV',
+                '🔒 FACTORS LOCKED • READY FOR BATTLE': '🔒 FACTORS LOCKED • READY FOR BATTLE',
+                '🔨 STRATEGY FORGED • READY FOR DEPLOYMENT': '🔨 STRATEGY FORGED • READY FOR DEPLOYMENT',
+                '🛡️ SHIELD ACTIVATED • RISK CONTROLS ONLINE': '🛡️ SHIELD ACTIVATED • RISK CONTROLS ONLINE',
+                'LANGUAGE / 语言': 'LANGUAGE / Language',
+                'ALL / 全部': 'ALL / All',
+                'TREND / 趋势': 'TREND / Trend',
+                'REVERSION / 均值回归': 'REVERSION / Reversion',
+                'VALUE / 价值': 'VALUE / Value',
+                'ARBITRAGE / 套利': 'ARBITRAGE / Arbitrage',
+                'SPECIAL / 特殊': 'SPECIAL / Special',
+                '📈 TREND STRATEGIES': '📈 TREND STRATEGIES',
+                '🔄 MEAN REVERSION': '🔄 MEAN REVERSION',
+                '📊 VALUE STRATEGIES': '📊 VALUE STRATEGIES',
+                '⚖️ ARBITRAGE STRATEGIES': '⚖️ ARBITRAGE STRATEGIES',
+                '⚡ SPECIAL STRATEGIES': '⚡ SPECIAL STRATEGIES',
+                'MARKET / 市场': 'MARKET / Market',
+                'ALL': 'ALL',
+                'TECH': 'TECH',
+                'FUND': 'FUND',
+                'SENT': 'SENT',
+                'FLOW': 'FLOW',
+                'FACTORS': 'Factors',
+                'TECHNICAL FACTORS': 'TECHNICAL FACTORS',
+                'FUNDAMENTAL FACTORS': 'FUNDAMENTAL FACTORS',
+                'SENTIMENT FACTORS': 'SENTIMENT FACTORS',
+                'MONEY FLOW FACTORS': 'MONEY FLOW FACTORS',
+                'technical': 'technical',
+                'fundamental': 'fundamental',
+                'sentiment': 'sentiment',
+                'moneyflow': 'moneyflow',
+                'Breakout Cannon': 'Breakout Cannon',
+                'Resistance level breach with volume confirmation': 'Resistance level breach with volume confirmation',
+                'Breakout': 'Breakout',
+                'Volume': 'Volume',
+                'Value Harvester': 'Value Harvester',
+                'Undervalued asset hunting with fundamental screening': 'Undervalued asset hunting with fundamental screening',
+                'Value': 'Value',
+                'Long-term': 'Long-term',
+                'Fundamental': 'Fundamental',
+                'Growth Rocket': 'Growth Rocket',
+                'High-growth stock selection with momentum filter': 'High-growth stock selection with momentum filter',
+                'Growth': 'Growth',
+                'High PE': 'High PE',
+                'Quality Crown': 'Quality Crown',
+                'High ROE, low debt, stable earnings compounder': 'High ROE, low debt, stable earnings compounder',
+                'Compound': 'Compound',
+                'Dividend Miner': 'Dividend Miner',
+                'High yield + dividend growth stock selection': 'High yield + dividend growth stock selection',
+                'Income': 'Income',
+                'Low Vol Zen': 'Low Vol Zen',
+                'Minimum variance portfolio for smooth returns': 'Minimum variance portfolio for smooth returns',
+                'Low Vol': 'Low Vol',
+                'Risk Averse': 'Risk Averse',
+                'Sector Rotator': 'Sector Rotator',
+                'Business cycle based sector allocation shifting': 'Business cycle based sector allocation shifting',
+                'Macro': 'Macro',
+                'Rotation': 'Rotation',
+                'Sector': 'Sector',
+                'Event Striker': 'Event Striker',
+                'Earnings, M&A, corporate action event capture': 'Earnings, M&A, corporate action event capture',
+                'Event': 'Event',
+                'Short-term': 'Short-term',
+                'Catalyst': 'Catalyst',
+                'Multi-Factor Core': 'Multi-Factor Core',
+                'Blended quality + value + momentum + low vol': 'Blended quality + value + momentum + low vol',
+                'Balanced': 'Balanced',
+                'Core': 'Core',
+                'Short Predator': 'Short Predator',
+                'Weak stock identification with short entry signals': 'Weak stock identification with short entry signals',
+                'Short': 'Short',
+                'Hedging': 'Hedging',
+                'Trend Surfer': 'Trend Surfer',
+                'Moving average crossover with trend confirmation': 'Moving average crossover with trend confirmation',
+                'Technical': 'Technical',
+                'Follow': 'Follow',
+                'Contrarian Rebel': 'Contrarian Rebel',
+                'Extreme sentiment reversals with mean bounce': 'Extreme sentiment reversals with mean bounce',
+                'Sentiment': 'Sentiment',
+                'Counter': 'Counter',
+                '🇨🇳 A股': '🇨🇳 A-Share',
+                '🇺🇸美股': '🇺🇸 US',
+                '🇭🇰港股': '🇭🇰 HK',
+                '中文': '中文',
+                'EN': 'EN',
+                'No factors selected yet': 'No factors selected yet',
+                'FACTORS LOCKED AND LOADED:': 'FACTORS LOCKED AND LOADED:',
+                '🔒 LOCK AND LOAD': '🔒 LOCK AND LOAD',
+                '⚔️ BATTLE IN PROGRESS': '⚔️ BATTLE IN PROGRESS',
+                'Live Return': 'Live Return',
+                'Trades': 'Trades',
+                '⏸️ PAUSE BATTLE': '⏸️ PAUSE BATTLE',
+                '⏸️ BATTLE PAUSED': '⏸️ BATTLE PAUSED',
+                '⏭️ FAST FORWARD': '⏭️ FAST FORWARD',
+                '▶️ RESUME BATTLE': '▶️ RESUME BATTLE',
+                '🎉 VIEW RESULTS': '🎉 VIEW RESULTS',
+                '🎉 VICTORY!': '🎉 VICTORY!',
+                'VICTORY': 'VICTORY',
+                'MISSION STATS': 'MISSION STATS',
+                'Calmar Ratio': 'Calmar Ratio',
+                'Sortino Ratio': 'Sortino Ratio',
+                'Best Day': 'Best Day',
+                'Worst Day': 'Worst Day',
+                'DOWNSIDE ANALYSIS': 'DOWNSIDE ANALYSIS',
+                'Drawdown Duration': 'Drawdown Duration',
+                'Recovery Time': 'Recovery Time',
+                'TRADE LOG': 'TRADE LOG',
+                'Date': 'Date',
+                'Action': 'Action',
+                'P&L': 'P&L',
+                '🎖️ First Blood': '🎖️ First Blood',
+                'First profitable trade': 'First profitable trade',
+                '⚡ Maximum Overdrive': '⚡ Maximum Overdrive',
+                '50%+ return achieved': '50%+ return achieved',
+                '🛡️ Iron Wall': '🛡️ Iron Wall',
+                'Max drawdown <10%': 'Max drawdown <10%',
+                'MISSION LOGS': 'MISSION LOGS',
+                'Template Select • Contents • Export': 'Template Select • Contents • Export',
+                '✅ REPORT EXPORTED AS': '✅ REPORT EXPORTED AS',
+                'Select Ammo • Lock and Load • Deploy': 'Select Ammo • Lock and Load • Deploy',
+                'TECHNICAL AMMO': 'TECHNICAL AMMO',
+                'Size Effect': 'Size Effect',
+                'Volatility Carry': 'Volatility Carry',
+                'Liquidity Beta': 'Liquidity Beta',
+                'FACTOR STATS': 'FACTOR STATS',
+                'Battlefield Formation • Asset Allocation': 'Battlefield Formation • Asset Allocation',
+                'Risk-adjusted returns': 'Risk-adjusted returns',
+                'Lowest volatility': 'Lowest volatility',
+                'DEPLOY FORMATION': 'DEPLOY FORMATION',
+                'OPTIMIZATION RESULTS': 'OPTIMIZATION RESULTS',
+                'Asset': 'Asset',
+                'Weight': 'Weight',
+                'Expected Return': 'Expected Return',
+                'Risk Contribution': 'Risk Contribution',
+                'SHIELD SETTINGS': 'SHIELD SETTINGS',
+                'Defensive Systems • Risk Controls': 'Defensive Systems • Risk Controls',
+                'SHIELD LEVEL': 'SHIELD LEVEL',
+                'Stop-Loss Limit': 'Stop-Loss Limit',
+                'Take-Profit Target': 'Take-Profit Target',
+                'Max Drawdown Limit': 'Max Drawdown Limit',
+                'Position Limits': 'Position Limits',
+                'Single Asset Max': 'Single Asset Max',
+                'Sector Max': 'Sector Max',
+                'Leverage': 'Leverage',
+                'EMERGENCY SHIELDS': 'EMERGENCY SHIELDS',
+                'Circuit Breaker': 'Circuit Breaker',
+                'Stop on volatility spike': 'Stop on volatility spike',
+                'Kill Switch': 'Kill Switch',
+                'Global position kill': 'Global position kill',
+                '🛡️ DEPLOY SHIELD': '🛡️ DEPLOY SHIELD',
+                'Execute Backtest • Monitor P&L • Achieve Victory': 'Execute Backtest • Monitor P&L • Achieve Victory',
+                '⚔️ BATTLE STATIONS ⚔️': '⚔️ BATTLE STATIONS ⚔️',
+                'Battle Progress': 'Battle Progress',
+                '0%': '0%',
+                '100%': '100%',
+                '▶️ START BATTLE': '▶️ START BATTLE',
+                '⚙️ CONFIG': '⚙️ CONFIG',
+                '📂 Load': '📂 Load',
+                '🗑️ Delete': '🗑️ Delete'
+            },
             zh: {
                 'QUANT CONSOLE': '量化控制台',
                 'v5.0 CYBERPUNK EDITION': 'v5.0 赛博朋克版',
@@ -1825,6 +2154,86 @@
                 'IR Ratio': 'IR比率',
                 'Value Premium': '价值溢价',
                 'Quality Factor': '质量因子',
+                'Size Effect': '规模效应',
+                'Volatility Carry': '波动套利',
+                'Liquidity Beta': '流动性贝塔',
+                'RSI Reversal': 'RSI反转',
+                'MACD Divergence': 'MACD背离',
+                'Bollinger Break': '布林突破',
+                'Moving Avg Cross': '均线交叉',
+                'Volume Surge': '成交量激增',
+                'Price Breakout': '价格突破',
+                'Trend Strength': '趋势强度',
+                'Relative Strength': '相对强弱',
+                'Stochastic Osc': '随机震荡',
+                'CCI Extreme': 'CCI极端',
+                'Williams %R': '威廉指标',
+                'ATR Breakout': 'ATR突破',
+                'Donchian Chan': '唐奇安通道',
+                'Keltner Band': '凯尔特纳通道',
+                'Ichimoku Cloud': '一目均衡云',
+                'Heikin-Ashi': '平均K线',
+                'Renko Pattern': '砖形图',
+                'Point & Figure': '点数图',
+                'Fibonacci Ret': '斐波那契回撤',
+                'Elliott Wave': '艾略特波浪',
+                'Gann Angle': '江恩角度',
+                'Pivot Points': '支点',
+                'Volume Profile': '成交量分布',
+                'VWAP Revert': 'VWAP回归',
+                'Tick Volume': 'Tick成交量',
+                'On Balance Vol': '能量潮',
+                'Accum/Distrib': '累积/派发',
+                'Chaikin Osc': '佳庆指标',
+                'Money Flow Ind': '资金流量指标',
+                'P/E Ratio': '市盈率',
+                'P/B Ratio': '市净率',
+                'P/S Ratio': '市销率',
+                'EV/EBITDA': '企业价值倍数',
+                'Dividend Yield': '股息率',
+                'ROE Quality': '净资产收益率质量',
+                'ROA Strength': '总资产收益率强度',
+                'Gross Margin': '毛利率',
+                'Operating Marg': '营业利润率',
+                'Net Margin': '净利率',
+                'Earnings Growth': '盈利增长',
+                'Sales Growth': '营收增长',
+                'CFO Growth': '经营现金流增长',
+                'Asset Turnover': '资产周转率',
+                'Inventory Chg': '库存变化',
+                'AR Turnover': '应收账款周转率',
+                'Debt to Equity': '资产负债率',
+                'Interest Cov': '利息覆盖率',
+                'Current Ratio': '流动比率',
+                'Quick Ratio': '速动比率',
+                'Cash Holdings': '现金持有',
+                'CapEx Growth': '资本支出增长',
+                'R&D Intensity': '研发强度',
+                'Ad Spend': '广告支出',
+                'Employee Growth': '员工增长',
+                'Insider Buy': '内部人买入',
+                'Institutional': '机构持仓',
+                'Share Buyback': '股票回购',
+                'Dividend Grow': '股息增长',
+                'Earnings Surp': '盈利超预期',
+                'News Sentiment': '新闻情绪',
+                'Social Mood': '社交情绪',
+                'Analyst Recom': '分析师推荐',
+                'Target Price': '目标价',
+                'Earnings Call': '财报电话会议',
+                'Management Tone': '管理层语气',
+                'Media Mentions': '媒体提及',
+                'Search Volume': '搜索量',
+                'Google Trends': '谷歌趋势',
+                'Twitter Buzz': '推特热度',
+                'Reddit Vibes': 'Reddit情绪',
+                'Options Skew': '期权偏度',
+                'Put/Call Ratio': '看跌/看涨比率',
+                'VIX Fear': 'VIX恐慌',
+                'Vol Premium': '波动率溢价',
+                'Short Interest': '空头仓位',
+                'Borrow Cost': '借贷成本',
+                'Flows Sentiment': '资金流情绪',
                 'STRATEGY FORGE': '策略工坊',
                 'Select Weapon • Configure Parameters • Forge Strategy': '选择武器 • 配置参数 • 锻造策略',
                 'SELECT WEAPON TYPE': '选择武器类型',
@@ -1964,7 +2373,75 @@
                 'Select Weapon • Configure Parameters • Forge Strategy': '选择武器 • 配置参数 • 锻造策略',
                 'SELECT WEAPON TYPE': '选择武器类型',
                 'Momentum Blaster': '动量冲击炮',
+                'Trend Surfer': '趋势冲浪者',
+                'Breakout Cannon': '突破加农炮',
+                'Mean Reversion Shield': '均值回归护盾',
+                'Contrarian Rebel': '逆向叛逆者',
+                'Value Harvester': '价值收割机',
+                'Quality Crown': '质量皇冠',
+                'Dividend Miner': '股息矿工',
+                'Pair Trading Blade': '配对交易之刃',
+                'Low Vol Zen': '低波动禅',
+                'Sector Rotator': '行业轮动者',
+                'Event Striker': '事件打击者',
+                'Multi-Factor Core': '多因子核心',
+                'Short Predator': '空头捕食者',
                 'High-speed trend chasing with stop-loss safeguards': '高速趋势追踪，带止损保障',
+                'Moving average crossover with trend confirmation': '带趋势确认的均线交叉',
+                'Resistance level breach with volume confirmation': '带成交量确认的阻力位突破',
+                'Range-bound trading with mean convergence': '均值回归的区间交易',
+                'Extreme sentiment reversals with mean bounce': '极端情绪反转，均值反弹',
+                'Undervalued asset hunting with fundamental screening': '通过基本面筛选寻找低估资产',
+                'High ROE, low debt, stable earnings compounder': '高ROE、低负债、稳定收益复利者',
+                'High yield + dividend growth stock selection': '高收益+股息增长选股',
+                'Dual-strike arbitrage on cointegrated pairs': '协整配对的双重套利',
+                'Minimum variance portfolio for smooth returns': '最小方差组合，平滑收益',
+                'Business cycle based sector allocation shifting': '基于经济周期的行业配置轮动',
+                'Earnings, M&A, corporate action event capture': '盈利、并购、公司事件捕捉',
+                'Blended quality + value + momentum + low vol': '质量+价值+动量+低波动混合',
+                'Weak stock identification with short entry signals': '弱势股票识别，带做空入场信号',
+                'Trend': '趋势',
+                'Aggressive': '激进',
+                'High Beta': '高贝塔',
+                'Technical': '技术',
+                'Follow': '跟随',
+                'Breakout': '突破',
+                'Volume': '成交量',
+                'Contrarian': '逆向',
+                'Defensive': '防御',
+                'Sentiment': '情绪',
+                'Counter': '反向',
+                'Value': '价值',
+                'Long-term': '长期',
+                'Fundamental': '基本面',
+                'Quality': '质量',
+                'Compound': '复利',
+                'Dividend': '股息',
+                'Income': '收益',
+                'Arbitrage': '套利',
+                'Market Neutral': '市场中性',
+                'Low Vol': '低波动',
+                'Risk Averse': '风险厌恶',
+                'Macro': '宏观',
+                'Rotation': '轮动',
+                'Sector': '行业',
+                'Event': '事件',
+                'Short-term': '短期',
+                'Catalyst': '催化剂',
+                'Multi-Factor': '多因子',
+                'Balanced': '平衡',
+                'Core': '核心',
+                'Short': '做空',
+                'Hedging': '对冲',
+                'Max Sharpe': '最大夏普',
+                'Max Return': '最大收益',
+                'Min Variance': '最小方差',
+                'Risk Parity': '风险平价',
+                'Most Diversified': '最大分散化',
+                'Equal Weight': '等权重',
+                'Cap Weighted': '市值加权',
+                'Factor Tilt': '因子倾斜',
+                'Black-Litterman': 'Black-Litterman',
                 'technical': '技术',
                 'Mean Reversion': '均值回归',
                 'Shield Device': '护盾装置',
@@ -2165,7 +2642,45 @@
                 'Contrarian Rebel': '逆向反叛者',
                 'Extreme sentiment reversals with mean bounce': '极端情绪反转，均值回归',
                 'Sentiment': '情绪',
-                'Counter': '反向'
+                'Counter': '反向',
+                '🇨🇳 A股': '🇨🇳 A股',
+                '🇺🇸美股': '🇺🇸 美股',
+                '🇭🇰港股': '🇭🇰 港股',
+                '中文': '中文',
+                'EN': 'EN',
+                '⚔️ BATTLE IN PROGRESS': '⚔️ 战斗进行中',
+                'Live Return': '实时收益',
+                'Trades': '交易次数',
+                '⏸️ PAUSE BATTLE': '⏸️ 暂停战斗',
+                '⏸️ BATTLE PAUSED': '⏸️ 战斗已暂停',
+                '⏭️ FAST FORWARD': '⏭️ 快进',
+                '▶️ RESUME BATTLE': '▶️ 继续战斗',
+                '🎉 VIEW RESULTS': '🎉 查看结果',
+                '🎉 VICTORY!': '🎉 胜利!',
+                'VICTORY': '胜利',
+                'MISSION STATS': '任务数据',
+                'Calmar Ratio': '卡玛比率',
+                'Sortino Ratio': '索提诺比率',
+                'Best Day': '最佳单日',
+                'Worst Day': '最差单日',
+                'DOWNSIDE ANALYSIS': '回撤分析',
+                'Drawdown Duration': '回撤时长',
+                'Recovery Time': '恢复时间',
+                'TRADE LOG': '交易日志',
+                'Date': '日期',
+                'Action': '操作',
+                'P&L': '盈亏',
+                '🎖️ First Blood': '🎖️ 首次胜利',
+                'First profitable trade': '首笔盈利交易',
+                '⚡ Maximum Overdrive': '⚡ 满负荷',
+                '50%+ return achieved': '达成50%+收益',
+                '🛡️ Iron Wall': '🛡️ 铁壁',
+                'Max drawdown <10%': '最大回撤<10%',
+                'MISSION LOGS': '任务日志',
+                'Template Select • Contents • Export': '模板选择 • 内容 • 导出',
+                '⚙️ CONFIG': '⚙️ 配置',
+                '📂 Load': '📂 加载',
+                '🗑️ Delete': '🗑️ 删除'
             }
         };
 
@@ -2207,8 +2722,17 @@
 
         function setLanguage(lang) {
             AppState.currentLang = lang;
+            // 先保存原始文本（可能包含新渲染的内容）
+            saveOriginalTexts();
+            // 重新渲染所有动态内容
+            renderStrategies();
+            renderFactors();
+            renderOptimizations();
+            // 应用翻译
             applyLanguage();
+            // 更新按钮状态
             updateLanguageButtons();
+            // 更新动态UI显示
             updateDynamicUIDisplays();
         }
 
@@ -2371,11 +2895,11 @@
 
             // 更新战术优化标签按钮文本
             const optimizationTabLabels = {
-                'all': { en: 'ALL / 全部', zh: 'ALL / 全部' },
-                'return': { en: 'RETURN / 收益', zh: 'RETURN / 收益' },
-                'risk': { en: 'RISK / 风险', zh: 'RISK / 风险' },
-                'simple': { en: 'SIMPLE / 简单', zh: 'SIMPLE / 简单' },
-                'advanced': { en: 'ADVANCED / 高级', zh: 'ADVANCED / 高级' }
+                'all': { en: 'ALL', zh: '全部' },
+                'return': { en: 'RETURN', zh: '收益' },
+                'risk': { en: 'RISK', zh: '风险' },
+                'simple': { en: 'SIMPLE', zh: '简单' },
+                'advanced': { en: 'ADVANCED', zh: '高级' }
             };
             document.querySelectorAll('.optimization-tab').forEach(btn => {
                 const type = btn.dataset.type;
@@ -2611,7 +3135,7 @@
             container.innerHTML = filtered.map(opt => `
                 <div class="strategy-card ${AppState.optimizationMode === opt.id ? 'selected' : ''}" onclick="selectOptimization(this, '${opt.id}')">
                     <div class="strategy-icon">${opt.icon}</div>
-                    <div class="strategy-name">${opt.name}</div>
+                    <div class="strategy-name">${i18n[AppState.currentLang][opt.name] || opt.name}</div>
                     <div class="strategy-desc">${i18n[AppState.currentLang][opt.desc] || opt.desc}</div>
                 </div>
             `).join('');
@@ -2696,16 +3220,18 @@
                 grouped[s.category].push(s);
             });
 
-            // 获取分类标题
+            // 获取分类标题 - 使用i18n支持双语
             const getCatTitle = (cat) => {
-                const titles = {
+                const titleKeys = {
                     'trend': '📈 TREND STRATEGIES',
                     'mean-reversion': '🔄 MEAN REVERSION',
                     'value': '📊 VALUE STRATEGIES',
                     'arbitrage': '⚖️ ARBITRAGE STRATEGIES',
                     'special': '⚡ SPECIAL STRATEGIES'
                 };
-                return titles[cat] || 'STRATEGIES';
+                const key = titleKeys[cat];
+                if (!key) return 'STRATEGIES';
+                return i18n[AppState.currentLang][key] || key;
             };
 
             // 清空容器
@@ -2738,12 +3264,12 @@
 
                     const nameDiv = document.createElement('div');
                     nameDiv.className = 'strategy-name';
-                    nameDiv.textContent = strategy.name;
+                    nameDiv.textContent = i18n[AppState.currentLang][strategy.name] || strategy.name;
                     cardDiv.appendChild(nameDiv);
 
                     const descDiv = document.createElement('div');
                     descDiv.className = 'strategy-desc';
-                    descDiv.textContent = strategy.desc;
+                    descDiv.textContent = i18n[AppState.currentLang][strategy.desc] || strategy.desc;
                     cardDiv.appendChild(descDiv);
 
                     const tagsDiv = document.createElement('div');
@@ -2751,7 +3277,7 @@
                     strategy.tags.forEach(tag => {
                         const tagSpan = document.createElement('span');
                         tagSpan.className = 'strategy-tag';
-                        tagSpan.textContent = tag;
+                        tagSpan.textContent = i18n[AppState.currentLang][tag] || tag;
                         tagsDiv.appendChild(tagSpan);
                     });
                     cardDiv.appendChild(tagsDiv);
@@ -2845,7 +3371,7 @@
             container.innerHTML = filtered.map(factor => `
                 <div class="factor-card rarity-${factor.rarity}" onclick="toggleFactor(this, '${factor.name}')">
                     <div class="factor-header">
-                        <div class="factor-name">${factor.name}</div>
+                        <div class="factor-name">${i18n[AppState.currentLang][factor.name] || factor.name}</div>
                         <div class="factor-rarity">${getRarityLabel(factor.rarity)}</div>
                     </div>
                     <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">
@@ -2881,12 +3407,15 @@
 
         function updateSelectedFactors() {
             const container = document.getElementById('selectedFactors');
+            const noFactorsText = i18n[AppState.currentLang]['No factors selected yet'] || 'No factors selected yet';
+            const factorsLockedText = i18n[AppState.currentLang]['FACTORS LOCKED AND LOADED:'] || 'FACTORS LOCKED AND LOADED:';
+
             if (AppState.selectedFactors.length === 0) {
-                container.innerHTML = '<span style="color: var(--text-secondary);">No factors selected yet</span>';
+                container.innerHTML = `<span style="color: var(--text-secondary);">${noFactorsText}</span>`;
             } else {
                 container.innerHTML = `
                     <span style="color: var(--neon-green); font-family: 'Orbitron', monospace;">
-                        ${AppState.selectedFactors.length} FACTORS LOCKED AND LOADED:
+                        ${AppState.selectedFactors.length} ${factorsLockedText}
                     </span>
                     <div style="margin-top: 12px; color: var(--neon-cyan);">
                         ${AppState.selectedFactors.join(' • ')}
@@ -2896,7 +3425,7 @@
         }
 
         function lockAndLoad() {
-            alert('🔒 FACTORS LOCKED • READY FOR BATTLE');
+            alert(i18n[AppState.currentLang]['🔒 FACTORS LOCKED • READY FOR BATTLE'] || '🔒 FACTORS LOCKED • READY FOR BATTLE');
             navigateTo('backtest');
         }
 
@@ -2935,11 +3464,11 @@
         }
 
         function forgeStrategy() {
-            alert('🔨 STRATEGY FORGED • READY FOR DEPLOYMENT');
+            alert(i18n[AppState.currentLang]['🔨 STRATEGY FORGED • READY FOR DEPLOYMENT'] || '🔨 STRATEGY FORGED • READY FOR DEPLOYMENT');
         }
 
         function deployShield() {
-            alert('🛡️ SHIELD ACTIVATED • RISK CONTROLS ONLINE');
+            alert(i18n[AppState.currentLang]['🛡️ SHIELD ACTIVATED • RISK CONTROLS ONLINE'] || '🛡️ SHIELD ACTIVATED • RISK CONTROLS ONLINE');
         }
 
         function runOptimization() {
@@ -2961,64 +3490,40 @@
         }
 
         let battleInterval = null;
-        function startBattle() {
-            if (AppState.battleInProgress) return;
 
-            AppState.battleInProgress = true;
-            AppState.battleProgress = 0;
-            document.getElementById('progressContainer').style.display = 'block';
-            document.getElementById('battleStats').style.display = 'grid';
-            document.getElementById('battleEvents').style.display = 'block';
+        // 新增功能
+        let currentBacktestData = null;
+        let selectedHistoryItems = [];
 
-            const events = [
-                { icon: '⚔️', text: 'Battle initiated! First position opened.', class: '' },
-                { icon: '📈', text: '+2.3% gain - Solid start!', class: 'event-success' },
-                { icon: '💥', text: 'CRITICAL HIT! +8.7% single-day return!', class: 'event-critical' },
-                { icon: '📉', text: 'Small pullback -1.2%', class: '' },
-                { icon: '🛡️', text: 'Stop-loss saved position!', class: 'event-success' },
-                { icon: '⚡', text: 'COMBO! 3rd consecutive win!', class: 'event-combo' },
-                { icon: '💥', text: 'CRITICAL! +12.4% breakout!', class: 'event-critical' }
-            ];
+        function updateCapital() {
+            const capital = document.getElementById('initialCapital').value;
+            AppState.currentCapital = parseInt(capital);
+            const formatted = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(AppState.currentCapital);
+            document.getElementById('capitalValue').textContent = formatted;
+        }
 
-            const startBtn = document.getElementById('startBattleBtn');
-            startBtn.textContent = '⏸️ PAUSE BATTLE';
-            startBtn.onclick = () => {
-                if (AppState.battleInProgress) {
-                    pauseBattle();
-                } else {
-                    resumeBattle();
-                }
-            };
+        function selectMarket(element, market) {
+            document.querySelectorAll('.market-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            AppState.currentMarket = market;
+        }
 
-            let eventIndex = 0;
-            battleInterval = setInterval(() => {
-                AppState.battleProgress += Math.random() * 10;
-                if (AppState.battleProgress >= 100) {
-                    AppState.battleProgress = 100;
-                    endBattle();
-                    return;
-                }
+        function toggleBattleView() {
+            const configContainer = document.getElementById('battleConfigContainer');
+            const battleContainer = document.getElementById('battleContainer');
+            const toggleBtn = document.getElementById('toggleConfigBtn');
 
-                document.getElementById('progressFill').style.width = AppState.battleProgress + '%';
-                document.getElementById('progressPercent').textContent = Math.floor(AppState.battleProgress) + '%';
-                document.getElementById('battleStatus').textContent = '⚔️ BATTLE IN PROGRESS';
-
-                AppState.battleStats.returns += (Math.random() - 0.3) * 5;
-                AppState.battleStats.trades += Math.random() > 0.7 ? 1 : 0;
-                AppState.battleStats.winRate = Math.min(85, 50 + Math.random() * 35);
-                AppState.battleStats.drawdown = Math.max(0, Math.min(20, AppState.battleStats.drawdown + (Math.random() - 0.6) * 2));
-
-                document.getElementById('liveReturn').textContent = (AppState.battleStats.returns > 0 ? '+' : '') + AppState.battleStats.returns.toFixed(2) + '%';
-                document.getElementById('liveReturn').className = 'battle-stat-value ' + (AppState.battleStats.returns >= 0 ? 'positive' : 'negative');
-                document.getElementById('liveTrades').textContent = AppState.battleStats.trades;
-                document.getElementById('liveWinRate').textContent = AppState.battleStats.winRate.toFixed(0) + '%';
-                document.getElementById('liveDrawdown').textContent = '-' + AppState.battleStats.drawdown.toFixed(2) + '%';
-
-                if (Math.random() > 0.6 && eventIndex < events.length) {
-                    addBattleEvent(events[eventIndex]);
-                    eventIndex++;
-                }
-            }, 300);
+            if (configContainer.style.display !== 'none') {
+                configContainer.style.display = 'none';
+                battleContainer.style.display = 'block';
+                toggleBtn.textContent = '⚙️ CONFIG';
+            } else {
+                configContainer.style.display = 'block';
+                battleContainer.style.display = 'none';
+                toggleBtn.textContent = '⚔️ BATTLE';
+            }
         }
 
         function pauseBattle() {
@@ -3030,56 +3535,6 @@
 
         function resumeBattle() {
             startBattle();
-        }
-
-        function endBattle() {
-            clearInterval(battleInterval);
-            AppState.battleInProgress = false;
-
-            // Generate realistic final results
-            const finalReturn = 24.7 + (Math.random() * 50); // 24.7% to 74.7%
-            AppState.battleStats.returns = finalReturn;
-
-            // Update current capital based on results
-            AppState.currentCapital = Math.round(AppState.initialCapital * (1 + finalReturn / 100));
-            AppState.missionCount++;
-
-            // Update account HP based on results
-            // Good returns increase HP, drawdown decreases HP
-            const hpChange = Math.min(8, Math.floor(finalReturn / 10)) - Math.floor((AppState.battleStats.drawdown || 0) / 5);
-            AppState.accountHP = Math.max(10, Math.min(100, AppState.accountHP + hpChange));
-
-            // Update UI
-            document.getElementById('liveReturn').textContent = '+' + finalReturn.toFixed(1) + '%';
-            document.getElementById('liveReturn').className = 'battle-stat-value positive';
-            document.getElementById('battleStatus').textContent = '🎉 VICTORY!';
-
-            // Update results page
-            const finalValueEl = document.getElementById('finalValue');
-            const finalReturnEl = document.getElementById('finalReturn');
-            if (finalValueEl) finalValueEl.textContent = '¥' + AppState.currentCapital.toLocaleString();
-            if (finalReturnEl) finalReturnEl.textContent = '+' + finalReturn.toFixed(1) + '%';
-
-            // Save backtest data
-            currentBacktestData = {
-                name: `Backtest #${AppState.missionCount}`,
-                date: new Date().toISOString(),
-                initialCapital: AppState.initialCapital,
-                finalCapital: AppState.currentCapital,
-                finalReturn: finalReturn.toFixed(1),
-                maxDrawdown: (AppState.battleStats.drawdown || 8.4).toFixed(1),
-                sharpeRatio: '1.89',
-                winRate: '61.5',
-                strategy: AppState.selectedStrategy,
-                factors: [...AppState.selectedFactors]
-            };
-
-            const startBtn = document.getElementById('startBattleBtn');
-            startBtn.textContent = '🏆 VIEW RESULTS';
-            startBtn.onclick = () => navigateTo('results');
-
-            // Update mission count in UI
-            updateDynamicUIDisplays();
         }
 
         function addBattleEvent(event) {
@@ -3193,43 +3648,6 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             renderWatchlist();
         }
 
-        // 新增功能
-        let currentBacktestData = null;
-        let selectedHistoryItems = [];
-
-        function updateCapital() {
-            const capital = document.getElementById('initialCapital').value;
-            AppState.currentCapital = parseInt(capital);
-            const formatted = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(AppState.currentCapital);
-            document.getElementById('capitalValue').textContent = formatted;
-        }
-
-        function selectMarket(element, market) {
-            document.querySelectorAll('.market-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            AppState.currentMarket = market;
-        }
-
-        function toggleBattleView() {
-            const configContainer = document.getElementById('battleConfigContainer');
-            const battleContainer = document.getElementById('battleContainer');
-            const toggleBtn = document.getElementById('toggleConfigBtn');
-
-            if (configContainer.style.display !== 'none') {
-                configContainer.style.display = 'none';
-                battleContainer.style.display = 'block';
-                toggleBtn.textContent = '⚙️ CONFIG';
-            } else {
-                configContainer.style.display = 'block';
-                battleContainer.style.display = 'none';
-                toggleBtn.textContent = '⚔️ BATTLE';
-            }
-        }
-
-        // 重写startBattle函数
-        let originalStartBattle = startBattle;
         function startBattle() {
             if (AppState.battleInProgress) return;
 
@@ -3392,8 +3810,6 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             `).join('');
         }
 
-        // 重写endBattle函数 - 保持动态值更新
-        let originalEndBattle = endBattle;
         function endBattle() {
             clearInterval(battleInterval);
             AppState.battleInProgress = false;
@@ -3620,7 +4036,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
 
             const colors = ['#00f5ff', '#ff00aa', '#ffd700', '#00ff88'];
             const datasets = selectedHistoryItems.map((idx, i) => {
-                const item = backtestHistory[idx];
+                const item = AppState.backtestHistory[idx];
                 const normalized = item.equityCurve.map(v => (v / item.equityCurve[0]) * 100);
                 return {
                     label: item.name,
@@ -3639,7 +4055,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             comparisonChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: backtestHistory[selectedHistoryItems[0]].equityCurve.map((_, i) => `Day ${i}`),
+                    labels: AppState.backtestHistory[selectedHistoryItems[0]].equityCurve.map((_, i) => `Day ${i}`),
                     datasets: datasets
                 },
                 options: {
