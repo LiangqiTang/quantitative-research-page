@@ -744,60 +744,60 @@
                     <span class="status-value">ONLINE</span>
                 </div>
                 <div class="status-row">
-                    <span class="status-label">ACCOUNT HP:</span>
+                    <span class="status-label" data-i18n="ACCOUNT HP:">ACCOUNT HP:</span>
                     <span class="status-value" id="accountHPValue">92%</span>
                 </div>
                 <div class="status-row">
-                    <span class="status-label">MISSION COUNT:</span>
+                    <span class="status-label" data-i18n="MISSION COUNT:">MISSION COUNT:</span>
                     <span class="status-value" id="missionCountValue">17</span>
                 </div>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">MAIN CONTROLS</div>
+                <div class="nav-section-title" data-i18n="MAIN CONTROLS">MAIN CONTROLS</div>
                 <div class="nav-item active" data-page="dashboard">
                     <span class="nav-icon">🚀</span>
-                    <span class="nav-label">Dashboard</span>
+                    <span class="nav-label" data-i18n="Dashboard">Dashboard</span>
                 </div>
                 <div class="nav-item" data-page="strategy">
                     <span class="nav-icon">🔫</span>
-                    <span class="nav-label">Strategy Forge</span>
+                    <span class="nav-label" data-i18n="Strategy Forge">Strategy Forge</span>
                 </div>
                 <div class="nav-item" data-page="factors">
                     <span class="nav-icon">💎</span>
-                    <span class="nav-label">Factor Arsenal</span>
+                    <span class="nav-label" data-i18n="Factor Arsenal">Factor Arsenal</span>
                 </div>
                 <div class="nav-item" data-page="optimization">
                     <span class="nav-icon">⚙️</span>
-                    <span class="nav-label">Tactical Ops</span>
+                    <span class="nav-label" data-i18n="Tactical Ops">Tactical Ops</span>
                 </div>
             </div>
 
             <div class="nav-section">
-                <div class="nav-section-title">MISSION CONTROL</div>
+                <div class="nav-section-title" data-i18n="MISSION CONTROL">MISSION CONTROL</div>
                 <div class="nav-item" data-page="market">
                     <span class="nav-icon">📊</span>
-                    <span class="nav-label">Market View</span>
+                    <span class="nav-label" data-i18n="Market View">Market View</span>
                 </div>
                 <div class="nav-item" data-page="risk">
                     <span class="nav-icon">🛡️</span>
-                    <span class="nav-label">Shield Settings</span>
+                    <span class="nav-label" data-i18n="Shield Settings">Shield Settings</span>
                 </div>
                 <div class="nav-item" data-page="backtest">
                     <span class="nav-icon">⚔️</span>
-                    <span class="nav-label">Battle Mode</span>
+                    <span class="nav-label" data-i18n="Battle Mode">Battle Mode</span>
                 </div>
                 <div class="nav-item" data-page="results">
                     <span class="nav-icon">🏆</span>
-                    <span class="nav-label">Victory Screen</span>
+                    <span class="nav-label" data-i18n="Victory Screen">Victory Screen</span>
                 </div>
                 <div class="nav-item" data-page="history">
                     <span class="nav-icon">📚</span>
-                    <span class="nav-label">History</span>
+                    <span class="nav-label" data-i18n="History">History</span>
                 </div>
                 <div class="nav-item" data-page="export">
                     <span class="nav-icon">📜</span>
-                    <span class="nav-label">Mission Logs</span>
+                    <span class="nav-label" data-i18n="Mission Logs">Mission Logs</span>
                 </div>
             </div>
 
@@ -1023,21 +1023,24 @@
                         </div>
                         <div class="page-subtitle">Select Ammunition • Load Factors • Lock and Load</div>
                     </div>
-                    <div class="header-actions">
-                        <div class="factor-tabs">
-                            <button class="cyber-btn primary factor-tab active" data-type="all" onclick="switchFactorTab('all')">ALL</button>
-                            <button class="cyber-btn factor-tab" data-type="technical" onclick="switchFactorTab('technical')">TECH</button>
-                            <button class="cyber-btn factor-tab" data-type="fundamental" onclick="switchFactorTab('fundamental')">FUND</button>
-                            <button class="cyber-btn factor-tab" data-type="sentiment" onclick="switchFactorTab('sentiment')">SENT</button>
-                            <button class="cyber-btn factor-tab" data-type="moneyflow" onclick="switchFactorTab('moneyflow')">FLOW</button>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="cyber-card">
                     <div class="card-header">
                         <div class="card-title">
                             <span class="card-icon">🎯</span>
+                            SELECT AMMUNITION
+                        </div>
+                    </div>
+                    <div class="category-tabs">
+                        <div class="category-tab factor-tab active" data-type="all" onclick="switchFactorTab('all')">ALL / 全部</div>
+                        <div class="category-tab factor-tab" data-type="technical" onclick="switchFactorTab('technical')">TECH / 技术</div>
+                        <div class="category-tab factor-tab" data-type="fundamental" onclick="switchFactorTab('fundamental')">FUND / 基本面</div>
+                        <div class="category-tab factor-tab" data-type="sentiment" onclick="switchFactorTab('sentiment')">SENT / 情绪</div>
+                        <div class="category-tab factor-tab" data-type="moneyflow" onclick="switchFactorTab('moneyflow')">FLOW / 资金流</div>
+                    </div>
+                    <div class="card-header" style="padding-bottom: 10px;">
+                        <div class="card-title">
                             <span id="factorCategoryTitle">FACTOR ARSENAL</span>
                             <span style="margin-left: 12px; font-size: 0.8rem; color: var(--neon-cyan);" id="factorCount">0 FACTORS</span>
                         </div>
@@ -1478,7 +1481,7 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="WATCHLIST">
                             <span class="card-icon">⭐</span>
                             WATCHLIST
                         </div>
@@ -1487,12 +1490,12 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Change</th>
-                                    <th>Volume</th>
-                                    <th>Action</th>
+                                    <th data-i18n="Code">Code</th>
+                                    <th data-i18n="Name">Name</th>
+                                    <th data-i18n="Price">Price</th>
+                                    <th data-i18n="Change">Change</th>
+                                    <th data-i18n="Volume">Volume</th>
+                                    <th data-i18n="Action">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="watchlistBody">
@@ -1805,6 +1808,20 @@
                 'Battle Mode': 'Battle Mode',
                 'Victory Screen': 'Victory Screen',
                 'Mission Logs': 'Mission Logs',
+                'History': 'History',
+                'Market View': 'Market View',
+                'BACKTEST HISTORY': 'BACKTEST HISTORY',
+                'Past Runs • Compare Results • Learn from History': 'Past Runs • Compare Results • Learn from History',
+                '🗑️ CLEAR ALL': '🗑️ CLEAR ALL',
+                'No backtests saved yet': 'No backtests saved yet',
+                'Run a backtest and save it to see it here': 'Run a backtest and save it to see it here',
+                '⚔️ RUN BACKTEST': '⚔️ RUN BACKTEST',
+                'MARKET VIEW': 'MARKET VIEW',
+                'Live Market Data • Index Performance • Watchlist': 'Live Market Data • Index Performance • Watchlist',
+                '🔄 REFRESH': '🔄 REFRESH',
+                '📈 SSE Composite': '📈 SSE Composite',
+                '📈 SZSE Component': '📈 SZSE Component',
+                '📈 CSI 300': '📈 CSI 300',
                 'MAIN CONTROL DECK': 'MAIN CONTROL DECK',
                 'System Status: Online • Mission: Active': 'System Status: Online • Mission: Active',
                 '⚔️ LAUNCH BATTLE': '⚔️ LAUNCH BATTLE',
@@ -1828,6 +1845,7 @@
                 'STRATEGY FORGE': 'STRATEGY FORGE',
                 'Select Weapon • Configure Parameters • Forge Strategy': 'Select Weapon • Configure Parameters • Forge Strategy',
                 'SELECT WEAPON TYPE': 'SELECT WEAPON TYPE',
+                'SELECT AMMUNITION': 'SELECT AMMUNITION',
                 'Momentum Blaster': 'Momentum Blaster',
                 'High-speed trend chasing with stop-loss safeguards': 'High-speed trend chasing with stop-loss safeguards',
                 'Trend': 'Trend',
@@ -1973,6 +1991,19 @@
                 '📊 VALUE STRATEGIES': '📊 VALUE STRATEGIES',
                 '⚖️ ARBITRAGE STRATEGIES': '⚖️ ARBITRAGE STRATEGIES',
                 '⚡ SPECIAL STRATEGIES': '⚡ SPECIAL STRATEGIES',
+                'Sharpe': 'Sharpe',
+                'Drawdown': 'Drawdown',
+                'Trades': 'Trades',
+                'Load': 'Load',
+                'Delete': 'Delete',
+                'Add': 'Add',
+                'WATCHLIST': 'WATCHLIST',
+                'Code': 'Code',
+                'Name': 'Name',
+                'Price': 'Price',
+                'Change': 'Change',
+                'Volume': 'Volume',
+                'Action': 'Action',
                 'MARKET / 市场': 'MARKET / Market',
                 'ALL': 'ALL',
                 'TECH': 'TECH',
@@ -2134,6 +2165,20 @@
                 'Battle Mode': '战斗模式',
                 'Victory Screen': '胜利画面',
                 'Mission Logs': '任务日志',
+                'History': '历史',
+                'Market View': '市场',
+                'BACKTEST HISTORY': '回测历史',
+                'Past Runs • Compare Results • Learn from History': '历史运行 • 对比结果 • 学习经验',
+                '🗑️ CLEAR ALL': '🗑️ 清空全部',
+                'No backtests saved yet': '还没有保存的回测',
+                'Run a backtest and save it to see it here': '运行回测并保存，就会在这里显示',
+                '⚔️ RUN BACKTEST': '⚔️ 运行回测',
+                'MARKET VIEW': '市场',
+                'Live Market Data • Index Performance • Watchlist': '实时市场数据 • 指数表现 • 自选股',
+                '🔄 REFRESH': '🔄 刷新',
+                '📈 SSE Composite': '📈 上证指数',
+                '📈 SZSE Component': '📈 深证成指',
+                '📈 CSI 300': '📈 沪深300',
                 'MAIN CONTROL DECK': '主控制平台',
                 'System Status: Online • Mission: Active': '系统状态: 在线 • 任务: 进行中',
                 '⚔️ LAUNCH BATTLE': '⚔️ 开始战斗',
@@ -2237,6 +2282,7 @@
                 'STRATEGY FORGE': '策略工坊',
                 'Select Weapon • Configure Parameters • Forge Strategy': '选择武器 • 配置参数 • 锻造策略',
                 'SELECT WEAPON TYPE': '选择武器类型',
+                'SELECT AMMUNITION': '选择弹药',
                 'Momentum Blaster': '动量冲击炮',
                 'High-speed trend chasing with stop-loss safeguards': '高速趋势追踪，带止损保障',
                 'Trend': '趋势',
@@ -2579,6 +2625,19 @@
                 '📊 VALUE STRATEGIES': '📊 价值策略',
                 '⚖️ ARBITRAGE STRATEGIES': '⚖️ 套利策略',
                 '⚡ SPECIAL STRATEGIES': '⚡ 特殊策略',
+                'Sharpe': '夏普比率',
+                'Drawdown': '回撤',
+                'Trades': '交易次数',
+                'Load': '加载',
+                'Delete': '删除',
+                'Add': '添加',
+                'WATCHLIST': '自选股',
+                'Code': '代码',
+                'Name': '名称',
+                'Price': '价格',
+                'Change': '涨跌幅',
+                'Volume': '成交量',
+                'Action': '操作',
                 'MARKET / 市场': 'MARKET / 市场',
                 'ALL': '全部',
                 'TECH': '技术',
@@ -2722,16 +2781,19 @@
 
         function setLanguage(lang) {
             AppState.currentLang = lang;
-            // 先保存原始文本（可能包含新渲染的内容）
+            // 先保存原始文本
             saveOriginalTexts();
-            // 重新渲染所有动态内容
+            // 应用翻译
+            applyLanguage();
+            // 重新渲染所有动态内容（它们会使用当前语言）
             renderStrategies();
             renderFactors();
             renderOptimizations();
-            // 应用翻译
-            applyLanguage();
+            renderHistory();
+            renderWatchlist();
             // 更新按钮状态
             updateLanguageButtons();
+            updateMarketButtons();
             // 更新动态UI显示
             updateDynamicUIDisplays();
         }
@@ -3939,6 +4001,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             emptyCard.style.display = 'none';
             listContainer.style.display = 'block';
 
+            const lang = AppState.currentLang;
             listContainer.innerHTML = AppState.backtestHistory.map((item, index) => `
                 <div class="history-card ${selectedHistoryItems.includes(index) ? 'selected' : ''}" onclick="toggleHistorySelection(${index})">
                     <div class="history-header">
@@ -3948,27 +4011,27 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                     <div class="history-stats">
                         <div class="history-stat">
                             <div class="history-stat-value ${item.finalReturn >= 0 ? 'positive' : 'negative'}">${item.finalReturn >= 0 ? '+' : ''}${item.finalReturn}%</div>
-                            <div class="history-stat-label">Return</div>
+                            <div class="history-stat-label">${i18n[lang]['Return']}</div>
                         </div>
                         <div class="history-stat">
                             <div class="history-stat-value">${item.sharpe}</div>
-                            <div class="history-stat-label">Sharpe</div>
+                            <div class="history-stat-label">${i18n[lang]['Sharpe']}</div>
                         </div>
                         <div class="history-stat">
                             <div class="history-stat-value negative">-${item.maxDrawdown}%</div>
-                            <div class="history-stat-label">Drawdown</div>
+                            <div class="history-stat-label">${i18n[lang]['Drawdown']}</div>
                         </div>
                         <div class="history-stat">
                             <div class="history-stat-value">${item.totalTrades}</div>
-                            <div class="history-stat-label">Trades</div>
+                            <div class="history-stat-label">${i18n[lang]['Trades']}</div>
                         </div>
                     </div>
                     <div class="history-actions">
                         <button class="cyber-btn" style="padding: 8px 16px; font-size: 0.75rem;" onclick="event.stopPropagation(); loadBacktest(${index})">
-                            📂 Load
+                            📂 ${i18n[lang]['Load']}
                         </button>
                         <button class="cyber-btn danger" style="padding: 8px 16px; font-size: 0.75rem;" onclick="event.stopPropagation(); deleteBacktest(${index})">
-                            🗑️ Delete
+                            🗑️ ${i18n[lang]['Delete']}
                         </button>
                     </div>
                 </div>
@@ -4114,6 +4177,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
         function renderWatchlist() {
             const container = document.getElementById('watchlistBody');
             const currencySymbol = AppState.currentMarket === 'cn' ? '¥' : (AppState.currentMarket === 'hk' ? 'HK$' : '$');
+            const lang = AppState.currentLang;
             container.innerHTML = watchlist.map(stock => `
                 <tr>
                     <td style="color: var(--neon-cyan); font-weight: bold;">${stock.code}</td>
@@ -4127,7 +4191,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                     <td style="color: var(--text-secondary);">${stock.volume}</td>
                     <td>
                         <button class="cyber-btn" style="padding: 4px 12px; font-size: 0.7rem;" onclick="alert('Added ${stock.name} to watchlist!')">
-                            ⭐ Add
+                            ⭐ ${i18n[lang]['Add']}
                         </button>
                     </td>
                 </tr>
