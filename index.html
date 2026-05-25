@@ -734,14 +734,14 @@
     <div class="app-container">
         <div class="sidebar">
             <div class="logo-container">
-                <div class="logo">⚡ QUANT CONSOLE</div>
-                <div class="logo-subtitle">v5.0 CYBERPUNK EDITION</div>
+                <div class="logo" data-i18n="QUANT CONSOLE">⚡ QUANT CONSOLE</div>
+                <div class="logo-subtitle" data-i18n="v5.0 CYBERPUNK EDITION">v5.0 CYBERPUNK EDITION</div>
             </div>
 
             <div class="status-bar">
                 <div class="status-row">
-                    <span class="status-label">SYSTEM STATUS:</span>
-                    <span class="status-value">ONLINE</span>
+                    <span class="status-label" data-i18n="SYSTEM STATUS:">SYSTEM STATUS:</span>
+                    <span class="status-value" data-i18n="ONLINE">ONLINE</span>
                 </div>
                 <div class="status-row">
                     <span class="status-label" data-i18n="ACCOUNT HP:">ACCOUNT HP:</span>
@@ -802,13 +802,13 @@
             </div>
 
             <div class="nav-section" style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(0, 245, 255, 0.3);">
-                <div class="nav-section-title">MARKET / 市场</div>
+                <div class="nav-section-title" data-i18n="MARKET">MARKET / 市场</div>
                 <div style="display: flex; gap: 8px; padding: 0 16px; margin-bottom: 16px; flex-wrap: wrap;">
                     <button class="cyber-btn primary" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('cn')">🇨🇳 A股</button>
                     <button class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('us')">🇺🇸美股</button>
                     <button class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('hk')">🇭🇰港股</button>
                 </div>
-                <div class="nav-section-title">LANGUAGE / 语言</div>
+                <div class="nav-section-title" data-i18n="LANGUAGE">LANGUAGE / 语言</div>
                 <div style="display: flex; gap: 8px; padding: 0 16px;">
                     <button class="cyber-btn primary" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('zh')">中文</button>
                     <button class="cyber-btn" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('en')">EN</button>
@@ -820,14 +820,14 @@
             <div class="page-content active" id="dashboard">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="MAIN CONTROL DECK">
                             <span class="page-title-icon">🚀</span>
                             MAIN CONTROL DECK
                         </div>
-                        <div class="page-subtitle">System Status: Online • Mission: Active</div>
+                        <div class="page-subtitle" data-i18n="System Status: Online • Mission: Active">System Status: Online • Mission: Active</div>
                     </div>
                     <div class="header-actions">
-                        <button class="cyber-btn primary" onclick="navigateTo('backtest')">
+                        <button class="cyber-btn primary" onclick="navigateTo('backtest')" data-i18n="⚔️ LAUNCH BATTLE">
                             ⚔️ LAUNCH BATTLE
                         </button>
                     </div>
@@ -836,7 +836,7 @@
                 <div class="hp-shield-container">
                     <div class="hp-shield-item">
                         <div class="hp-shield-label">
-                            <span class="hp-label">❤️ ACCOUNT HP</span>
+                            <span class="hp-label" data-i18n="❤️ ACCOUNT HP">❤️ ACCOUNT HP</span>
                             <span id="dashboardHPValue">92%</span>
                         </div>
                         <div class="energy-bar-container">
@@ -845,7 +845,7 @@
                     </div>
                     <div class="hp-shield-item">
                         <div class="hp-shield-label">
-                            <span class="shield-label">🛡️ SHIELD POWER</span>
+                            <span class="shield-label" data-i18n="🛡️ SHIELD POWER">🛡️ SHIELD POWER</span>
                             <span id="shieldValue">78%</span>
                         </div>
                         <div class="energy-bar-container">
@@ -856,26 +856,26 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-label">Total Return</div>
+                        <div class="stat-label" data-i18n="Total Return">Total Return</div>
                         <div class="stat-value positive" id="totalReturnValue">+24.7%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Sharpe Ratio</div>
+                        <div class="stat-label" data-i18n="Sharpe Ratio">Sharpe Ratio</div>
                         <div class="stat-value" id="sharpeRatioValue">1.89</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Max Drawdown</div>
+                        <div class="stat-label" data-i18n="Max Drawdown">Max Drawdown</div>
                         <div class="stat-value negative" id="maxDrawdownValue">-8.4%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-label" data-i18n="Win Rate">Win Rate</div>
                         <div class="stat-value positive" id="winRateValue">61.5%</div>
                     </div>
                 </div>
 
                 <div class="cyber-card hologram">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="EQUITY CURVE RADAR">
                             <span class="card-icon">📊</span>
                             EQUITY CURVE RADAR
                         </div>
@@ -888,7 +888,7 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="EQUIPPED FACTORS">
                             <span class="card-icon">⚡</span>
                             EQUIPPED FACTORS
                         </div>
@@ -950,28 +950,28 @@
             <div class="page-content" id="strategy">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="STRATEGY FORGE">
                             <span class="page-title-icon">🔫</span>
                             STRATEGY FORGE
                         </div>
-                        <div class="page-subtitle">Select Weapon • Configure Parameters • Forge Strategy</div>
+                        <div class="page-subtitle" data-i18n="Select Weapon • Configure Parameters • Forge Strategy">Select Weapon • Configure Parameters • Forge Strategy</div>
                     </div>
                 </div>
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="SELECT WEAPON TYPE">
                             <span class="card-icon">⚔️</span>
                             SELECT WEAPON TYPE
                         </div>
                     </div>
                     <div class="category-tabs">
-                        <div class="category-tab active" data-category="all" onclick="switchStrategyCategory('all')">ALL / 全部</div>
-                        <div class="category-tab" data-category="trend" onclick="switchStrategyCategory('trend')">TREND / 趋势</div>
-                        <div class="category-tab" data-category="mean-reversion" onclick="switchStrategyCategory('mean-reversion')">REVERSION / 均值回归</div>
-                        <div class="category-tab" data-category="value" onclick="switchStrategyCategory('value')">VALUE / 价值</div>
-                        <div class="category-tab" data-category="arbitrage" onclick="switchStrategyCategory('arbitrage')">ARBITRAGE / 套利</div>
-                        <div class="category-tab" data-category="special" onclick="switchStrategyCategory('special')">SPECIAL / 特殊</div>
+                        <div class="category-tab active" data-category="all" onclick="switchStrategyCategory('all')" data-i18n="ALL_STRATEGIES">ALL / 全部</div>
+                        <div class="category-tab" data-category="trend" onclick="switchStrategyCategory('trend')" data-i18n="TREND">TREND / 趋势</div>
+                        <div class="category-tab" data-category="mean-reversion" onclick="switchStrategyCategory('mean-reversion')" data-i18n="REVERSION">REVERSION / 均值回归</div>
+                        <div class="category-tab" data-category="value" onclick="switchStrategyCategory('value')" data-i18n="VALUE">VALUE / 价值</div>
+                        <div class="category-tab" data-category="arbitrage" onclick="switchStrategyCategory('arbitrage')" data-i18n="ARBITRAGE">ARBITRAGE / 套利</div>
+                        <div class="category-tab" data-category="special" onclick="switchStrategyCategory('special')" data-i18n="SPECIAL">SPECIAL / 特殊</div>
                     </div>
                     <div id="strategyCategoriesContainer"></div>
                     <div class="corner-br"></div>
@@ -979,34 +979,34 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="WEAPON CONFIGURATION">
                             <span class="card-icon">⚙️</span>
                             WEAPON CONFIGURATION
                         </div>
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Lookback Period</span>
-                            <span class="param-value">20 days</span>
+                            <span data-i18n="Lookback Period">Lookback Period</span>
+                            <span class="param-value" data-i18n="20 days">20 days</span>
                         </div>
                         <input type="range" class="param-slider" id="param1" min="5" max="60" value="20" oninput="updateParam('param1', 'param1Value')">
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Holding Period</span>
-                            <span class="param-value" id="param2Value">10 days</span>
+                            <span data-i18n="Holding Period">Holding Period</span>
+                            <span class="param-value" id="param2Value" data-i18n="10 days">10 days</span>
                         </div>
                         <input type="range" class="param-slider" id="param2" min="1" max="30" value="10" oninput="updateParam('param2', 'param2Value')">
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Position Size</span>
-                            <span class="param-value" id="param3Value">5%</span>
+                            <span data-i18n="Position Size">Position Size</span>
+                            <span class="param-value" id="param3Value" data-i18n="5%">5%</span>
                         </div>
                         <input type="range" class="param-slider" id="param3" min="1" max="20" value="5" oninput="updateParam('param3', 'param3Value')">
                     </div>
                     <div style="margin-top: 24px; text-align: center;">
-                        <button class="cyber-btn success cyber-btn-large" onclick="forgeStrategy()">
+                        <button class="cyber-btn success cyber-btn-large" onclick="forgeStrategy()" data-i18n="🔨 FORGE STRATEGY">
                             🔨 FORGE STRATEGY
                         </button>
                     </div>
@@ -1017,31 +1017,31 @@
             <div class="page-content" id="factors">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="FACTOR ARSENAL">
                             <span class="page-title-icon">💎</span>
                             FACTOR ARSENAL
                         </div>
-                        <div class="page-subtitle">Select Ammunition • Load Factors • Lock and Load</div>
+                        <div class="page-subtitle" data-i18n="Select Ammunition • Load Factors • Lock and Load">Select Ammunition • Load Factors • Lock and Load</div>
                     </div>
                 </div>
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="SELECT AMMUNITION">
                             <span class="card-icon">🎯</span>
                             SELECT AMMUNITION
                         </div>
                     </div>
                     <div class="category-tabs">
-                        <div class="category-tab factor-tab active" data-type="all" onclick="switchFactorTab('all')">ALL / 全部</div>
-                        <div class="category-tab factor-tab" data-type="technical" onclick="switchFactorTab('technical')">TECH / 技术</div>
-                        <div class="category-tab factor-tab" data-type="fundamental" onclick="switchFactorTab('fundamental')">FUND / 基本面</div>
-                        <div class="category-tab factor-tab" data-type="sentiment" onclick="switchFactorTab('sentiment')">SENT / 情绪</div>
-                        <div class="category-tab factor-tab" data-type="moneyflow" onclick="switchFactorTab('moneyflow')">FLOW / 资金流</div>
+                        <div class="category-tab factor-tab active" data-type="all" onclick="switchFactorTab('all')" data-i18n="ALL_FACTORS">ALL / 全部</div>
+                        <div class="category-tab factor-tab" data-type="technical" onclick="switchFactorTab('technical')" data-i18n="TECH_FACTORS">TECH / 技术</div>
+                        <div class="category-tab factor-tab" data-type="fundamental" onclick="switchFactorTab('fundamental')" data-i18n="FUND_FACTORS">FUND / 基本面</div>
+                        <div class="category-tab factor-tab" data-type="sentiment" onclick="switchFactorTab('sentiment')" data-i18n="SENT_FACTORS">SENT / 情绪</div>
+                        <div class="category-tab factor-tab" data-type="moneyflow" onclick="switchFactorTab('moneyflow')" data-i18n="FLOW_FACTORS">FLOW / 资金流</div>
                     </div>
                     <div class="card-header" style="padding-bottom: 10px;">
                         <div class="card-title">
-                            <span id="factorCategoryTitle">FACTOR ARSENAL</span>
+                            <span id="factorCategoryTitle" data-i18n="FACTOR ARSENAL">FACTOR ARSENAL</span>
                             <span style="margin-left: 12px; font-size: 0.8rem; color: var(--neon-cyan);" id="factorCount">0 FACTORS</span>
                         </div>
                     </div>
@@ -1052,16 +1052,16 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="SELECTED LOADOUT">
                             <span class="card-icon">📋</span>
                             SELECTED LOADOUT
                         </div>
                     </div>
-                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);" id="selectedFactors">
+                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);" id="selectedFactors" data-i18n="No factors selected yet">
                         No factors selected yet
                     </div>
                     <div style="margin-top: 20px; text-align: center;">
-                        <button class="cyber-btn success cyber-btn-large" onclick="lockAndLoad()">
+                        <button class="cyber-btn success cyber-btn-large" onclick="lockAndLoad()" data-i18n="🔒 LOCK AND LOAD">
                             🔒 LOCK AND LOAD
                         </button>
                     </div>
@@ -1072,14 +1072,14 @@
             <div class="page-content" id="optimization">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="TACTICAL OPTIMIZATION">
                             <span class="page-title-icon">⚙️</span>
                             TACTICAL OPTIMIZATION
                         </div>
-                        <div class="page-subtitle">Battle Formation • Weight Allocation • Deployment</div>
+                        <div class="page-subtitle" data-i18n="Battle Formation • Weight Allocation • Deployment">Battle Formation • Weight Allocation • Deployment</div>
                     </div>
                     <div class="header-actions">
-                        <button class="cyber-btn primary" onclick="runOptimization()">
+                        <button class="cyber-btn primary" onclick="runOptimization()" data-i18n="⚡ RUN OPTIMIZATION">
                             ⚡ RUN OPTIMIZATION
                         </button>
                     </div>
@@ -1089,15 +1089,15 @@
                     <div class="card-header">
                         <div class="card-title">
                             <span class="card-icon">🎯</span>
-                            <span id="optimizationCategoryTitle">OPTIMIZATION MODE</span>
+                            <span id="optimizationCategoryTitle" data-i18n="OPTIMIZATION MODE">OPTIMIZATION MODE</span>
                         </div>
                     </div>
                     <div class="category-tabs">
-                        <div class="category-tab optimization-tab active" data-type="all" onclick="switchOptimizationCategory('all')">ALL</div>
-                        <div class="category-tab optimization-tab" data-type="return" onclick="switchOptimizationCategory('return')">RETURN</div>
-                        <div class="category-tab optimization-tab" data-type="risk" onclick="switchOptimizationCategory('risk')">RISK</div>
-                        <div class="category-tab optimization-tab" data-type="simple" onclick="switchOptimizationCategory('simple')">SIMPLE</div>
-                        <div class="category-tab optimization-tab" data-type="advanced" onclick="switchOptimizationCategory('advanced')">ADVANCED</div>
+                        <div class="category-tab optimization-tab active" data-type="all" onclick="switchOptimizationCategory('all')" data-i18n="ALL">ALL</div>
+                        <div class="category-tab optimization-tab" data-type="return" onclick="switchOptimizationCategory('return')" data-i18n="RETURN">RETURN</div>
+                        <div class="category-tab optimization-tab" data-type="risk" onclick="switchOptimizationCategory('risk')" data-i18n="RISK">RISK</div>
+                        <div class="category-tab optimization-tab" data-type="simple" onclick="switchOptimizationCategory('simple')" data-i18n="SIMPLE">SIMPLE</div>
+                        <div class="category-tab optimization-tab" data-type="advanced" onclick="switchOptimizationCategory('advanced')" data-i18n="ADVANCED">ADVANCED</div>
                     </div>
                     <div class="strategies-grid" id="optimizationModes">
                     </div>
@@ -1106,7 +1106,7 @@
 
                 <div class="cyber-card" id="optimizationResultCard" style="display: none;">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="OPTIMAL FORMATION">
                             <span class="card-icon">✅</span>
                             OPTIMAL FORMATION
                         </div>
@@ -1114,10 +1114,10 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Asset</th>
-                                <th>Weight</th>
-                                <th>Risk</th>
-                                <th>Return</th>
+                                <th data-i18n="Asset">Asset</th>
+                                <th data-i18n="Weight">Weight</th>
+                                <th data-i18n="Risk">Risk</th>
+                                <th data-i18n="Return">Return</th>
                             </tr>
                         </thead>
                         <tbody id="optimizationResult">
@@ -1130,51 +1130,51 @@
             <div class="page-content" id="risk">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="SHIELD CONFIGURATION">
                             <span class="page-title-icon">🛡️</span>
                             SHIELD CONFIGURATION
                         </div>
-                        <div class="page-subtitle">Defense Systems • Risk Control • Safety Protocols</div>
+                        <div class="page-subtitle" data-i18n="Defense Systems • Risk Control • Safety Protocols">Defense Systems • Risk Control • Safety Protocols</div>
                     </div>
                 </div>
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="SHIELD POWER LEVELS">
                             <span class="card-icon">⚡</span>
                             SHIELD POWER LEVELS
                         </div>
                     </div>
                     <div class="toggle-container" onclick="toggleSwitch(this)">
                         <div class="toggle-switch active"></div>
-                        <span class="toggle-label">Stop-Loss Shield</span>
+                        <span class="toggle-label" data-i18n="Stop-Loss Shield">Stop-Loss Shield</span>
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Stop-Loss Level</span>
+                            <span data-i18n="Stop-Loss Level">Stop-Loss Level</span>
                             <span class="param-value" id="stopLossValue">-10%</span>
                         </div>
                         <input type="range" class="param-slider" id="stopLoss" min="2" max="30" value="10" oninput="updateParam('stopLoss', 'stopLossValue', '%', true)">
                     </div>
                     <div class="toggle-container" onclick="toggleSwitch(this)">
                         <div class="toggle-switch active"></div>
-                        <span class="toggle-label">Take-Profit Lock</span>
+                        <span class="toggle-label" data-i18n="Take-Profit Lock">Take-Profit Lock</span>
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Take-Profit Level</span>
+                            <span data-i18n="Take-Profit Level">Take-Profit Level</span>
                             <span class="param-value" id="takeProfitValue">25%</span>
                         </div>
                         <input type="range" class="param-slider" id="takeProfit" min="5" max="100" value="25" oninput="updateParam('takeProfit', 'takeProfitValue', '%')">
                     </div>
                     <div class="toggle-container" onclick="toggleSwitch(this)">
                         <div class="toggle-switch active"></div>
-                        <span class="toggle-label">Max Drawdown Shield</span>
+                        <span class="toggle-label" data-i18n="Max Drawdown Shield">Max Drawdown Shield</span>
                     </div>
                     <div class="hp-shield-container" style="margin-top: 16px;">
                         <div class="hp-shield-item">
                             <div class="hp-shield-label">
-                                <span class="hp-label">⚠️ MAX DRAWDOWN LIMIT</span>
+                                <span class="hp-label" data-i18n="⚠️ MAX DRAWDOWN LIMIT">⚠️ MAX DRAWDOWN LIMIT</span>
                                 <span id="ddLimitValue">20%</span>
                             </div>
                             <div class="energy-bar-container">
@@ -1187,27 +1187,27 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="POSITION CONTROLS">
                             <span class="card-icon">⚖️</span>
                             POSITION CONTROLS
                         </div>
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Max Single Position</span>
+                            <span data-i18n="Max Single Position">Max Single Position</span>
                             <span class="param-value" id="singlePosValue">10%</span>
                         </div>
                         <input type="range" class="param-slider" id="singlePos" min="1" max="30" value="10" oninput="updateParam('singlePos', 'singlePosValue', '%')">
                     </div>
                     <div class="param-group">
                         <div class="param-label">
-                            <span>Max Sector Exposure</span>
+                            <span data-i18n="Max Sector Exposure">Max Sector Exposure</span>
                             <span class="param-value" id="sectorLimitValue">30%</span>
                         </div>
                         <input type="range" class="param-slider" id="sectorLimit" min="10" max="60" value="30" oninput="updateParam('sectorLimit', 'sectorLimitValue', '%')">
                     </div>
                     <div style="margin-top: 24px; text-align: center;">
-                        <button class="cyber-btn success cyber-btn-large" onclick="deployShield()">
+                        <button class="cyber-btn success cyber-btn-large" onclick="deployShield()" data-i18n="🛡️ ACTIVATE SHIELD">
                             🛡️ ACTIVATE SHIELD
                         </button>
                     </div>
@@ -1218,25 +1218,25 @@
             <div class="page-content" id="backtest">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="BATTLE MODE">
                             <span class="page-title-icon">⚔️</span>
                             BATTLE MODE
                         </div>
-                        <div class="page-subtitle">Configure Mission • Launch Simulation • Monitor Progress</div>
+                        <div class="page-subtitle" data-i18n="Configure Mission • Launch Simulation • Monitor Progress">Configure Mission • Launch Simulation • Monitor Progress</div>
                     </div>
                 </div>
 
                 <div class="battle-container" id="battleConfigContainer">
                     <div class="cyber-card">
                         <div class="card-header">
-                            <div class="card-title">
+                            <div class="card-title" data-i18n="INITIAL CAPITAL">
                                 <span class="card-icon">💰</span>
                                 INITIAL CAPITAL
                             </div>
                         </div>
                         <div class="param-group">
                             <div class="param-label">
-                                <span>Starting Capital</span>
+                                <span data-i18n="Starting Capital">Starting Capital</span>
                                 <span class="param-value" id="capitalValue">¥1,000,000</span>
                             </div>
                             <input type="range" class="param-slider" id="initialCapital" min="100000" max="10000000" step="100000" value="1000000" oninput="updateCapital()">
@@ -1250,7 +1250,7 @@
 
                     <div class="cyber-card">
                         <div class="card-header">
-                            <div class="card-title">
+                            <div class="card-title" data-i18n="MARKET SELECTION">
                                 <span class="card-icon">📊</span>
                                 MARKET SELECTION
                             </div>
@@ -1310,21 +1310,21 @@
 
                     <div class="cyber-card">
                         <div class="card-header">
-                            <div class="card-title">
+                            <div class="card-title" data-i18n="STRATEGY PARAMETERS">
                                 <span class="card-icon">⚡</span>
                                 STRATEGY PARAMETERS
                             </div>
                         </div>
                         <div class="param-group">
                             <div class="param-label">
-                                <span>Backtest Period</span>
+                                <span data-i18n="Backtest Period">Backtest Period</span>
                                 <span class="param-value" id="periodValue">252 Days</span>
                             </div>
                             <input type="range" class="param-slider" id="backtestPeriod" min="60" max="756" step="30" value="252" oninput="updateParam('backtestPeriod', 'periodValue', ' Days')">
                         </div>
                         <div class="param-group">
                             <div class="param-label">
-                                <span>Rebalance Frequency</span>
+                                <span data-i18n="Rebalance Frequency">Rebalance Frequency</span>
                                 <span class="param-value" id="rebalanceValue">20 Days</span>
                             </div>
                             <input type="range" class="param-slider" id="rebalanceFreq" min="5" max="60" value="20" oninput="updateParam('rebalanceFreq', 'rebalanceValue', ' Days')">
@@ -1335,12 +1335,12 @@
 
                 <div class="battle-container" id="battleContainer" style="display: none;">
                     <div class="battle-header">
-                        <div class="battle-title" id="battleStatus">⚔️ BATTLE STANDBY</div>
+                        <div class="battle-title" id="battleStatus" data-i18n="⚔️ BATTLE STANDBY">⚔️ BATTLE STANDBY</div>
                     </div>
 
                     <div class="battle-progress-container" id="progressContainer" style="display: none;">
                         <div class="battle-progress-label">
-                            <span>MISSION PROGRESS</span>
+                            <span data-i18n="MISSION PROGRESS">MISSION PROGRESS</span>
                             <span id="progressPercent">0%</span>
                         </div>
                         <div class="battle-progress-bar">
@@ -1350,34 +1350,34 @@
 
                     <div class="stats-grid" id="battleStats" style="display: none; margin-bottom: 20px;">
                         <div class="stat-card">
-                            <div class="stat-label">Portfolio Value</div>
+                            <div class="stat-label" data-i18n="Portfolio Value">Portfolio Value</div>
                             <div class="stat-value positive" id="livePortfolioValue">¥1,000,000</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Total Return</div>
+                            <div class="stat-label" data-i18n="Total Return">Total Return</div>
                             <div class="stat-value positive" id="liveReturn">0.00%</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Trades Made</div>
+                            <div class="stat-label" data-i18n="Trades Made">Trades Made</div>
                             <div class="stat-value" id="liveTrades">0</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Win Rate</div>
+                            <div class="stat-label" data-i18n="Win Rate">Win Rate</div>
                             <div class="stat-value" id="liveWinRate">0%</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Max Drawdown</div>
+                            <div class="stat-label" data-i18n="Max Drawdown">Max Drawdown</div>
                             <div class="stat-value negative" id="liveDrawdown">0.00%</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-label">Sharpe Ratio</div>
+                            <div class="stat-label" data-i18n="Sharpe Ratio">Sharpe Ratio</div>
                             <div class="stat-value" id="liveSharpe">0.00</div>
                         </div>
                     </div>
 
                     <div class="cyber-card" id="positionPanel" style="display: none; margin-bottom: 20px;">
                         <div class="card-header">
-                            <div class="card-title">
+                            <div class="card-title" data-i18n="CURRENT POSITIONS">
                                 <span class="card-icon">📈</span>
                                 CURRENT POSITIONS
                             </div>
@@ -1389,7 +1389,7 @@
 
                     <div class="cyber-card" id="equityChartCard" style="display: none; margin-bottom: 20px;">
                         <div class="card-header">
-                            <div class="card-title">
+                            <div class="card-title" data-i18n="EQUITY CURVE">
                                 <span class="card-icon">📊</span>
                                 EQUITY CURVE
                             </div>
@@ -1404,14 +1404,14 @@
                     </div>
 
                     <div class="battle-controls" id="battleControls">
-                        <button class="cyber-btn primary cyber-btn-large" id="startBattleBtn" onclick="startBattle()">
+                        <button class="cyber-btn primary cyber-btn-large" id="startBattleBtn" onclick="startBattle()" data-i18n="⚔️ START BATTLE">
                             ⚔️ START BATTLE
                         </button>
                     </div>
                 </div>
 
                 <div style="margin-top: 20px; text-align: center;">
-                    <button class="cyber-btn" id="toggleConfigBtn" onclick="toggleBattleView()">
+                    <button class="cyber-btn" id="toggleConfigBtn" onclick="toggleBattleView()" data-i18n="📋 CONFIGURE">
                         📋 CONFIGURE
                     </button>
                 </div>
@@ -1420,14 +1420,14 @@
             <div class="page-content" id="market">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="MARKET VIEW">
                             <span class="page-title-icon">📊</span>
                             MARKET VIEW
                         </div>
-                        <div class="page-subtitle">Live Market Data • Index Performance • Watchlist</div>
+                        <div class="page-subtitle" data-i18n="Live Market Data • Index Performance • Watchlist">Live Market Data • Index Performance • Watchlist</div>
                     </div>
                     <div class="header-actions">
-                        <button class="cyber-btn" onclick="refreshMarketData()">
+                        <button class="cyber-btn" onclick="refreshMarketData()" data-i18n="🔄 REFRESH">
                             🔄 REFRESH
                         </button>
                     </div>
@@ -1435,32 +1435,32 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-label">📈 SSE Composite</div>
+                        <div class="stat-label" data-i18n="📈 SSE Composite">📈 SSE Composite</div>
                         <div class="stat-value positive" id="sseIndex">3,125.67</div>
                         <div class="stat-value positive small" style="margin-top: 4px;">+1.23%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">📈 SZSE Component</div>
+                        <div class="stat-label" data-i18n="📈 SZSE Component">📈 SZSE Component</div>
                         <div class="stat-value positive" id="szseIndex">10,542.38</div>
                         <div class="stat-value positive small" style="margin-top: 4px;">+0.87%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">📈 CSI 300</div>
+                        <div class="stat-label" data-i18n="📈 CSI 300">📈 CSI 300</div>
                         <div class="stat-value negative" id="csi300Index">3,652.19</div>
                         <div class="stat-value negative small" style="margin-top: 4px;">-0.45%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">📈 NASDAQ</div>
+                        <div class="stat-label" data-i18n="📈 NASDAQ">📈 NASDAQ</div>
                         <div class="stat-value positive" id="nasdaqIndex">16,245.37</div>
                         <div class="stat-value positive small" style="margin-top: 4px;">+2.15%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">📈 S&P 500</div>
+                        <div class="stat-label" data-i18n="📈 S&P 500">📈 S&P 500</div>
                         <div class="stat-value positive" id="sp500Index">5,125.89</div>
                         <div class="stat-value positive small" style="margin-top: 4px;">+0.92%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">📈 Hang Seng</div>
+                        <div class="stat-label" data-i18n="📈 Hang Seng">📈 Hang Seng</div>
                         <div class="stat-value positive" id="hsiIndex">18,452.76</div>
                         <div class="stat-value positive small" style="margin-top: 4px;">+1.58%</div>
                     </div>
@@ -1468,7 +1468,7 @@
 
                 <div class="cyber-card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="MARKET CHART">
                             <span class="card-icon">📈</span>
                             MARKET CHART
                         </div>
@@ -1509,17 +1509,17 @@
             <div class="page-content" id="results">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="VICTORY SCREEN">
                             <span class="page-title-icon">🏆</span>
                             VICTORY SCREEN
                         </div>
-                        <div class="page-subtitle">Battle Results • Achievements • Performance Grade</div>
+                        <div class="page-subtitle" data-i18n="Battle Results • Achievements • Performance Grade">Battle Results • Achievements • Performance Grade</div>
                     </div>
                     <div class="header-actions">
-                        <button class="cyber-btn" onclick="saveBacktest()">
+                        <button class="cyber-btn" onclick="saveBacktest()" data-i18n="💾 SAVE RUN">
                             💾 SAVE RUN
                         </button>
-                        <button class="cyber-btn" onclick="navigateTo('export')">
+                        <button class="cyber-btn" onclick="navigateTo('export')" data-i18n="📜 EXPORT LOG">
                             📜 EXPORT LOG
                         </button>
                     </div>
@@ -1527,42 +1527,42 @@
 
                 <div class="cyber-card">
                     <div class="results-container">
-                        <div class="grade-display grade-s" id="gradeDisplay">S</div>
-                        <div class="victory-text">🎉 MISSION SUCCESS</div>
+                        <div class="grade-display grade-s" id="gradeDisplay" data-i18n="S">S</div>
+                        <div class="victory-text" data-i18n="🎉 MISSION SUCCESS">🎉 MISSION SUCCESS</div>
                     </div>
                     <div class="corner-br"></div>
                 </div>
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-label">Final Value</div>
+                        <div class="stat-label" data-i18n="Final Value">Final Value</div>
                         <div class="stat-value positive" id="finalValue">¥1,897,000</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Final Return</div>
+                        <div class="stat-label" data-i18n="Final Return">Final Return</div>
                         <div class="stat-value positive" id="finalReturn">+89.7%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Sharpe Ratio</div>
+                        <div class="stat-label" data-i18n="Sharpe Ratio">Sharpe Ratio</div>
                         <div class="stat-value" id="finalSharpe">2.34</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Max Drawdown</div>
+                        <div class="stat-label" data-i18n="Max Drawdown">Max Drawdown</div>
                         <div class="stat-value negative" id="finalDrawdown">-11.2%</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Total Trades</div>
+                        <div class="stat-label" data-i18n="Total Trades">Total Trades</div>
                         <div class="stat-value" id="finalTrades">28</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-label" data-i18n="Win Rate">Win Rate</div>
                         <div class="stat-value positive" id="finalWinRate">71.4%</div>
                     </div>
                 </div>
 
                 <div class="cyber-card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="EQUITY CURVE">
                             <span class="card-icon">📊</span>
                             EQUITY CURVE
                         </div>
@@ -1575,7 +1575,7 @@
 
                 <div class="cyber-card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="TRADE LOG">
                             <span class="card-icon">📋</span>
                             TRADE LOG
                         </div>
@@ -1584,13 +1584,13 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Action</th>
-                                    <th>Asset</th>
-                                    <th>Shares</th>
-                                    <th>Price</th>
-                                    <th>P&L</th>
-                                    <th>Return</th>
+                                    <th data-i18n="Date">Date</th>
+                                    <th data-i18n="Action">Action</th>
+                                    <th data-i18n="Asset">Asset</th>
+                                    <th data-i18n="Shares">Shares</th>
+                                    <th data-i18n="Price">Price</th>
+                                    <th data-i18n="P&L">P&L</th>
+                                    <th data-i18n="Return">Return</th>
                                 </tr>
                             </thead>
                             <tbody id="tradeLogBody">
@@ -1602,7 +1602,7 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="ACHIEVEMENTS UNLOCKED">
                             <span class="card-icon">🏅</span>
                             ACHIEVEMENTS UNLOCKED
                         </div>
@@ -1610,18 +1610,18 @@
                     <div class="achievements-grid">
                         <div class="achievement-card">
                             <div class="achievement-icon">🏆</div>
-                            <div class="achievement-name">FIRST CENTURY</div>
-                            <div class="achievement-desc">Achieved +100% return</div>
+                            <div class="achievement-name" data-i18n="FIRST CENTURY">FIRST CENTURY</div>
+                            <div class="achievement-desc" data-i18n="Achieved +100% return">Achieved +100% return</div>
                         </div>
                         <div class="achievement-card">
                             <div class="achievement-icon">⚡</div>
-                            <div class="achievement-name">STREAK MASTER</div>
-                            <div class="achievement-desc">7 consecutive winning trades</div>
+                            <div class="achievement-name" data-i18n="STREAK MASTER">STREAK MASTER</div>
+                            <div class="achievement-desc" data-i18n="7 consecutive winning trades">7 consecutive winning trades</div>
                         </div>
                         <div class="achievement-card">
                             <div class="achievement-icon">🛡️</div>
-                            <div class="achievement-name">PERFECT DEFENSE</div>
-                            <div class="achievement-desc">Max drawdown under 15%</div>
+                            <div class="achievement-name" data-i18n="PERFECT DEFENSE">PERFECT DEFENSE</div>
+                            <div class="achievement-desc" data-i18n="Max drawdown under 15%">Max drawdown under 15%</div>
                         </div>
                     </div>
                     <div class="corner-br"></div>
@@ -1631,14 +1631,14 @@
             <div class="page-content" id="history">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="BACKTEST HISTORY">
                             <span class="page-title-icon">📚</span>
                             BACKTEST HISTORY
                         </div>
-                        <div class="page-subtitle">Past Runs • Compare Results • Learn from History</div>
+                        <div class="page-subtitle" data-i18n="Past Runs • Compare Results • Learn from History">Past Runs • Compare Results • Learn from History</div>
                     </div>
                     <div class="header-actions">
-                        <button class="cyber-btn danger" onclick="clearHistory()">
+                        <button class="cyber-btn danger" onclick="clearHistory()" data-i18n="🗑️ CLEAR ALL">
                             🗑️ CLEAR ALL
                         </button>
                     </div>
@@ -1647,9 +1647,9 @@
                 <div class="cyber-card" id="emptyHistoryCard">
                     <div style="text-align: center; padding: 40px;">
                         <div style="font-size: 4rem; margin-bottom: 16px;">📭</div>
-                        <div style="font-size: 1.25rem; color: var(--text-secondary);">No backtests saved yet</div>
-                        <div style="margin-top: 8px; color: var(--text-muted);">Run a backtest and save it to see it here</div>
-                        <button class="cyber-btn primary" style="margin-top: 24px;" onclick="navigateTo('backtest')">
+                        <div style="font-size: 1.25rem; color: var(--text-secondary);" data-i18n="No backtests saved yet">No backtests saved yet</div>
+                        <div style="margin-top: 8px; color: var(--text-muted);" data-i18n="Run a backtest and save it to see it here">Run a backtest and save it to see it here</div>
+                        <button class="cyber-btn primary" style="margin-top: 24px;" onclick="navigateTo('backtest')" data-i18n="⚔️ RUN BACKTEST">
                             ⚔️ RUN BACKTEST
                         </button>
                     </div>
@@ -1661,7 +1661,7 @@
 
                 <div class="cyber-card" id="comparisonCard" style="display: none; margin-top: 20px;">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="COMPARISON VIEW">
                             <span class="card-icon">📊</span>
                             COMPARISON VIEW
                         </div>
@@ -1676,17 +1676,17 @@
             <div class="page-content" id="export">
                 <div class="page-header">
                     <div>
-                        <div class="page-title">
+                        <div class="page-title" data-i18n="MISSION LOG EXPORT">
                             <span class="page-title-icon">📜</span>
                             MISSION LOG EXPORT
                         </div>
-                        <div class="page-subtitle">Select Template • Configure Logs • Archive Mission</div>
+                        <div class="page-subtitle" data-i18n="Select Template • Configure Logs • Archive Mission">Select Template • Configure Logs • Archive Mission</div>
                     </div>
                 </div>
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="LOG TEMPLATE SELECT">
                             <span class="card-icon">📋</span>
                             LOG TEMPLATE SELECT
                         </div>
@@ -1694,23 +1694,23 @@
                     <div class="report-templates">
                         <div class="template-card selected" onclick="selectTemplate(this, 'full')">
                             <div class="template-icon">📜</div>
-                            <div class="template-name">Full Mission Log</div>
-                            <div class="template-desc">Complete report with all data</div>
+                            <div class="template-name" data-i18n="Full Mission Log">Full Mission Log</div>
+                            <div class="template-desc" data-i18n="Complete report with all data">Complete report with all data</div>
                         </div>
                         <div class="template-card" onclick="selectTemplate(this, 'summary')">
                             <div class="template-icon">📊</div>
-                            <div class="template-name">Battle Summary</div>
-                            <div class="template-desc">Key metrics only</div>
+                            <div class="template-name" data-i18n="Battle Summary">Battle Summary</div>
+                            <div class="template-desc" data-i18n="Key metrics only">Key metrics only</div>
                         </div>
                         <div class="template-card" onclick="selectTemplate(this, 'trades')">
                             <div class="template-icon">📝</div>
-                            <div class="template-name">Kill Log</div>
-                            <div class="template-desc">Trade-by-trade record</div>
+                            <div class="template-name" data-i18n="Kill Log">Kill Log</div>
+                            <div class="template-desc" data-i18n="Trade-by-trade record">Trade-by-trade record</div>
                         </div>
                         <div class="template-card" onclick="selectTemplate(this, 'factors')">
                             <div class="template-icon">🔬</div>
-                            <div class="template-name">Factor Analysis</div>
-                            <div class="template-desc">Factor performance deep dive</div>
+                            <div class="template-name" data-i18n="Factor Analysis">Factor Analysis</div>
+                            <div class="template-desc" data-i18n="Factor performance deep dive">Factor performance deep dive</div>
                         </div>
                     </div>
                     <div class="corner-br"></div>
@@ -1718,7 +1718,7 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="LOG CONTENTS">
                             <span class="card-icon">⚙️</span>
                             LOG CONTENTS
                         </div>
@@ -1726,23 +1726,23 @@
                     <div class="export-options">
                         <label class="export-option">
                             <input type="checkbox" class="export-checkbox" checked>
-                            <span class="export-label">Performance Metrics</span>
+                            <span class="export-label" data-i18n="Performance Metrics">Performance Metrics</span>
                         </label>
                         <label class="export-option">
                             <input type="checkbox" class="export-checkbox" checked>
-                            <span class="export-label">Trade History</span>
+                            <span class="export-label" data-i18n="Trade History">Trade History</span>
                         </label>
                         <label class="export-option">
                             <input type="checkbox" class="export-checkbox" checked>
-                            <span class="export-label">Drawdown Analysis</span>
+                            <span class="export-label" data-i18n="Drawdown Analysis">Drawdown Analysis</span>
                         </label>
                         <label class="export-option">
                             <input type="checkbox" class="export-checkbox">
-                            <span class="export-label">Factor Attribution</span>
+                            <span class="export-label" data-i18n="Factor Attribution">Factor Attribution</span>
                         </label>
                         <label class="export-option">
                             <input type="checkbox" class="export-checkbox">
-                            <span class="export-label">Risk Statistics</span>
+                            <span class="export-label" data-i18n="Risk Statistics">Risk Statistics</span>
                         </label>
                     </div>
                     <div class="corner-br"></div>
@@ -1750,33 +1750,33 @@
 
                 <div class="cyber-card">
                     <div class="card-header">
-                        <div class="card-title">
+                        <div class="card-title" data-i18n="LOG PREVIEW">
                             <span class="card-icon">👁️</span>
                             LOG PREVIEW
                         </div>
                     </div>
                     <div class="preview-container" id="previewContainer">
                         <div class="preview-line" style="animation-delay: 0s;">╔════════════════════════════════════════╗</div>
-                        <div class="preview-line" style="animation-delay: 0.1s;">║ QUANT MISSION LOG v5.0                 ║</div>
+                        <div class="preview-line" style="animation-delay: 0.1s;" data-i18n="QUANT MISSION LOG v5.0">║ QUANT MISSION LOG v5.0                 ║</div>
                         <div class="preview-line" style="animation-delay: 0.2s;">╠════════════════════════════════════════╣</div>
-                        <div class="preview-line" style="animation-delay: 0.3s;">║ MISSION: Battle Simulation #42         ║</div>
+                        <div class="preview-line" style="animation-delay: 0.3s;" data-i18n="MISSION: Battle Simulation #42">║ MISSION: Battle Simulation #42         ║</div>
                         <div class="preview-line" style="animation-delay: 0.4s;">║ DATE: 2026-05-08                      ║</div>
-                        <div class="preview-line" style="animation-delay: 0.5s;">║ STATUS: SUCCESS [GRADE: S]            ║</div>
+                        <div class="preview-line" style="animation-delay: 0.5s;" data-i18n="STATUS: SUCCESS [GRADE: S]">║ STATUS: SUCCESS [GRADE: S]            ║</div>
                         <div class="preview-line" style="animation-delay: 0.6s;">╠════════════════════════════════════════╣</div>
-                        <div class="preview-line" style="animation-delay: 0.7s;">║ RETURN: +89.7%                        ║</div>
-                        <div class="preview-line" style="animation-delay: 0.8s;">║ SHARPE: 2.34                          ║</div>
-                        <div class="preview-line" style="animation-delay: 0.9s;">║ DRAWDOWN: -11.2%                      ║</div>
-                        <div class="preview-line" style="animation-delay: 1.0s;">║ WIN RATE: 71.4%                       ║</div>
+                        <div class="preview-line" style="animation-delay: 0.7s;" data-i18n="RETURN: +89.7%">║ RETURN: +89.7%                        ║</div>
+                        <div class="preview-line" style="animation-delay: 0.8s;" data-i18n="SHARPE: 2.34">║ SHARPE: 2.34                          ║</div>
+                        <div class="preview-line" style="animation-delay: 0.9s;" data-i18n="DRAWDOWN: -11.2%">║ DRAWDOWN: -11.2%                      ║</div>
+                        <div class="preview-line" style="animation-delay: 1.0s;" data-i18n="WIN RATE: 71.4%">║ WIN RATE: 71.4%                       ║</div>
                         <div class="preview-line" style="animation-delay: 1.1s;">╚════════════════════════════════════════╝</div>
                     </div>
                     <div style="display: flex; gap: 16px; justify-content: center;">
-                        <button class="cyber-btn" onclick="generatePreview()">
+                        <button class="cyber-btn" onclick="generatePreview()" data-i18n="🔄 REFRESH PREVIEW">
                             🔄 REFRESH PREVIEW
                         </button>
-                        <button class="cyber-btn primary cyber-btn-large" onclick="exportReport('pdf')">
+                        <button class="cyber-btn primary cyber-btn-large" onclick="exportReport('pdf')" data-i18n="📄 EXPORT PDF">
                             📄 EXPORT PDF
                         </button>
-                        <button class="cyber-btn success" onclick="exportReport('csv')">
+                        <button class="cyber-btn success" onclick="exportReport('csv')" data-i18n="📊 EXPORT CSV">
                             📊 EXPORT CSV
                         </button>
                     </div>
@@ -1809,6 +1809,17 @@
                 'Mission Logs': 'Mission Logs',
                 'History': 'History',
                 'Market View': 'Market View',
+                'ALL_STRATEGIES': 'ALL / 全部',
+                'TREND': 'TREND / 趋势',
+                'REVERSION': 'REVERSION / 均值回归',
+                'VALUE': 'VALUE / 价值',
+                'ARBITRAGE': 'ARBITRAGE / 套利',
+                'SPECIAL': 'SPECIAL / 特殊',
+                'ALL_FACTORS': 'ALL / 全部',
+                'TECH_FACTORS': 'TECH / 技术',
+                'FUND_FACTORS': 'FUND / 基本面',
+                'SENT_FACTORS': 'SENT / 情绪',
+                'FLOW_FACTORS': 'FLOW / 资金流',
                 'BACKTEST HISTORY': 'BACKTEST HISTORY',
                 'Past Runs • Compare Results • Learn from History': 'Past Runs • Compare Results • Learn from History',
                 '🗑️ CLEAR ALL': '🗑️ CLEAR ALL',
@@ -2145,9 +2156,243 @@
                 '▶️ START BATTLE': '▶️ START BATTLE',
                 '⚙️ CONFIG': '⚙️ CONFIG',
                 '📂 Load': '📂 Load',
-                '🗑️ Delete': '🗑️ Delete'
+                '🗑️ Delete': '🗑️ Delete',
+                'MARKET': 'MARKET',
+                'LANGUAGE': 'LANGUAGE',
+                'ALL': 'ALL',
+                'RETURN': 'RETURN',
+                'RISK': 'RISK',
+                'SIMPLE': 'SIMPLE',
+                'ADVANCED': 'ADVANCED',
+                '🔨 FORGE STRATEGY': '🔨 FORGE STRATEGY',
+                '🔒 LOCK AND LOAD': '🔒 LOCK AND LOAD',
+                'No factors selected yet': 'No factors selected yet',
+                'Code': 'Code',
+                'Name': 'Name',
+                'Price': 'Price',
+                'Change': 'Change',
+                'Volume': 'Volume',
+                'Action': 'Action',
+                'WATCHLIST': 'WATCHLIST',
+                'VICTORY SCREEN': 'VICTORY SCREEN',
+                'Battle Results • Achievements • Performance Grade': 'Battle Results • Achievements • Performance Grade',
+                '💾 SAVE RUN': '💾 SAVE RUN',
+                '📜 EXPORT LOG': '📜 EXPORT LOG',
+                '🇨🇳 A-Shares': '🇨🇳 A-Shares',
+                'China Mainland': 'China Mainland',
+                'Stocks': 'Stocks',
+                'Exchange': 'Exchange',
+                '🇺🇸 US Stocks': '🇺🇸 US Stocks',
+                'NASDAQ/NYSE': 'NASDAQ/NYSE',
+                '🇭🇰 Hong Kong': '🇭🇰 Hong Kong',
+                'HKEX': 'HKEX',
+                '5000+': '5000+',
+                '6000+': '6000+',
+                '2500+': '2500+',
+                'INITIAL CAPITAL': 'INITIAL CAPITAL',
+                'Starting Capital': 'Starting Capital',
+                '¥100K': '¥100K',
+                '¥10M': '¥10M',
+                'STRATEGY PARAMETERS': 'STRATEGY PARAMETERS',
+                'Backtest Period': 'Backtest Period',
+                '252 Days': '252 Days',
+                'Rebalance Frequency': 'Rebalance Frequency',
+                '20 Days': '20 Days',
+                'CURRENT POSITIONS': 'CURRENT POSITIONS',
+                'EQUITY CURVE': 'EQUITY CURVE',
+                '📋 CONFIGURE': '📋 CONFIGURE',
+                'Portfolio Value': 'Portfolio Value',
+                '📈 NASDAQ': '📈 NASDAQ',
+                '📈 S&P 500': '📈 S&P 500',
+                '📈 Hang Seng': '📈 Hang Seng',
+                'MARKET CHART': 'MARKET CHART',
+                'EQUIPPED FACTORS': 'EQUIPPED FACTORS'
             },
             zh: {
+                'QUANT CONSOLE': '量化控制台',
+                'v5.0 CYBERPUNK EDITION': 'v5.0 赛博朋克版',
+                'SYSTEM STATUS:': '系统状态:',
+                'ONLINE': '在线',
+                'ACCOUNT HP:': '账户血量:',
+                'MISSION COUNT:': '任务计数:',
+                'MAIN CONTROLS': '主控制',
+                'Dashboard': '仪表盘',
+                'Strategy Forge': '策略工坊',
+                'Factor Arsenal': '因子库',
+                'Tactical Ops': '战术优化',
+                'MISSION CONTROL': '任务控制',
+                'Shield Settings': '护盾设置',
+                'Battle Mode': '战斗模式',
+                'Victory Screen': '胜利画面',
+                'Mission Logs': '任务日志',
+                'History': '历史',
+                'Market View': '市场视图',
+                'ALL_STRATEGIES': 'ALL / 全部',
+                'TREND': 'TREND / 趋势',
+                'REVERSION': 'REVERSION / 均值回归',
+                'VALUE': 'VALUE / 价值',
+                'ARBITRAGE': 'ARBITRAGE / 套利',
+                'SPECIAL': 'SPECIAL / 特殊',
+                'ALL_FACTORS': 'ALL / 全部',
+                'TECH_FACTORS': 'TECH / 技术',
+                'FUND_FACTORS': 'FUND / 基本面',
+                'SENT_FACTORS': 'SENT / 情绪',
+                'FLOW_FACTORS': 'FLOW / 资金流',
+                'MAIN CONTROL DECK': '主控甲板',
+                'System Status: Online • Mission: Active': '系统状态: 在线 • 任务: 进行中',
+                '⚔️ LAUNCH BATTLE': '⚔️ 发起战斗',
+                '❤️ ACCOUNT HP': '❤️ 账户血量',
+                '🛡️ SHIELD POWER': '🛡️ 护盾能量',
+                'Total Return': '总回报',
+                'Sharpe Ratio': '夏普比率',
+                'Max Drawdown': '最大回撤',
+                'Win Rate': '胜率',
+                'EQUITY CURVE RADAR': '收益曲线雷达',
+                'EQUIPPED FACTORS': '已装备因子',
+                'Momentum Alpha': '动量阿尔法',
+                'Legendary': '传说',
+                'Epic': '史诗',
+                'Rare': '稀有',
+                'Common': '普通',
+                'IC Score': 'IC分数',
+                'IR Ratio': 'IR比率',
+                'Value Premium': '价值溢价',
+                'Quality Factor': '质量因子',
+                'STRATEGY FORGE': '策略工坊',
+                'Select Weapon • Configure Parameters • Forge Strategy': '选择武器 • 配置参数 • 锻造策略',
+                'SELECT WEAPON TYPE': '选择武器类型',
+                'SELECT AMMUNITION': '选择弹药',
+                'Momentum Blaster': '动量爆破器',
+                'High-speed trend chasing with stop-loss safeguards': '高速趋势追踪，带止损保护',
+                'Trend': '趋势',
+                'Aggressive': '激进',
+                'High Beta': '高贝塔',
+                'Mean Reversion Shield': '均值回归护盾',
+                'Range-bound trading with mean convergence': '区间交易，均值收敛',
+                'Contrarian': '逆向',
+                'Defensive': '防御',
+                'Pair Trading Blade': '配对交易刀',
+                'Dual-strike arbitrage on cointegrated pairs': '协整配对的双重套利',
+                'Arbitrage': '套利',
+                'Market Neutral': '市场中性',
+                'WEAPON CONFIGURATION': '武器配置',
+                'Lookback Period': '回看周期',
+                '20 days': '20天',
+                'Holding Period': '持有周期',
+                '10 days': '10天',
+                'Position Size': '仓位大小',
+                '5%': '5%',
+                'FACTOR ARSENAL': '因子库',
+                'Select Ammunition • Load Factors • Lock and Load': '选择弹药 • 加载因子 • 锁定装载',
+                'TECHNICAL FACTORS': '技术因子',
+                'SELECTED LOADOUT': '已选择装备',
+                'TACTICAL OPTIMIZATION': '战术优化',
+                'Battle Formation • Weight Allocation • Deployment': '战斗编队 • 权重分配 • 部署',
+                '⚡ RUN OPTIMIZATION': '⚡ 运行优化',
+                'OPTIMIZATION MODE': '优化模式',
+                'Max Sharpe': '最大夏普',
+                'Risk-adjusted return maximization': '风险调整收益最大化',
+                'Max Return': '最大收益',
+                'Maximum expected return': '最大预期收益',
+                'Min Variance': '最小方差',
+                'Volatility minimization': '波动率最小化',
+                'Risk Parity': '风险平价',
+                'Equal risk contribution': '等风险贡献',
+                'Most Diversified': '最大分散化',
+                'Maximum decorrelation': '最大去相关',
+                'Equal Weight': '等权重',
+                'Simple equal weighting': '简单等权重',
+                'Cap Weighted': '市值加权',
+                'Market capitalization weighted': '市值加权',
+                'Factor Tilt': '因子倾斜',
+                'Multi-factor weighted allocation': '多因子加权配置',
+                'Black-Litterman': 'Black-Litterman',
+                'Bayesian portfolio optimization': '贝叶斯组合优化',
+                'RETURN OPTIMIZATION': '收益优化',
+                'RISK OPTIMIZATION': '风险优化',
+                'SIMPLE ALLOCATION': '简单配置',
+                'ADVANCED OPTIMIZATION': '高级优化',
+                'RETURN / 收益': 'RETURN / 收益',
+                'RISK / 风险': 'RISK / 风险',
+                'SIMPLE / 简单': 'SIMPLE / 简单',
+                'ADVANCED / 高级': 'ADVANCED / 高级',
+                'OPTIMAL FORMATION': '最优编队',
+                'Risk': '风险',
+                'Return': '收益',
+                'SHIELD CONFIGURATION': '护盾配置',
+                'Defense Systems • Risk Control • Safety Protocols': '防御系统 • 风险控制 • 安全协议',
+                'SHIELD POWER LEVELS': '护盾能量等级',
+                'Stop-Loss Shield': '止损护盾',
+                'Stop-Loss Level': '止损水平',
+                '-10%': '-10%',
+                'Take-Profit Lock': '止盈锁',
+                'Take-Profit Level': '止盈水平',
+                '25%': '25%',
+                'Max Drawdown Shield': '最大回撤护盾',
+                '⚠️ MAX DRAWDOWN LIMIT': '⚠️ 最大回撤限制',
+                '20%': '20%',
+                'POSITION CONTROLS': '仓位控制',
+                'Max Single Position': '最大单仓位',
+                '10%': '10%',
+                'Max Sector Exposure': '最大行业暴露',
+                '30%': '30%',
+                '🛡️ ACTIVATE SHIELD': '🛡️ 激活护盾',
+                'BATTLE MODE': '战斗模式',
+                'Launch Simulation • Monitor Progress • Claim Victory': '启动模拟 • 监控进度 • 宣告胜利',
+                '⚔️ BATTLE STANDBY': '⚔️ 战斗待命',
+                'MISSION PROGRESS': '任务进度',
+                'Trades Made': '已完成交易',
+                '⚔️ START BATTLE': '⚔️ 开始战斗',
+                'MARKET': '市场',
+                'LANGUAGE': '语言',
+                'ALL': 'ALL',
+                'RETURN': '收益',
+                'RISK': '风险',
+                'SIMPLE': '简单',
+                'ADVANCED': '高级',
+                '🔨 FORGE STRATEGY': '🔨 锻造策略',
+                '🔒 LOCK AND LOAD': '🔒 锁定装载',
+                'No factors selected yet': '还没有选择因子',
+                'Code': '代码',
+                'Name': '名称',
+                'Price': '价格',
+                'Change': '涨跌',
+                'Volume': '成交量',
+                'Action': '操作',
+                'WATCHLIST': '自选股',
+                'VICTORY SCREEN': '胜利画面',
+                'Battle Results • Achievements • Performance Grade': '战斗结果 • 成就 • 表现评级',
+                '💾 SAVE RUN': '💾 保存运行',
+                '📜 EXPORT LOG': '📜 导出日志',
+                '🇨🇳 A-Shares': '🇨🇳 A股',
+                'China Mainland': '中国大陆',
+                'Stocks': '股票',
+                'Exchange': '交易所',
+                '🇺🇸 US Stocks': '🇺🇸 美股',
+                'NASDAQ/NYSE': '纳斯达克/纽交所',
+                '🇭🇰 Hong Kong': '🇭🇰 港股',
+                'HKEX': '港交所',
+                '5000+': '5000+',
+                '6000+': '6000+',
+                '2500+': '2500+',
+                'INITIAL CAPITAL': '初始资金',
+                'Starting Capital': '启动资金',
+                '¥100K': '¥10万',
+                '¥10M': '¥1000万',
+                'STRATEGY PARAMETERS': '策略参数',
+                'Backtest Period': '回测周期',
+                '252 Days': '252天',
+                'Rebalance Frequency': '再平衡频率',
+                '20 Days': '20天',
+                'CURRENT POSITIONS': '当前仓位',
+                'EQUITY CURVE': '净值曲线',
+                '📋 CONFIGURE': '📋 配置',
+                'Portfolio Value': '组合价值',
+                '📈 NASDAQ': '📈 纳斯达克',
+                '📈 S&P 500': '📈 标普500',
+                '📈 Hang Seng': '📈 恒生指数',
+                'MARKET CHART': '市场图表',
+                'EQUIPPED FACTORS': '已装备因子',
                 'QUANT CONSOLE': '量化控制台',
                 'v5.0 CYBERPUNK EDITION': 'v5.0 赛博朋克版',
                 'SYSTEM STATUS:': '系统状态:',
@@ -2774,48 +3019,14 @@
             const lang = AppState.currentLang;
             const translations = i18n[lang];
 
-            // 1. 翻译所有带data-i18n属性的静态元素
+            // 翻译所有带data-i18n属性的静态元素
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 if (key && translations[key]) {
-                    // 如果有原始文本缓存，优先使用key匹配；否则保持现状
                     el.textContent = translations[key];
-                } else if (el.dataset.i18nOriginal) {
+                } else if (el.dataset.i18nOriginal && lang === 'en') {
                     // 英文模式恢复原始文本
-                    if (lang === 'en') {
-                        el.textContent = el.dataset.i18nOriginal;
-                    }
-                }
-            });
-
-            // 2. 翻译因子标签按钮
-            const factorTabLabels = {
-                'all': { en: 'ALL / 全部', zh: 'ALL / 全部' },
-                'technical': { en: 'TECH / 技术', zh: 'TECH / 技术' },
-                'fundamental': { en: 'FUND / 基本面', zh: 'FUND / 基本面' },
-                'sentiment': { en: 'SENT / 情绪', zh: 'SENT / 情绪' },
-                'moneyflow': { en: 'FLOW / 资金流', zh: 'FLOW / 资金流' }
-            };
-            document.querySelectorAll('.factor-tab').forEach(btn => {
-                const type = btn.dataset.type;
-                if (type && factorTabLabels[type]) {
-                    btn.textContent = factorTabLabels[type][lang];
-                }
-            });
-
-            // 3. 翻译策略分类标签
-            const strategyCatLabels = {
-                'all': { en: 'ALL / 全部', zh: 'ALL / 全部' },
-                'trend': { en: 'TREND / 趋势', zh: 'TREND / 趋势' },
-                'mean-reversion': { en: 'REVERSION / 均值回归', zh: 'REVERSION / 均值回归' },
-                'value': { en: 'VALUE / 价值', zh: 'VALUE / 价值' },
-                'arbitrage': { en: 'ARBITRAGE / 套利', zh: 'ARBITRAGE / 套利' },
-                'special': { en: 'SPECIAL / 特殊', zh: 'SPECIAL / 特殊' }
-            };
-            document.querySelectorAll('.category-tab').forEach(btn => {
-                const cat = btn.dataset.category;
-                if (cat && strategyCatLabels[cat]) {
-                    btn.textContent = strategyCatLabels[cat][lang];
+                    el.textContent = el.dataset.i18nOriginal;
                 }
             });
         }
