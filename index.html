@@ -1787,8 +1787,7 @@
     </div>
 
     <script>
-        // 语言切换功能 - 使用AppState管理
-        let originalTexts = new Map();
+        // 语言切换功能 - 业界标准方案：data-i18n属性驱动
 
         const i18n = {
             en: {
@@ -2763,43 +2762,87 @@
 
         let currentStrategyCategory = 'all';
 
-        function saveOriginalTexts() {
-            const walker = document.createTreeWalker(
-                document.body,
-                NodeFilter.SHOW_TEXT,
-                null,
-                false
-            );
-            while (walker.nextNode()) {
-                const node = walker.currentNode;
-                const text = node.textContent.trim();
-                if (text) {
-                    originalTexts.set(node, node.textContent);
+        // 初始化：保存所有带data-i18n属性元素的原始英文文本
+        function initI18n() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.dataset.i18nOriginal = el.textContent.trim();
+            });
+        }
+
+        // 核心翻译函数：业界标准方案
+        function applyLanguage() {
+            const lang = AppState.currentLang;
+            const translations = i18n[lang];
+
+            // 1. 翻译所有带data-i18n属性的静态元素
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (key && translations[key]) {
+                    // 如果有原始文本缓存，优先使用key匹配；否则保持现状
+                    el.textContent = translations[key];
+                } else if (el.dataset.i18nOriginal) {
+                    // 英文模式恢复原始文本
+                    if (lang === 'en') {
+                        el.textContent = el.dataset.i18nOriginal;
+                    }
                 }
-            }
+            });
+
+            // 2. 翻译因子标签按钮
+            const factorTabLabels = {
+                'all': { en: 'ALL / 全部', zh: 'ALL / 全部' },
+                'technical': { en: 'TECH / 技术', zh: 'TECH / 技术' },
+                'fundamental': { en: 'FUND / 基本面', zh: 'FUND / 基本面' },
+                'sentiment': { en: 'SENT / 情绪', zh: 'SENT / 情绪' },
+                'moneyflow': { en: 'FLOW / 资金流', zh: 'FLOW / 资金流' }
+            };
+            document.querySelectorAll('.factor-tab').forEach(btn => {
+                const type = btn.dataset.type;
+                if (type && factorTabLabels[type]) {
+                    btn.textContent = factorTabLabels[type][lang];
+                }
+            });
+
+            // 3. 翻译策略分类标签
+            const strategyCatLabels = {
+                'all': { en: 'ALL / 全部', zh: 'ALL / 全部' },
+                'trend': { en: 'TREND / 趋势', zh: 'TREND / 趋势' },
+                'mean-reversion': { en: 'REVERSION / 均值回归', zh: 'REVERSION / 均值回归' },
+                'value': { en: 'VALUE / 价值', zh: 'VALUE / 价值' },
+                'arbitrage': { en: 'ARBITRAGE / 套利', zh: 'ARBITRAGE / 套利' },
+                'special': { en: 'SPECIAL / 特殊', zh: 'SPECIAL / 特殊' }
+            };
+            document.querySelectorAll('.category-tab').forEach(btn => {
+                const cat = btn.dataset.category;
+                if (cat && strategyCatLabels[cat]) {
+                    btn.textContent = strategyCatLabels[cat][lang];
+                }
+            });
         }
 
         function setLanguage(lang) {
             AppState.currentLang = lang;
-            // 先保存原始文本
-            saveOriginalTexts();
-            // 应用翻译
+            localStorage.setItem('preferredLang', lang);
+
+            // 应用翻译到静态内容
             applyLanguage();
-            // 重新渲染所有动态内容（它们会使用当前语言）
+
+            // 重新渲染所有动态内容（它们内部使用i18n）
             renderStrategies();
             renderFactors();
             renderOptimizations();
             renderHistory();
             renderWatchlist();
+
             // 更新按钮状态
             updateLanguageButtons();
             updateMarketButtons();
+
             // 更新动态UI显示
             updateDynamicUIDisplays();
         }
 
         function updateLanguageButtons() {
-            // 找到语言按钮所在的nav-section
             const navSections = document.querySelectorAll('.nav-section');
             let langSection = null;
             for (let i = navSections.length - 1; i >= 0; i--) {
@@ -2810,7 +2853,6 @@
             }
             if (langSection) {
                 const buttons = langSection.querySelectorAll('button');
-                // 语言按钮应该是市场按钮之后的两个
                 let langButtons = Array.from(buttons).filter(btn =>
                     btn.textContent.includes('中文') || btn.textContent.includes('EN')
                 );
@@ -2889,94 +2931,6 @@
             }
         }
 
-        function applyLanguage() {
-            if (AppState.currentLang === 'en') {
-                // 恢复英文
-                originalTexts.forEach((originalText, node) => {
-                    if (node.parentNode) {
-                        node.textContent = originalText;
-                    }
-                });
-            } else {
-                const translations = i18n[AppState.currentLang];
-                const walker = document.createTreeWalker(
-                    document.body,
-                    NodeFilter.SHOW_TEXT,
-                    null,
-                    false
-                );
-                const textNodes = [];
-                while (walker.nextNode()) {
-                    textNodes.push(walker.currentNode);
-                }
-
-                // 先建立所有翻译键的映射，按长度降序排列（优先匹配长文本）
-                const sortedKeys = Object.keys(translations).sort((a, b) => b.length - a.length);
-
-                textNodes.forEach(node => {
-                    if (!originalTexts.has(node)) {
-                        originalTexts.set(node, node.textContent);
-                    }
-                    let text = originalTexts.get(node);
-
-                    // 尝试所有可能的匹配，多次替换直到没有变化
-                    let changed = true;
-                    let iterations = 0;
-                    while (changed && iterations < 10) {
-                        changed = false;
-                        for (const key of sortedKeys) {
-                            if (text.includes(key)) {
-                                const newText = text.split(key).join(translations[key]);
-                                if (newText !== text) {
-                                    text = newText;
-                                    changed = true;
-                                }
-                            }
-                        }
-                        iterations++;
-                    }
-
-                    node.textContent = text;
-                });
-            }
-
-            // 更新因子标签按钮文本
-            const factorTabLabels = {
-                'all': { en: 'ALL', zh: '全部' },
-                'technical': { en: 'TECH', zh: '技术' },
-                'fundamental': { en: 'FUND', zh: '基本面' },
-                'sentiment': { en: 'SENT', zh: '情绪' },
-                'moneyflow': { en: 'FLOW', zh: '资金流' }
-            };
-            document.querySelectorAll('.factor-tab').forEach(btn => {
-                const type = btn.dataset.type;
-                if (type && factorTabLabels[type]) {
-                    btn.textContent = factorTabLabels[type][AppState.currentLang];
-                }
-            });
-
-            // 更新战术优化标签按钮文本
-            const optimizationTabLabels = {
-                'all': { en: 'ALL', zh: '全部' },
-                'return': { en: 'RETURN', zh: '收益' },
-                'risk': { en: 'RISK', zh: '风险' },
-                'simple': { en: 'SIMPLE', zh: '简单' },
-                'advanced': { en: 'ADVANCED', zh: '高级' }
-            };
-            document.querySelectorAll('.optimization-tab').forEach(btn => {
-                const type = btn.dataset.type;
-                if (type && optimizationTabLabels[type]) {
-                    btn.textContent = optimizationTabLabels[type][AppState.currentLang];
-                }
-            });
-
-            // 重新渲染因子库以更新因子卡片
-            renderFactors();
-            // 重新渲染策略库
-            renderStrategies();
-            // 重新渲染战术优化
-            renderOptimizations();
-        }
 
         const AppState = {
             currentPage: 'dashboard',
@@ -3241,19 +3195,6 @@
             if (winRateEl) winRateEl.textContent = '61.5%';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // 先初始化页面内容
-            initNavigation();
-            initFactors();
-            initCharts();
-            renderStrategies();
-            // 再保存原始文本（包括动态生成的内容）
-            saveOriginalTexts();
-            // 应用中文翻译（默认）
-            applyLanguage();
-            // 更新动态UI显示
-            updateDynamicUIDisplays();
-        });
 
         // 策略分类相关函数
         function switchStrategyCategory(category) {
@@ -4244,10 +4185,9 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             marketChart.update('none');
         }
 
-        // 扩展初始化函数
-        const originalInit = document.addEventListener;
+        // ===== 页面初始化 =====
         document.addEventListener('DOMContentLoaded', function() {
-            // 先初始化页面内容
+            // 1. 先初始化所有模块
             initNavigation();
             initFactors();
             initOptimizations();
@@ -4259,13 +4199,19 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             // 初始化资金显示
             updateCapital();
 
-            // 再保存原始文本（包括动态生成的内容）
-            saveOriginalTexts();
+            // 2. 初始化i18n：保存原始英文文本
+            initI18n();
 
-            // 应用中文翻译
+            // 3. 从localStorage读取用户偏好语言
+            const savedLang = localStorage.getItem('preferredLang');
+            if (savedLang) {
+                AppState.currentLang = savedLang;
+            }
+
+            // 4. 应用初始语言
             applyLanguage();
 
-            // 更新市场按钮状态
+            // 5. 更新按钮状态
             updateMarketButtons();
             updateLanguageButtons();
         });
