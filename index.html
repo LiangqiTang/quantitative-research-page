@@ -4590,30 +4590,26 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             // 2. 初始化i18n：保存原始英文文本
             initI18n();
 
-            // 3. 从localStorage读取用户偏好，默认为中文
-            // 检查是否是新用户（没有任何localStorage设置）
-            const hasVisited = localStorage.getItem('hasVisitedBefore');
+            // 3. 从localStorage读取用户偏好
+            // 重要：页面第一次进入时，强制默认是中文！
+            // 检查是否是从未设置过语言的用户
             let savedLang = localStorage.getItem('preferredLang');
             let savedMarket = localStorage.getItem('preferredMarket');
 
-            if (!hasVisited) {
-                // 新用户：强制设为中文和A股市场
+            if (!savedLang) {
+                // 如果没有保存过语言，强制设为中文
                 savedLang = 'zh';
-                savedMarket = 'cn';
                 localStorage.setItem('preferredLang', 'zh');
-                localStorage.setItem('preferredMarket', 'cn');
-                localStorage.setItem('hasVisitedBefore', 'true');
-            } else {
-                // 老用户：使用保存的设置，默认中文
-                if (!savedLang) {
-                    savedLang = 'zh';
-                    localStorage.setItem('preferredLang', 'zh');
-                }
-                if (savedMarket) {
-                    AppState.currentMarket = savedMarket;
-                }
             }
+
+            if (!savedMarket) {
+                // 如果没有保存过市场，默认A股
+                savedMarket = 'cn';
+                localStorage.setItem('preferredMarket', 'cn');
+            }
+
             AppState.currentLang = savedLang;
+            AppState.currentMarket = savedMarket;
 
             // 4. 应用初始语言
             applyLanguage();
