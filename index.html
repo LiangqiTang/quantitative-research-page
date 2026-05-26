@@ -4611,18 +4611,14 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             AppState.currentLang = savedLang;
             AppState.currentMarket = savedMarket;
 
-            // 4. 应用初始语言
-            applyLanguage();
-
-            // 5. 初始化市场视图（会设置 marketConfig 并更新 watchlist）
+            // 4. 初始化市场视图（会设置 marketConfig 并更新 watchlist）
             updateMarketView();
 
-            // 6. 渲染其他内容
-            renderHistory();
+            // 5. 应用初始语言 - 直接调用 setLanguage，确保所有动态内容都被渲染！
+            setLanguage(savedLang);
 
-            // 7. 更新按钮状态
+            // 6. 更新市场按钮状态
             updateMarketButtons();
-            updateLanguageButtons();
         });
     </script>
 </body>
