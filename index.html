@@ -34,6 +34,11 @@
             --border-cyan: rgba(0, 245, 255, 0.3);
             --border-pink: rgba(255, 0, 170, 0.3);
             --border-light: rgba(255, 255, 255, 0.1);
+            /* 涨跌语义化颜色: 红涨绿跌 */
+            --price-up: #ff3333;
+            --price-down: #00ff88;
+            --glow-up: 0 0 20px rgba(255, 51, 51, 0.5);
+            --glow-down: 0 0 20px rgba(0, 255, 136, 0.5);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -301,8 +306,8 @@
             font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 700;
             color: var(--neon-cyan); text-shadow: 0 0 20px var(--neon-cyan);
         }
-        .stat-value.positive { color: var(--neon-green); text-shadow: 0 0 20px var(--neon-green); }
-        .stat-value.negative { color: var(--neon-red); text-shadow: 0 0 20px var(--neon-red); }
+        .stat-value.positive { color: var(--price-up); text-shadow: 0 0 20px var(--price-up); }
+        .stat-value.negative { color: var(--price-down); text-shadow: 0 0 20px var(--price-down); }
 
         .hp-shield-container { display: flex; gap: 24px; margin-bottom: 24px; }
         .hp-shield-item { flex: 1; }
@@ -468,8 +473,8 @@
         .battle-stat-value {
             font-family: 'Orbitron', monospace; font-size: 1.8rem; font-weight: 700; margin-bottom: 4px;
         }
-        .battle-stat-value.positive { color: var(--neon-green); animation: popNumber 0.5s ease; }
-        .battle-stat-value.negative { color: var(--neon-red); }
+        .battle-stat-value.positive { color: var(--price-up); text-shadow: 0 0 20px var(--price-up); animation: popNumber 0.5s ease; }
+        .battle-stat-value.negative { color: var(--price-down); text-shadow: 0 0 20px var(--price-down); }
         @keyframes popNumber {
             0% { transform: scale(1); }
             50% { transform: scale(1.3); }
@@ -671,8 +676,8 @@
             font-weight: 700;
         }
 
-        .history-stat-value.positive { color: var(--neon-green); }
-        .history-stat-value.negative { color: var(--neon-red); }
+        .history-stat-value.positive { color: var(--price-up); }
+        .history-stat-value.negative { color: var(--price-down); }
 
         .history-stat-label {
             font-family: 'Share Tech Mono', monospace;
@@ -717,6 +722,39 @@
         .cyber-btn-large {
             padding: 16px 32px;
             font-size: 0.9rem;
+        }
+
+        /* 日期选择器样式 */
+        .date-selector-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .cyber-date-picker {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .date-display {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-cyan);
+            border-radius: 4px;
+            color: var(--neon-cyan);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .date-display:hover {
+            box-shadow: var(--glow-cyan);
+            border-color: var(--neon-cyan);
         }
     </style>
 </head>
@@ -827,6 +865,10 @@
                         <div class="page-subtitle" data-i18n="System Status: Online • Mission: Active">System Status: Online • Mission: Active</div>
                     </div>
                     <div class="header-actions">
+                        <div class="date-selector-container">
+                            <input type="date" id="datePicker" class="cyber-date-picker">
+                            <div class="date-display" id="dateDisplay">📅 2024年5月26日</div>
+                        </div>
                         <button class="cyber-btn primary" onclick="navigateTo('backtest')" data-i18n="⚔️ LAUNCH BATTLE">
                             ⚔️ LAUNCH BATTLE
                         </button>
@@ -2208,7 +2250,11 @@
                 '📈 S&P 500': '📈 S&P 500',
                 '📈 Hang Seng': '📈 Hang Seng',
                 'MARKET CHART': 'MARKET CHART',
-                'EQUIPPED FACTORS': 'EQUIPPED FACTORS'
+                'EQUIPPED FACTORS': 'EQUIPPED FACTORS',
+                'Select Date': 'Select Date',
+                'Date': 'Date',
+                'Today': 'Today',
+                'Market Data': 'Market Data'
             },
             zh: {
                 'QUANT CONSOLE': '量化控制台',
@@ -2987,7 +3033,11 @@
                 'Template Select • Contents • Export': '模板选择 • 内容 • 导出',
                 '⚙️ CONFIG': '⚙️ 配置',
                 '📂 Load': '📂 加载',
-                '🗑️ Delete': '🗑️ 删除'
+                '🗑️ Delete': '🗑️ 删除',
+                'Select Date': '选择日期',
+                'Date': '日期',
+                'Today': '今天',
+                'Market Data': '市场数据'
             }
         };
 
@@ -3052,6 +3102,9 @@
             renderHistory();
             renderWatchlist();
 
+            // 更新日期显示
+            updateDateDisplay(AppState.currentDate);
+
             // 更新图表标签
             initMarketChart();
 
@@ -3083,6 +3136,9 @@
             updateMarketButtons();
             // 更新市场视图内容
             updateMarketView();
+            // 更新市场指数数据和图表
+            updateMarketIndicesForDate(AppState.currentDate);
+            initMarketChart();
             // 显示提示
             const marketNames = {
                 'cn': { zh: 'A股', en: 'A-Share Market' },
@@ -3136,89 +3192,33 @@
                 defaultCapital: defaultCapital
             };
 
-            // 2. 更新市场指数卡片
-            const statsGrid = document.getElementById('market-stats-grid');
-            if (statsGrid) {
-                let indicesHtml = '';
-                if (market === 'cn') {
-                    indicesHtml = `
-                        <div class="stat-card">
-                            <div class="stat-label">📈 上证指数</div>
-                            <div class="stat-value positive">3,247.52</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+1.24%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 深证成指</div>
-                            <div class="stat-value positive">10,842.38</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+0.87%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 沪深300</div>
-                            <div class="stat-value negative">3,852.19</div>
-                            <div class="stat-value negative small" style="margin-top: 4px;">-0.45%</div>
-                        </div>`;
-                } else if (market === 'us') {
-                    indicesHtml = `
-                        <div class="stat-card">
-                            <div class="stat-label">📈 标普500</div>
-                            <div class="stat-value positive">5,123.41</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+0.56%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 纳斯达克</div>
-                            <div class="stat-value positive">16,245.37</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+2.15%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 道琼斯</div>
-                            <div class="stat-value positive">38,425.67</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+0.34%</div>
-                        </div>`;
-                } else if (market === 'hk') {
-                    indicesHtml = `
-                        <div class="stat-card">
-                            <div class="stat-label">📈 恒生指数</div>
-                            <div class="stat-value positive">18,452.36</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+1.02%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 国企指数</div>
-                            <div class="stat-value positive">11,876.34</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+1.45%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 恒生科技</div>
-                            <div class="stat-value positive">4,325.67</div>
-                            <div class="stat-value positive small" style="margin-top: 4px;">+2.31%</div>
-                        </div>`;
-                }
-                statsGrid.innerHTML = indicesHtml;
-            }
-
-            // 3. 更新 Watchlist
-            watchlist = [];
+            // 2. 设置指数配置
+            const lang = AppState.currentLang;
             if (market === 'cn') {
-                watchlist = [
-                    { code: '600519', name: '贵州茅台', price: 1688.00, change: 2.3, volume: '12.5M' },
-                    { code: '000001', name: '平安银行', price: 12.45, change: -1.2, volume: '45.2M' },
-                    { code: '600036', name: '招商银行', price: 32.80, change: 0.8, volume: '28.1M' },
-                    { code: '000858', name: '五粮液', price: 145.60, change: 3.5, volume: '8.9M' }
+                AppState.marketConfig.indices = [
+                    { id: 'SSE', label: { zh: '📈 上证指数', en: '📈 SSE Composite' }, value: AppState.marketData.SSE.value, change: AppState.marketData.SSE.change },
+                    { id: 'SZSE', label: { zh: '📈 深证成指', en: '📈 SZSE Component' }, value: AppState.marketData.SZSE.value, change: AppState.marketData.SZSE.change },
+                    { id: 'CSI300', label: { zh: '📈 沪深300', en: '📈 CSI 300' }, value: AppState.marketData.GEM.value, change: AppState.marketData.GEM.change }
                 ];
             } else if (market === 'us') {
-                watchlist = [
-                    { code: 'AAPL', name: 'Apple', price: 178.50, change: 1.2, volume: '52.3M' },
-                    { code: 'MSFT', name: 'Microsoft', price: 415.20, change: -0.5, volume: '23.1M' },
-                    { code: 'GOOGL', name: 'Alphabet', price: 141.80, change: 0.8, volume: '31.2M' },
-                    { code: 'NVDA', name: 'NVIDIA', price: 875.30, change: 3.2, volume: '48.7M' }
+                AppState.marketConfig.indices = [
+                    { id: 'SPX', label: { zh: '📈 标普500', en: '📈 S&P 500' }, value: AppState.marketData.SPX.value, change: AppState.marketData.SPX.change },
+                    { id: 'NASDAQ', label: { zh: '📈 纳斯达克', en: '📈 NASDAQ' }, value: AppState.marketData.DJIA.value, change: AppState.marketData.DJIA.change },
+                    { id: 'DJIA', label: { zh: '📈 道琼斯', en: '📈 Dow Jones' }, value: AppState.marketData.DJIA.value + 33000, change: AppState.marketData.SPX.change * 0.6 }
                 ];
             } else if (market === 'hk') {
-                watchlist = [
-                    { code: '00700', name: '腾讯控股', price: 368.50, change: 1.8, volume: '28.5M' },
-                    { code: '09988', name: '阿里巴巴', price: 78.20, change: -0.6, volume: '42.1M' },
-                    { code: '03690', name: '美团', price: 128.40, change: 2.1, volume: '35.2M' },
-                    { code: '09618', name: '京东', price: 102.50, change: 0.9, volume: '21.8M' }
+                AppState.marketConfig.indices = [
+                    { id: 'HSI', label: { zh: '📈 恒生指数', en: '📈 Hang Seng' }, value: AppState.marketData.HSCEI.value + 6000, change: AppState.marketData.HSCEI.change * 0.7 },
+                    { id: 'HSCEI', label: { zh: '📈 国企指数', en: '📈 HSCEI' }, value: AppState.marketData.HSCEI.value, change: AppState.marketData.HSCEI.change },
+                    { id: 'HSTECH', label: { zh: '📈 恒生科技', en: '📈 Hang Seng Tech' }, value: AppState.marketData.HSCEI.value * 0.36 + 100, change: AppState.marketData.HSCEI.change * 2.3 }
                 ];
             }
+
+            // 3. 更新市场指数卡片
+            renderMarketIndices();
+
+            // 4. 更新 Watchlist
+            watchlist = generateWatchlistForDate(AppState.currentDate, market);
             renderWatchlist();
 
             // 4. 更新回测页面的市场选择卡片选中状态
@@ -3342,6 +3342,7 @@
             // ===== 动态状态值 =====
             currentLang: 'zh', // 默认中文
             currentMarket: 'cn', // 默认A股市场
+            currentDate: new Date().toISOString().split('T')[0], // 当前选择的日期
             accountHP: 92, // 账户生命值
             missionCount: 17, // 任务计数
             initialCapital: 1000000, // 初始资金
@@ -4515,7 +4516,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                     <td style="color: var(--text-primary); font-weight: bold;">
                         ${currencySymbol}${stock.price.toFixed(2)}
                     </td>
-                    <td style="color: ${stock.change >= 0 ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: bold;">
+                    <td style="color: ${stock.change >= 0 ? 'var(--price-up)' : 'var(--price-down)'}; font-weight: bold;">
                         ${stock.change >= 0 ? '+' : ''}${stock.change.toFixed(2)}%
                     </td>
                     <td style="color: var(--text-secondary);">${stock.volume}</td>
@@ -4528,59 +4529,209 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             `).join('');
         }
 
+
+        function updateMarketChart() {
+            if (!marketChart) return;
+            let lastVal = marketChart.data.datasets[0].data[marketChart.data.datasets[0].data.length - 1];
+            const newData = marketChart.data.datasets[0].data.slice(1);
+            newData.push(lastVal * (1 + (Math.random() - 0.5) * 0.02));
+            marketChart.data.datasets[0].data = newData;
+            marketChart.update('none');
+        }
+
+        // ===== 日期相关功能 =====
+        function formatDateForDisplay(date, lang) {
+            const d = new Date(date);
+            if (lang === 'zh') {
+                return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+            } else {
+                return d.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+        }
+
+        function updateDashboardStats() {
+            const targetDate = AppState.currentDate;
+            // 基于日期生成可复现的随机统计数据
+            const dateNum = new Date(targetDate).getTime();
+            const seed = dateNum % 100000;
+            const rand = (s) => {
+                const x = Math.sin(s) * 10000;
+                return x - Math.floor(x);
+            };
+
+            // 生成统计数据
+            const totalReturn = (rand(seed) - 0.3) * 50; // -15% to +35%
+            const sharpeRatio = 0.5 + rand(seed + 1) * 2.5; // 0.5 to 3.0
+            const maxDrawdown = -(rand(seed + 2) * 15); // 0 to -15%
+            const winRate = 40 + rand(seed + 3) * 40; // 40% to 80%
+
+            // 更新仪表盘统计
+            const totalReturnEl = document.getElementById('totalReturnValue');
+            if (totalReturnEl) {
+                totalReturnEl.textContent = (totalReturn >= 0 ? '+' : '') + totalReturn.toFixed(1) + '%';
+                totalReturnEl.className = 'stat-value ' + (totalReturn >= 0 ? 'positive' : 'negative');
+            }
+
+            const sharpeEl = document.getElementById('sharpeRatioValue');
+            if (sharpeEl) {
+                sharpeEl.textContent = sharpeRatio.toFixed(2);
+            }
+
+            const drawdownEl = document.getElementById('maxDrawdownValue');
+            if (drawdownEl) {
+                drawdownEl.textContent = maxDrawdown.toFixed(1) + '%';
+                drawdownEl.className = 'stat-value ' + (maxDrawdown >= 0 ? 'positive' : 'negative');
+            }
+
+            const winRateEl = document.getElementById('winRateValue');
+            if (winRateEl) {
+                winRateEl.textContent = winRate.toFixed(1) + '%';
+                winRateEl.className = 'stat-value ' + (winRate >= 50 ? 'positive' : 'negative');
+            }
+        }
+
+        function generateChartData(startDate, market, days = 50) {
+            let val = 100;
+            const drift = market === 'cn' ? -0.1 : (market === 'us' ? 0.2 : 0.05);
+            const volatility = market === 'cn' ? 2.5 : (market === 'us' ? 1.5 : 2);
+
+            const data = [];
+            const labels = [];
+
+            for (let i = days - 1; i >= 0; i--) {
+                const d = new Date(startDate);
+                d.setDate(d.getDate() - i);
+                labels.push(d);
+                val += (Math.random() - 0.5 + drift) * volatility;
+                data.push(val);
+            }
+
+            return { data, labels };
+        }
+
+        function updateDateDisplay(dateStr) {
+            const dateDisplay = document.getElementById('dateDisplay');
+            const datePicker = document.getElementById('datePicker');
+            if (dateDisplay && datePicker) {
+                dateDisplay.textContent = `📅 ${formatDateForDisplay(dateStr, AppState.currentLang)}`;
+                datePicker.value = dateStr;
+            }
+        }
+
+        function setDate(dateStr) {
+            AppState.currentDate = dateStr;
+            localStorage.setItem('preferredDate', dateStr);
+            updateAllDataForDate(dateStr);
+        }
+
+        function updateAllDataForDate(targetDate) {
+            updateDateDisplay(targetDate);
+            updateMarketIndicesForDate(targetDate);
+            updateWatchlistForDate(targetDate);
+            initMarketChart();
+            updateDashboardStats();
+        }
+
+        function updateMarketIndicesForDate(targetDate) {
+            // 基于日期生成可复现的随机市场数据
+            const dateNum = new Date(targetDate).getTime();
+            const seed = dateNum % 100000;
+            const rand = (s) => {
+                const x = Math.sin(s) * 10000;
+                return x - Math.floor(x);
+            };
+
+            // 更新市场指数数据
+            if (AppState.currentMarket === 'cn') {
+                AppState.marketData.SSE.value = 3200 + rand(seed) * 200;
+                AppState.marketData.SSE.change = (rand(seed + 1) - 0.5) * 4;
+                AppState.marketData.SZSE.value = 10800 + rand(seed + 2) * 300;
+                AppState.marketData.SZSE.change = (rand(seed + 3) - 0.5) * 3;
+                AppState.marketData.GEM.value = 2100 + rand(seed + 4) * 150;
+                AppState.marketData.GEM.change = (rand(seed + 5) - 0.5) * 2;
+            } else if (AppState.currentMarket === 'us') {
+                AppState.marketData.DJIA.value = 38000 + rand(seed) * 1000;
+                AppState.marketData.DJIA.change = (rand(seed + 1) - 0.5) * 2;
+                AppState.marketData.SPX.value = 5100 + rand(seed + 2) * 200;
+                AppState.marketData.SPX.change = (rand(seed + 3) - 0.5) * 1.5;
+            } else {
+                AppState.marketData.HSCEI.value = 11800 + rand(seed) * 400;
+                AppState.marketData.HSCEI.change = (rand(seed + 1) - 0.5) * 2.5;
+            }
+
+            // 重新渲染市场视图
+            updateMarketView();
+        }
+
+        function generateWatchlistForDate(targetDate, market) {
+            const dateNum = new Date(targetDate).getTime();
+            const seed = dateNum % 100000;
+            const rand = (s) => {
+                const x = Math.sin(s) * 10000;
+                return x - Math.floor(x);
+            };
+
+            if (market === 'cn') {
+                return [
+                    { code: '600519', name: '贵州茅台', price: 1580 + rand(seed) * 200, change: (rand(seed + 1) - 0.4) * 5, volume: (10 + rand(seed + 2) * 10).toFixed(1) + 'M' },
+                    { code: '000001', name: '平安银行', price: 10 + rand(seed + 3) * 5, change: (rand(seed + 4) - 0.5) * 4, volume: (40 + rand(seed + 5) * 20).toFixed(1) + 'M' },
+                    { code: '600036', name: '招商银行', price: 28 + rand(seed + 6) * 10, change: (rand(seed + 7) - 0.45) * 3, volume: (20 + rand(seed + 8) * 15).toFixed(1) + 'M' },
+                    { code: '000858', name: '五粮液', price: 130 + rand(seed + 9) * 30, change: (rand(seed + 10) - 0.35) * 6, volume: (5 + rand(seed + 11) * 8).toFixed(1) + 'M' }
+                ];
+            } else if (market === 'us') {
+                return [
+                    { code: 'AAPL', name: 'Apple', price: 165 + rand(seed) * 30, change: (rand(seed + 1) - 0.45) * 4, volume: (45 + rand(seed + 2) * 20).toFixed(1) + 'M' },
+                    { code: 'MSFT', name: 'Microsoft', price: 390 + rand(seed + 3) * 50, change: (rand(seed + 4) - 0.5) * 3, volume: (20 + rand(seed + 5) * 10).toFixed(1) + 'M' },
+                    { code: 'GOOGL', name: 'Alphabet', price: 130 + rand(seed + 6) * 25, change: (rand(seed + 7) - 0.48) * 2.5, volume: (25 + rand(seed + 8) * 12).toFixed(1) + 'M' },
+                    { code: 'NVDA', name: 'NVIDIA', price: 820 + rand(seed + 9) * 120, change: (rand(seed + 10) - 0.35) * 7, volume: (40 + rand(seed + 11) * 25).toFixed(1) + 'M' }
+                ];
+            } else if (market === 'hk') {
+                return [
+                    { code: '00700', name: '腾讯控股', price: 340 + rand(seed) * 60, change: (rand(seed + 1) - 0.42) * 4, volume: (25 + rand(seed + 2) * 15).toFixed(1) + 'M' },
+                    { code: '09988', name: '阿里巴巴', price: 72 + rand(seed + 3) * 15, change: (rand(seed + 4) - 0.52) * 3, volume: (38 + rand(seed + 5) * 18).toFixed(1) + 'M' },
+                    { code: '03690', name: '美团', price: 118 + rand(seed + 6) * 22, change: (rand(seed + 7) - 0.4) * 5, volume: (30 + rand(seed + 8) * 14).toFixed(1) + 'M' },
+                    { code: '09618', name: '京东', price: 98 + rand(seed + 9) * 18, change: (rand(seed + 10) - 0.46) * 3.5, volume: (18 + rand(seed + 11) * 12).toFixed(1) + 'M' }
+                ];
+            }
+            return [];
+        }
+
+        function updateWatchlistForDate(targetDate) {
+            watchlist = generateWatchlistForDate(targetDate, AppState.currentMarket);
+            renderWatchlist();
+        }
+
+        // ===== 重写的市场图表初始化 =====
         function initMarketChart() {
             const ctx = document.getElementById('marketChart');
             if (!ctx) return;
 
             const market = AppState.currentMarket;
             const lang = AppState.currentLang;
+            const targetDate = AppState.currentDate;
 
-            // 根据语言生成标签
-            const labels = Array.from({length: 50}, (_, i) => {
-                if (lang === 'zh') {
-                    if (i === 0) return '第1天';
-                    if (i === 24) return '第25天';
-                    if (i === 49) return '第50天';
-                    return '';
-                } else {
-                    if (i === 0) return 'Day 1';
-                    if (i === 24) return 'Day 25';
-                    if (i === 49) return 'Day 50';
-                    return '';
+            // 生成真实日期标签和数据
+            const { data, labels: dateLabels } = generateChartData(targetDate, market, 50);
+
+            // 根据语言格式化日期标签
+            const labels = dateLabels.map((d, i) => {
+                if (i === 0 || i === 24 || i === 49) {
+                    return formatDateForDisplay(d, lang);
                 }
+                return '';
             });
 
-            // 根据不同市场设置不同的起始值和波动特性
-            let val = 100;
-            let drift = 0;
-            let volatility = 2;
-            let color = '#ffd700'; // 默认金色
-            let bgColor = 'rgba(255, 215, 0, 0.1)';
-
-            if (market === 'cn') {
-                drift = -0.1; // A股稍微偏弱
-                volatility = 2.5;
-                color = '#ff6b6b'; // 红色系
-                bgColor = 'rgba(255, 107, 107, 0.1)';
-            } else if (market === 'us') {
-                drift = 0.2; // 美股走强
-                volatility = 1.5;
-                color = '#00ff88'; // 绿色系
-                bgColor = 'rgba(0, 255, 136, 0.1)';
-            } else if (market === 'hk') {
-                drift = 0.05; // 港股中性
-                volatility = 2;
-                color = '#00d4ff'; // 蓝色系
-                bgColor = 'rgba(0, 212, 255, 0.1)';
-            }
-
-            const data = Array.from({length: 50}, () => {
-                val += (Math.random() - 0.5 + drift) * volatility;
-                return val;
-            });
+            // 检查趋势：终点值 vs 起点值（红涨绿跌）
+            const isUpTrend = data[data.length - 1] > data[0];
+            const color = isUpTrend ? '#ff3333' : '#00ff88'; // 红涨绿跌
+            const bgColor = isUpTrend ? 'rgba(255, 51, 51, 0.1)' : 'rgba(0, 255, 136, 0.1)';
 
             // 获取轴标签文本
-            const xAxisLabel = lang === 'zh' ? '时间' : 'Time';
+            const xAxisLabel = lang === 'zh' ? '日期' : 'Date';
             const yAxisLabel = lang === 'zh' ? '指数值' : 'Index Value';
 
             // 如果图表已经存在，直接更新数据
@@ -4675,15 +4826,6 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             });
         }
 
-        function updateMarketChart() {
-            if (!marketChart) return;
-            let lastVal = marketChart.data.datasets[0].data[marketChart.data.datasets[0].data.length - 1];
-            const newData = marketChart.data.datasets[0].data.slice(1);
-            newData.push(lastVal * (1 + (Math.random() - 0.5) * 0.02));
-            marketChart.data.datasets[0].data = newData;
-            marketChart.update('none');
-        }
-
         // ===== 页面初始化 =====
         document.addEventListener('DOMContentLoaded', function() {
             // 1. 先初始化所有模块
@@ -4691,7 +4833,6 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             initFactors();
             initOptimizations();
             initCharts();
-            initMarketChart();
 
             // 2. 初始化i18n：保存原始英文文本
             initI18n();
@@ -4701,13 +4842,16 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             const isFirstVisit = !localStorage.getItem('hasVisitedV2');
             let savedLang = localStorage.getItem('preferredLang');
             let savedMarket = localStorage.getItem('preferredMarket');
+            let savedDate = localStorage.getItem('preferredDate');
 
             if (isFirstVisit) {
                 // 第一次访问：强制设为中文和A股
                 savedLang = 'zh';
                 savedMarket = 'cn';
+                savedDate = new Date().toISOString().split('T')[0];
                 localStorage.setItem('preferredLang', 'zh');
                 localStorage.setItem('preferredMarket', 'cn');
+                localStorage.setItem('preferredDate', savedDate);
                 localStorage.setItem('hasVisitedV2', 'true');
             } else {
                 // 老用户：如果没有保存过，默认中文和A股
@@ -4719,18 +4863,43 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                     savedMarket = 'cn';
                     localStorage.setItem('preferredMarket', 'cn');
                 }
+                if (!savedDate) {
+                    savedDate = new Date().toISOString().split('T')[0];
+                    localStorage.setItem('preferredDate', savedDate);
+                }
             }
 
             AppState.currentLang = savedLang;
             AppState.currentMarket = savedMarket;
+            AppState.currentDate = savedDate;
 
-            // 4. 初始化市场视图（会设置 marketConfig 并更新 watchlist）
+            // 4. 初始化日期选择器
+            const datePicker = document.getElementById('datePicker');
+            if (datePicker) {
+                const today = new Date();
+                const oneYearAgo = new Date();
+                oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+                datePicker.max = today.toISOString().split('T')[0];
+                datePicker.min = oneYearAgo.toISOString().split('T')[0];
+                datePicker.value = savedDate;
+
+                datePicker.addEventListener('change', function(e) {
+                    setDate(e.target.value);
+                });
+            }
+
+            // 5. 初始化市场视图（会设置 marketConfig 并更新 watchlist）
             updateMarketView();
 
-            // 5. 应用初始语言 - 直接调用 setLanguage，确保所有动态内容都被渲染！
+            // 6. 初始化日期显示和市场图表
+            updateDateDisplay(savedDate);
+            initMarketChart();
+
+            // 7. 应用初始语言 - 直接调用 setLanguage，确保所有动态内容都被渲染！
             setLanguage(savedLang);
 
-            // 6. 更新市场按钮状态
+            // 8. 更新市场按钮状态
             updateMarketButtons();
         });
     </script>
