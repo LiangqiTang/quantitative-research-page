@@ -3119,13 +3119,29 @@
         }
 
         function updateMarketView() {
-            // 简化版：直接更新市场视图
+            // 更新市场视图
             const market = AppState.currentMarket;
 
-            // 1. 先更新货币符号
+            // 1. 设置市场配置
             let currencySymbol = '¥';
-            if (market === 'us') currencySymbol = '$';
-            if (market === 'hk') currencySymbol = 'HK$';
+            let currency = 'CNY';
+            let defaultCapital = 1000000;
+
+            if (market === 'us') {
+                currencySymbol = '$';
+                currency = 'USD';
+                defaultCapital = 100000;
+            } else if (market === 'hk') {
+                currencySymbol = 'HK$';
+                currency = 'HKD';
+                defaultCapital = 1000000;
+            }
+
+            AppState.marketConfig = {
+                currency: currency,
+                currencySymbol: currencySymbol,
+                defaultCapital: defaultCapital
+            };
 
             // 2. 更新市场指数卡片
             const statsGrid = document.getElementById('market-stats-grid');
@@ -3211,6 +3227,9 @@
                 ];
             }
             renderWatchlist();
+
+            // 4. 更新所有货币显示
+            updateAllCurrencyDisplays();
         }
 
         function renderMarketIndices() {
@@ -4560,18 +4579,29 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             initI18n();
 
             // 3. 从localStorage读取用户偏好，默认为中文
+            // 检查是否是新用户（没有任何localStorage设置）
+            const hasVisited = localStorage.getItem('hasVisitedBefore');
             let savedLang = localStorage.getItem('preferredLang');
-            // 如果没有保存过或者是第一次访问，强制设为中文
-            if (!savedLang) {
+            let savedMarket = localStorage.getItem('preferredMarket');
+
+            if (!hasVisited) {
+                // 新用户：强制设为中文和A股市场
                 savedLang = 'zh';
+                savedMarket = 'cn';
                 localStorage.setItem('preferredLang', 'zh');
+                localStorage.setItem('preferredMarket', 'cn');
+                localStorage.setItem('hasVisitedBefore', 'true');
+            } else {
+                // 老用户：使用保存的设置，默认中文
+                if (!savedLang) {
+                    savedLang = 'zh';
+                    localStorage.setItem('preferredLang', 'zh');
+                }
+                if (savedMarket) {
+                    AppState.currentMarket = savedMarket;
+                }
             }
             AppState.currentLang = savedLang;
-
-            const savedMarket = localStorage.getItem('preferredMarket');
-            if (savedMarket) {
-                AppState.currentMarket = savedMarket;
-            }
 
             // 4. 应用初始语言
             applyLanguage();
