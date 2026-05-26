@@ -1042,7 +1042,7 @@
                     <div class="card-header" style="padding-bottom: 10px;">
                         <div class="card-title">
                             <span id="factorCategoryTitle" data-i18n="FACTOR ARSENAL">FACTOR ARSENAL</span>
-                            <span style="margin-left: 12px; font-size: 0.8rem; color: var(--neon-cyan);" id="factorCount">0 FACTORS</span>
+                            <span style="margin-left: 12px; font-size: 0.8rem; color: var(--neon-cyan);" id="factorCount" data-i18n="0 FACTORS">0 FACTORS</span>
                         </div>
                     </div>
                     <div class="factors-grid" id="techFactors">
@@ -1241,8 +1241,8 @@
                             </div>
                             <input type="range" class="param-slider" id="initialCapital" min="100000" max="10000000" step="100000" value="1000000" oninput="updateCapital()">
                             <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: var(--text-secondary);">
-                                <span>¥100K</span>
-                                <span>¥10M</span>
+                                <span data-i18n="¥100K">¥100K</span>
+                                <span data-i18n="¥10M">¥10M</span>
                             </div>
                         </div>
                         <div class="corner-br"></div>
@@ -1258,49 +1258,49 @@
                         <div class="factors-grid" id="marketSelectGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                             <div class="factor-card rarity-legendary selected market-card" onclick="selectMarket(this, 'cn')">
                                 <div class="factor-header">
-                                    <div class="factor-name">🇨🇳 A-Shares</div>
-                                    <div class="factor-rarity">China Mainland</div>
+                                    <div class="factor-name" data-i18n="🇨🇳 A-Shares">🇨🇳 A-Shares</div>
+                                    <div class="factor-rarity" data-i18n="China Mainland">China Mainland</div>
                                 </div>
                                 <div class="factor-stats">
                                     <div class="factor-stat">
-                                        <div class="factor-stat-label">Stocks</div>
-                                        <div class="factor-stat-value">5000+</div>
+                                        <div class="factor-stat-label" data-i18n="Stocks">Stocks</div>
+                                        <div class="factor-stat-value" data-i18n="5000+">5000+</div>
                                     </div>
                                     <div class="factor-stat">
-                                        <div class="factor-stat-label">Exchange</div>
-                                        <div class="factor-stat-value">SSE/SZSE</div>
+                                        <div class="factor-stat-label" data-i18n="Exchange">Exchange</div>
+                                        <div class="factor-stat-value" data-i18n="SSE/SZSE">SSE/SZSE</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="factor-card rarity-epic market-card" onclick="selectMarket(this, 'us')">
                                 <div class="factor-header">
-                                    <div class="factor-name">🇺🇸 US Stocks</div>
-                                    <div class="factor-rarity">NASDAQ/NYSE</div>
+                                    <div class="factor-name" data-i18n="🇺🇸 US Stocks">🇺🇸 US Stocks</div>
+                                    <div class="factor-rarity" data-i18n="NASDAQ/NYSE">NASDAQ/NYSE</div>
                                 </div>
                                 <div class="factor-stats">
                                     <div class="factor-stat">
-                                        <div class="factor-stat-label">Stocks</div>
-                                        <div class="factor-stat-value">6000+</div>
+                                        <div class="factor-stat-label" data-i18n="Stocks">Stocks</div>
+                                        <div class="factor-stat-value" data-i18n="6000+">6000+</div>
                                     </div>
                                     <div class="factor-stat">
-                                        <div class="factor-stat-label">Exchange</div>
-                                        <div class="factor-stat-value">NASDAQ/NYSE</div>
+                                        <div class="factor-stat-label" data-i18n="Exchange">Exchange</div>
+                                        <div class="factor-stat-value" data-i18n="NASDAQ/NYSE">NASDAQ/NYSE</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="factor-card rarity-rare market-card" onclick="selectMarket(this, 'hk')">
                                 <div class="factor-header">
-                                    <div class="factor-name">🇭🇰 Hong Kong</div>
-                                    <div class="factor-rarity">HKEX</div>
+                                    <div class="factor-name" data-i18n="🇭🇰 Hong Kong">🇭🇰 Hong Kong</div>
+                                    <div class="factor-rarity" data-i18n="HKEX">HKEX</div>
                                 </div>
                                 <div class="factor-stats">
                                     <div class="factor-stat">
-                                        <div class="factor-stat-label">Stocks</div>
-                                        <div class="factor-stat-value">2500+</div>
+                                        <div class="factor-stat-label" data-i18n="Stocks">Stocks</div>
+                                        <div class="factor-stat-value" data-i18n="2500+">2500+</div>
                                     </div>
                                     <div class="factor-stat">
-                                        <div class="factor-stat-label">Exchange</div>
-                                        <div class="factor-stat-value">HKEX</div>
+                                        <div class="factor-stat-label" data-i18n="Exchange">Exchange</div>
+                                        <div class="factor-stat-value" data-i18n="HKEX">HKEX</div>
                                     </div>
                                 </div>
                             </div>
@@ -2021,6 +2021,7 @@
                 'SENT': 'SENT',
                 'FLOW': 'FLOW',
                 'FACTORS': 'Factors',
+                '0 FACTORS': '0 FACTORS',
                 'TECHNICAL FACTORS': 'TECHNICAL FACTORS',
                 'FUNDAMENTAL FACTORS': 'FUNDAMENTAL FACTORS',
                 'SENTIMENT FACTORS': 'SENTIMENT FACTORS',
@@ -2182,6 +2183,7 @@
                 'China Mainland': 'China Mainland',
                 'Stocks': 'Stocks',
                 'Exchange': 'Exchange',
+                'SSE/SZSE': 'SSE/SZSE',
                 '🇺🇸 US Stocks': '🇺🇸 US Stocks',
                 'NASDAQ/NYSE': 'NASDAQ/NYSE',
                 '🇭🇰 Hong Kong': '🇭🇰 Hong Kong',
@@ -2368,6 +2370,7 @@
                 'China Mainland': '中国大陆',
                 'Stocks': '股票',
                 'Exchange': '交易所',
+                'SSE/SZSE': '上交所/深交所',
                 '🇺🇸 US Stocks': '🇺🇸 美股',
                 'NASDAQ/NYSE': '纳斯达克/纽交所',
                 '🇭🇰 Hong Kong': '🇭🇰 港股',
@@ -2889,6 +2892,7 @@
                 'SENT': '情绪',
                 'FLOW': '资金流',
                 'FACTORS': '个因子',
+                '0 FACTORS': '0 因子',
                 'TECHNICAL FACTORS': '技术因子',
                 'FUNDAMENTAL FACTORS': '基本面因子',
                 'SENTIMENT FACTORS': '情绪因子',
@@ -3047,6 +3051,9 @@
             renderOptimizations();
             renderHistory();
             renderWatchlist();
+
+            // 更新图表标签
+            initMarketChart();
 
             // 更新按钮状态
             updateLanguageButtons();
@@ -4526,7 +4533,22 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             if (!ctx) return;
 
             const market = AppState.currentMarket;
-            const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
+            const lang = AppState.currentLang;
+
+            // 根据语言生成标签
+            const labels = Array.from({length: 50}, (_, i) => {
+                if (lang === 'zh') {
+                    if (i === 0) return '第1天';
+                    if (i === 24) return '第25天';
+                    if (i === 49) return '第50天';
+                    return '';
+                } else {
+                    if (i === 0) return 'Day 1';
+                    if (i === 24) return 'Day 25';
+                    if (i === 49) return 'Day 50';
+                    return '';
+                }
+            });
 
             // 根据不同市场设置不同的起始值和波动特性
             let val = 100;
@@ -4557,11 +4579,18 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                 return val;
             });
 
+            // 获取轴标签文本
+            const xAxisLabel = lang === 'zh' ? '时间' : 'Time';
+            const yAxisLabel = lang === 'zh' ? '指数值' : 'Index Value';
+
             // 如果图表已经存在，直接更新数据
             if (marketChart) {
+                marketChart.data.labels = labels;
                 marketChart.data.datasets[0].data = data;
                 marketChart.data.datasets[0].borderColor = color;
                 marketChart.data.datasets[0].backgroundColor = bgColor;
+                marketChart.options.scales.x.title.text = xAxisLabel;
+                marketChart.options.scales.y.title.text = yAxisLabel;
                 marketChart.update();
                 return;
             }
@@ -4578,16 +4607,69 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                         backgroundColor: bgColor,
                         fill: true,
                         tension: 0.4,
-                        pointRadius: 0
+                        pointRadius: 0,
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: color,
+                            borderWidth: 1
+                        }
+                    },
                     scales: {
-                        x: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } },
-                        y: { display: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a0a0a0' } }
+                        x: {
+                            display: true,
+                            grid: {
+                                color: 'rgba(255,255,255,0.08)',
+                                drawBorder: true
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: { size: 11 },
+                                maxTicksLimit: 10
+                            },
+                            title: {
+                                display: true,
+                                text: xAxisLabel,
+                                color: '#00f5ff',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        },
+                        y: {
+                            display: true,
+                            grid: {
+                                color: 'rgba(255,255,255,0.08)',
+                                drawBorder: true
+                            },
+                            ticks: {
+                                color: '#a0a0a0',
+                                font: { size: 11 },
+                                callback: function(value) {
+                                    return value.toFixed(1);
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: yAxisLabel,
+                                color: '#00f5ff',
+                                font: { size: 12, weight: 'bold' }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
                     }
                 }
             });
