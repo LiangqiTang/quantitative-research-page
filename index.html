@@ -1433,7 +1433,7 @@
                     </div>
                 </div>
 
-                <div class="stats-grid">
+                <div class="stats-grid" id="market-stats-grid">
                     <div class="stat-card">
                         <div class="stat-label" data-i18n="📈 SSE Composite">📈 SSE Composite</div>
                         <div class="stat-value positive" id="sseIndex">3,125.67</div>
@@ -3038,6 +3038,9 @@
             // 应用翻译到静态内容
             applyLanguage();
 
+            // 更新市场指数显示（语言切换时）
+            renderMarketIndices();
+
             // 重新渲染所有动态内容（它们内部使用i18n）
             renderStrategies();
             renderFactors();
@@ -3078,6 +3081,7 @@
 
         function setMarket(market) {
             AppState.currentMarket = market;
+            localStorage.setItem('preferredMarket', market);
             updateMarketButtons();
             // 更新市场视图内容
             updateMarketView();
@@ -3119,26 +3123,165 @@
             // 更新watchlist和market data
             const marketConfigs = {
                 'cn': {
-                    index: 'SSE', value: 3247.52, change: 1.24,
-                    watchlist: ['贵州茅台', '宁德时代', '比亚迪', '工商银行', '中国平安']
+                    currency: 'CNY',
+                    currencySymbol: '¥',
+                    defaultCapital: 1000000,
+                    indices: [
+                        { id: 'sse', label: { zh: '📈 上证指数', en: '📈 SSE Composite' }, value: 3247.52, change: 1.24 },
+                        { id: 'szse', label: { zh: '📈 深证成指', en: '📈 SZSE Component' }, value: 10842.38, change: 0.87 },
+                        { id: 'csi300', label: { zh: '📈 沪深300', en: '📈 CSI 300' }, value: 3852.19, change: -0.45 }
+                    ],
+                    watchlist: [
+                        { code: '600519', name: '贵州茅台', price: 1688.00, change: 2.3, volume: '12.5M' },
+                        { code: '000001', name: '平安银行', price: 12.45, change: -1.2, volume: '45.2M' },
+                        { code: '600036', name: '招商银行', price: 32.80, change: 0.8, volume: '28.1M' },
+                        { code: '000858', name: '五粮液', price: 145.60, change: 3.5, volume: '8.9M' }
+                    ]
                 },
                 'us': {
-                    index: 'S&P 500', value: 5123.41, change: 0.56,
-                    watchlist: ['AAPL', 'MSFT', 'GOOGL', 'NVDA', 'TSLA']
+                    currency: 'USD',
+                    currencySymbol: '$',
+                    defaultCapital: 1000000,
+                    indices: [
+                        { id: 'sp500', label: { zh: '📈 标普500', en: '📈 S&P 500' }, value: 5123.41, change: 0.56 },
+                        { id: 'nasdaq', label: { zh: '📈 纳斯达克', en: '📈 NASDAQ' }, value: 16245.37, change: 2.15 },
+                        { id: 'dow', label: { zh: '📈 道琼斯', en: '📈 DOW JONES' }, value: 38425.67, change: 0.34 }
+                    ],
+                    watchlist: [
+                        { code: 'AAPL', name: 'Apple', price: 178.50, change: 1.2, volume: '52.3M' },
+                        { code: 'MSFT', name: 'Microsoft', price: 415.20, change: -0.5, volume: '23.1M' },
+                        { code: 'GOOGL', name: 'Alphabet', price: 141.80, change: 0.8, volume: '31.2M' },
+                        { code: 'NVDA', name: 'NVIDIA', price: 875.30, change: 3.2, volume: '48.7M' }
+                    ]
                 },
                 'hk': {
-                    index: 'HSI', value: 18452.36, change: 1.02,
-                    watchlist: ['腾讯控股', '阿里巴巴', '美团', '京东', '百度']
+                    currency: 'HKD',
+                    currencySymbol: 'HK$',
+                    defaultCapital: 1000000,
+                    indices: [
+                        { id: 'hsi', label: { zh: '📈 恒生指数', en: '📈 Hang Seng' }, value: 18452.36, change: 1.02 },
+                        { id: 'hscei', label: { zh: '📈 国企指数', en: '📈 HSCEI' }, value: 11876.34, change: 1.45 },
+                        { id: 'hstech', label: { zh: '📈 恒生科技', en: '📈 Hang Seng Tech' }, value: 4325.67, change: 2.31 }
+                    ],
+                    watchlist: [
+                        { code: '00700', name: '腾讯控股', price: 368.50, change: 1.8, volume: '28.5M' },
+                        { code: '09988', name: '阿里巴巴', price: 78.20, change: -0.6, volume: '42.1M' },
+                        { code: '03690', name: '美团', price: 128.40, change: 2.1, volume: '35.2M' },
+                        { code: '09618', name: '京东', price: 102.50, change: 0.9, volume: '21.8M' }
+                    ]
                 }
             };
+
             const config = marketConfigs[AppState.currentMarket];
             if (config) {
-                AppState.marketData[config.index] = {
-                    value: config.value,
-                    change: config.change
-                };
-                // 更新市场视图显示
+                // 更新货币和市场配置
+                AppState.marketConfig = {...config};
+
+                // 完全替换 watchlist 数组
+                watchlist.splice(0, watchlist.length, ...config.watchlist.map(s => ({...s})));
+
+                // 更新市场指数显示
+                renderMarketIndices();
+
+                // 更新资金显示和滑块
+                updateCapitalForMarket();
+
+                // 更新 watchlist 显示
                 renderWatchlist();
+
+                // 更新所有带货币的UI
+                updateAllCurrencyDisplays();
+
+                // 更新市场图表
+                updateMarketChart();
+            }
+        }
+
+        function renderMarketIndices() {
+            const config = AppState.marketConfig;
+            if (!config || !config.indices) return;
+
+            const statsGrid = document.getElementById('market-stats-grid');
+            if (!statsGrid) return;
+
+            const lang = AppState.currentLang;
+            statsGrid.innerHTML = config.indices.map(index => `
+                <div class="stat-card">
+                    <div class="stat-label">${index.label[lang] || index.label.en}</div>
+                    <div class="stat-value ${index.change >= 0 ? 'positive' : 'negative'}" id="${index.id}Index">
+                        ${index.value.toLocaleString()}
+                    </div>
+                    <div class="stat-value ${index.change >= 0 ? 'positive' : 'negative'} small" style="margin-top: 4px;">
+                        ${index.change >= 0 ? '+' : ''}${index.change.toFixed(2)}%
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCapitalForMarket() {
+            const config = AppState.marketConfig;
+            if (!config) return;
+
+            // 更新初始资金滑块和显示
+            const capitalSlider = document.getElementById('initialCapital');
+            if (capitalSlider) {
+                // 保持相对比例，但切换货币
+                const ratio = AppState.initialCapital / 1000000;
+                AppState.initialCapital = Math.round(config.defaultCapital * ratio);
+                AppState.currentCapital = Math.round(config.defaultCapital * ratio * 1.247382);
+
+                capitalSlider.value = AppState.initialCapital;
+                capitalSlider.min = Math.round(config.defaultCapital * 0.1);
+                capitalSlider.max = Math.round(config.defaultCapital * 10);
+                capitalSlider.step = Math.round(config.defaultCapital * 0.1);
+
+                // 更新滑块标签
+                const sliderLabels = capitalSlider.parentElement.querySelectorAll('div > span');
+                if (sliderLabels.length >= 2) {
+                    sliderLabels[0].textContent = formatCurrency(Math.round(config.defaultCapital * 0.1));
+                    sliderLabels[1].textContent = formatCurrency(Math.round(config.defaultCapital * 10));
+                }
+            }
+
+            updateCapital();
+        }
+
+        function formatCurrency(amount) {
+            const config = AppState.marketConfig || { currency: 'CNY', currencySymbol: '¥' };
+            const currencyMap = {
+                'CNY': { currency: 'CNY', locale: 'zh-CN' },
+                'USD': { currency: 'USD', locale: 'en-US' },
+                'HKD': { currency: 'HKD', locale: 'en-HK' }
+            };
+            const map = currencyMap[config.currency] || currencyMap['CNY'];
+
+            return new Intl.NumberFormat(map.locale, {
+                style: 'currency',
+                currency: map.currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function getCurrencySymbol() {
+            const config = AppState.marketConfig;
+            return config ? config.currencySymbol : '¥';
+        }
+
+        function updateAllCurrencyDisplays() {
+            // 更新所有需要货币符号的显示
+            updateCapital();
+
+            // 更新 Dashboard 上的资金显示
+            const portfolioValueEl = document.getElementById('livePortfolioValue');
+            if (portfolioValueEl) {
+                portfolioValueEl.textContent = formatCurrency(AppState.currentCapital);
+            }
+
+            // 更新回测结果的资金显示
+            const finalValueEl = document.getElementById('finalValue');
+            if (finalValueEl) {
+                finalValueEl.textContent = formatCurrency(Math.round(AppState.currentCapital * 1.897));
             }
         }
 
@@ -3158,9 +3301,10 @@
             currentMarket: 'cn', // 默认A股市场
             accountHP: 92, // 账户生命值
             missionCount: 17, // 任务计数
-            initialCapital: 1000000, // 初始资金 ¥1M
+            initialCapital: 1000000, // 初始资金
             currentCapital: 1247382, // 当前资金
             portfolioValue: 0, // 实时组合价值
+            marketConfig: null, // 会由 updateMarketView() 设置
 
             // 策略参数
             strategyParams: {
@@ -3711,9 +3855,9 @@
 
         function updateCapital() {
             const capital = document.getElementById('initialCapital').value;
+            AppState.initialCapital = parseInt(capital);
             AppState.currentCapital = parseInt(capital);
-            const formatted = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(AppState.currentCapital);
-            document.getElementById('capitalValue').textContent = formatted;
+            document.getElementById('capitalValue').textContent = formatCurrency(AppState.initialCapital);
         }
 
         function selectMarket(element, market) {
@@ -3954,8 +4098,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                 currentBacktestData.equityCurve.push(currentValue);
                 updateLiveEquityChart();
 
-                const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentValue);
-                document.getElementById('livePortfolioValue').textContent = formattedValue;
+                document.getElementById('livePortfolioValue').textContent = formatCurrency(Math.round(currentValue));
                 document.getElementById('liveReturn').textContent = (AppState.battleStats.returns >= 0 ? '+' : '') + AppState.battleStats.returns.toFixed(2) + '%';
                 document.getElementById('liveReturn').className = 'stat-value ' + (AppState.battleStats.returns >= 0 ? 'positive' : 'negative');
                 document.getElementById('liveTrades').textContent = AppState.battleStats.trades;
@@ -4046,8 +4189,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             currentBacktestData.totalTrades = AppState.battleStats.trades;
             currentBacktestData.winRate = 71.4;
 
-            const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(finalValue);
-            document.getElementById('livePortfolioValue').textContent = formattedValue;
+            document.getElementById('livePortfolioValue').textContent = formatCurrency(Math.round(finalValue));
             document.getElementById('liveReturn').textContent = '+89.7%';
             document.getElementById('liveReturn').className = 'stat-value positive';
             document.getElementById('battleStatus').textContent = '🎉 VICTORY!';
@@ -4057,7 +4199,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             startBtn.onclick = () => navigateTo('results');
 
             // 更新结果页面
-            document.getElementById('finalValue').textContent = formattedValue;
+            document.getElementById('finalValue').textContent = formatCurrency(Math.round(finalValue));
             document.getElementById('finalReturn').textContent = '+89.7%';
             document.getElementById('finalSharpe').textContent = '2.34';
             document.getElementById('finalDrawdown').textContent = '-11.2%';
@@ -4212,8 +4354,7 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             AppState.currentCapital = currentBacktestData.capital || AppState.initialCapital;
             navigateTo('results');
 
-            const formattedValue = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }).format(currentBacktestData.finalValue);
-            document.getElementById('finalValue').textContent = formattedValue;
+            document.getElementById('finalValue').textContent = formatCurrency(Math.round(currentBacktestData.finalValue));
             document.getElementById('finalReturn').textContent = (currentBacktestData.finalReturn >= 0 ? '+' : '') + currentBacktestData.finalReturn + '%';
             document.getElementById('finalSharpe').textContent = currentBacktestData.sharpe;
             document.getElementById('finalDrawdown').textContent = '-' + currentBacktestData.maxDrawdown + '%';
@@ -4291,44 +4432,38 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
         }
 
         // 市场视图功能
-        const watchlist = [
-            { code: '600519', name: '贵州茅台', price: 1688.00, change: 2.3, volume: '12.5M' },
-            { code: '000001', name: '平安银行', price: 12.45, change: -1.2, volume: '45.2M' },
-            { code: '600036', name: '招商银行', price: 32.80, change: 0.8, volume: '28.1M' },
-            { code: '000858', name: '五粮液', price: 145.60, change: 3.5, volume: '8.9M' }
-        ];
+        let watchlist = [];
 
         let marketChart = null;
 
         function refreshMarketData() {
-            // Update index data in AppState
-            Object.keys(AppState.marketData).forEach(key => {
+            const config = AppState.marketConfig;
+            if (!config || !config.indices) return;
+
+            // 更新当前市场所有指数数据
+            config.indices.forEach(index => {
                 const change = (Math.random() - 0.5) * 2;
-                AppState.marketData[key].change = parseFloat((AppState.marketData[key].change + change * 0.1).toFixed(2));
-                AppState.marketData[key].value = parseFloat((AppState.marketData[key].value * (1 + change / 100)).toFixed(2));
+                index.change = parseFloat((index.change + change * 0.1).toFixed(2));
+                index.value = parseFloat((index.value * (1 + change / 100)).toFixed(2));
             });
 
-            // Update UI with new index values
-            document.getElementById('sseIndex').textContent = AppState.marketData.SSE.value.toLocaleString();
-            const sseEl = document.querySelector('#sseIndex').parentElement.querySelector('.small');
-            if (sseEl) {
-                sseEl.textContent = (AppState.marketData.SSE.change >= 0 ? '+' : '') + AppState.marketData.SSE.change + '%';
-                sseEl.className = 'stat-value small ' + (AppState.marketData.SSE.change >= 0 ? 'positive' : 'negative');
-            }
-
-            // Update watchlist
+            // 更新watchlist
             watchlist.forEach(stock => {
                 stock.price *= (1 + (Math.random() - 0.5) * 0.02);
                 stock.change = (Math.random() - 0.5) * 5;
             });
+
+            // 重新渲染
+            renderMarketIndices();
             renderWatchlist();
             updateMarketChart();
+
             alert(AppState.currentLang === 'zh' ? '市场数据已刷新！' : 'Market data refreshed!');
         }
 
         function renderWatchlist() {
             const container = document.getElementById('watchlistBody');
-            const currencySymbol = AppState.currentMarket === 'cn' ? '¥' : (AppState.currentMarket === 'hk' ? 'HK$' : '$');
+            const currencySymbol = getCurrencySymbol();
             const lang = AppState.currentLang;
             container.innerHTML = watchlist.map(stock => `
                 <tr>
@@ -4404,25 +4539,36 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             initOptimizations();
             initCharts();
             initMarketChart();
-            renderWatchlist();
-            renderHistory();
-
-            // 初始化资金显示
-            updateCapital();
 
             // 2. 初始化i18n：保存原始英文文本
             initI18n();
 
-            // 3. 从localStorage读取用户偏好语言
+            // 3. 从localStorage读取用户偏好
+            // 注意：暂时清除旧的语言设置，强制默认为中文（可以删除这段清除代码后）
+            localStorage.removeItem('preferredLang');
+
             const savedLang = localStorage.getItem('preferredLang');
             if (savedLang) {
                 AppState.currentLang = savedLang;
+            } else {
+                // 默认为中文
+                AppState.currentLang = 'zh';
+            }
+            const savedMarket = localStorage.getItem('preferredMarket');
+            if (savedMarket) {
+                AppState.currentMarket = savedMarket;
             }
 
             // 4. 应用初始语言
             applyLanguage();
 
-            // 5. 更新按钮状态
+            // 5. 初始化市场视图（会设置 marketConfig 并更新 watchlist）
+            updateMarketView();
+
+            // 6. 渲染其他内容
+            renderHistory();
+
+            // 7. 更新按钮状态
             updateMarketButtons();
             updateLanguageButtons();
         });
