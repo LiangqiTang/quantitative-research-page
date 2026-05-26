@@ -804,14 +804,14 @@
             <div class="nav-section" style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(0, 245, 255, 0.3);">
                 <div class="nav-section-title" data-i18n="MARKET">MARKET / 市场</div>
                 <div style="display: flex; gap: 8px; padding: 0 16px; margin-bottom: 16px; flex-wrap: wrap;">
-                    <button class="cyber-btn primary" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('cn')">🇨🇳 A股</button>
-                    <button class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('us')">🇺🇸美股</button>
-                    <button class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('hk')">🇭🇰港股</button>
+                    <button id="btn-market-cn" class="cyber-btn primary" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('cn')">🇨🇳 A股</button>
+                    <button id="btn-market-us" class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('us')">🇺🇸美股</button>
+                    <button id="btn-market-hk" class="cyber-btn" style="flex: 1; padding: 8px 6px; font-size: 0.75rem; min-width: 60px;" onclick="setMarket('hk')">🇭🇰港股</button>
                 </div>
                 <div class="nav-section-title" data-i18n="LANGUAGE">LANGUAGE / 语言</div>
                 <div style="display: flex; gap: 8px; padding: 0 16px;">
-                    <button class="cyber-btn primary" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('zh')">中文</button>
-                    <button class="cyber-btn" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('en')">EN</button>
+                    <button id="btn-lang-zh" class="cyber-btn primary" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('zh')">中文</button>
+                    <button id="btn-lang-en" class="cyber-btn" style="flex: 1; padding: 12px 8px; font-size: 0.85rem;" onclick="setLanguage('en')">EN</button>
                 </div>
             </div>
         </div>
@@ -3057,25 +3057,16 @@
         }
 
         function updateLanguageButtons() {
-            const navSections = document.querySelectorAll('.nav-section');
-            let langSection = null;
-            for (let i = navSections.length - 1; i >= 0; i--) {
-                if (navSections[i].textContent.includes('LANGUAGE')) {
-                    langSection = navSections[i];
-                    break;
+            const btnZh = document.getElementById('btn-lang-zh');
+            const btnEn = document.getElementById('btn-lang-en');
+            if (btnZh && btnEn) {
+                btnZh.classList.remove('primary');
+                btnEn.classList.remove('primary');
+                if (AppState.currentLang === 'zh') {
+                    btnZh.classList.add('primary');
+                } else {
+                    btnEn.classList.add('primary');
                 }
-            }
-            if (langSection) {
-                const buttons = langSection.querySelectorAll('button');
-                let langButtons = Array.from(buttons).filter(btn =>
-                    btn.textContent.includes('中文') || btn.textContent.includes('EN')
-                );
-                langButtons.forEach((btn, i) => {
-                    btn.classList.remove('primary');
-                    if ((AppState.currentLang === 'zh' && i === 0) || (AppState.currentLang === 'en' && i === 1)) {
-                        btn.classList.add('primary');
-                    }
-                });
             }
         }
 
@@ -3096,25 +3087,20 @@
         }
 
         function updateMarketButtons() {
-            // 找到市场按钮所在的nav-section
-            const navSections = document.querySelectorAll('.nav-section');
-            let marketSection = null;
-            for (let i = navSections.length - 1; i >= 0; i--) {
-                if (navSections[i].textContent.includes('MARKET')) {
-                    marketSection = navSections[i];
-                    break;
+            const btnCn = document.getElementById('btn-market-cn');
+            const btnUs = document.getElementById('btn-market-us');
+            const btnHk = document.getElementById('btn-market-hk');
+            if (btnCn && btnUs && btnHk) {
+                btnCn.classList.remove('primary');
+                btnUs.classList.remove('primary');
+                btnHk.classList.remove('primary');
+                if (AppState.currentMarket === 'cn') {
+                    btnCn.classList.add('primary');
+                } else if (AppState.currentMarket === 'us') {
+                    btnUs.classList.add('primary');
+                } else {
+                    btnHk.classList.add('primary');
                 }
-            }
-            if (marketSection) {
-                const buttons = marketSection.querySelectorAll('button');
-                buttons.forEach((btn, i) => {
-                    btn.classList.remove('primary');
-                    if ((AppState.currentMarket === 'cn' && i === 0) ||
-                        (AppState.currentMarket === 'us' && i === 1) ||
-                        (AppState.currentMarket === 'hk' && i === 2)) {
-                        btn.classList.add('primary');
-                    }
-                });
             }
         }
 
@@ -3242,6 +3228,9 @@
             // 5. 更新资金滑块和所有货币显示
             updateCapitalForMarket();
             updateAllCurrencyDisplays();
+
+            // 6. 重新初始化市场图表，让它根据不同市场显示不同的曲线
+            initMarketChart();
         }
 
         function renderMarketIndices() {
@@ -4536,13 +4525,48 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             const ctx = document.getElementById('marketChart');
             if (!ctx) return;
 
+            const market = AppState.currentMarket;
             const labels = Array.from({length: 50}, (_, i) => `Day ${i+1}`);
+
+            // 根据不同市场设置不同的起始值和波动特性
             let val = 100;
+            let drift = 0;
+            let volatility = 2;
+            let color = '#ffd700'; // 默认金色
+            let bgColor = 'rgba(255, 215, 0, 0.1)';
+
+            if (market === 'cn') {
+                drift = -0.1; // A股稍微偏弱
+                volatility = 2.5;
+                color = '#ff6b6b'; // 红色系
+                bgColor = 'rgba(255, 107, 107, 0.1)';
+            } else if (market === 'us') {
+                drift = 0.2; // 美股走强
+                volatility = 1.5;
+                color = '#00ff88'; // 绿色系
+                bgColor = 'rgba(0, 255, 136, 0.1)';
+            } else if (market === 'hk') {
+                drift = 0.05; // 港股中性
+                volatility = 2;
+                color = '#00d4ff'; // 蓝色系
+                bgColor = 'rgba(0, 212, 255, 0.1)';
+            }
+
             const data = Array.from({length: 50}, () => {
-                val += (Math.random() - 0.4) * 2;
+                val += (Math.random() - 0.5 + drift) * volatility;
                 return val;
             });
 
+            // 如果图表已经存在，直接更新数据
+            if (marketChart) {
+                marketChart.data.datasets[0].data = data;
+                marketChart.data.datasets[0].borderColor = color;
+                marketChart.data.datasets[0].backgroundColor = bgColor;
+                marketChart.update();
+                return;
+            }
+
+            // 创建新图表
             marketChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -4550,8 +4574,8 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
                     datasets: [{
                         label: 'Market Index',
                         data: data,
-                        borderColor: '#ffd700',
-                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        borderColor: color,
+                        backgroundColor: bgColor,
                         fill: true,
                         tension: 0.4,
                         pointRadius: 0
@@ -4591,21 +4615,28 @@ Risk Controls,${AppState.riskParams.shieldActive ? 'ACTIVE' : 'INACTIVE'}`;
             initI18n();
 
             // 3. 从localStorage读取用户偏好
-            // 重要：页面第一次进入时，强制默认是中文！
-            // 检查是否是从未设置过语言的用户
+            // 重要：页面第一次进入时，强制默认是中文和A股！
+            const isFirstVisit = !localStorage.getItem('hasVisitedV2');
             let savedLang = localStorage.getItem('preferredLang');
             let savedMarket = localStorage.getItem('preferredMarket');
 
-            if (!savedLang) {
-                // 如果没有保存过语言，强制设为中文
+            if (isFirstVisit) {
+                // 第一次访问：强制设为中文和A股
                 savedLang = 'zh';
-                localStorage.setItem('preferredLang', 'zh');
-            }
-
-            if (!savedMarket) {
-                // 如果没有保存过市场，默认A股
                 savedMarket = 'cn';
+                localStorage.setItem('preferredLang', 'zh');
                 localStorage.setItem('preferredMarket', 'cn');
+                localStorage.setItem('hasVisitedV2', 'true');
+            } else {
+                // 老用户：如果没有保存过，默认中文和A股
+                if (!savedLang) {
+                    savedLang = 'zh';
+                    localStorage.setItem('preferredLang', 'zh');
+                }
+                if (!savedMarket) {
+                    savedMarket = 'cn';
+                    localStorage.setItem('preferredMarket', 'cn');
+                }
             }
 
             AppState.currentLang = savedLang;
